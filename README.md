@@ -8,4 +8,4 @@ Core design principles :
     - Scripting in softwares like Blender, Illustrator or After Effects.
     - Low-Level graphics programming with GPU APIs like OpenGL.
     - Per-pixel thinking ([Shadertoy](https://www.shadertoy.com/) like).
-  - **Vectors are amazing** : They should be used as often as possible to abstract away the coordinate system and simplify the equations. (*PS : matrices are kinda cool too*)
+  - **Vectors are amazing** : They should be used as often as possible to abstract away the coordinate system and simplify the equations.
