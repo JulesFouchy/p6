@@ -9,4 +9,4 @@ Core design principles :
     - Scripting in softwares like Blender, Illustrator or After Effects.
     - Per-pixel thinking ([Shadertoy](https://www.shadertoy.com/) like).
     - Low-Level graphics programming with GPU APIs like OpenGL.
-    - **Low-Level access** : nothing should stand in the way of you writting raw OpenGL calls
+  - **Low-Level access** : nothing should stand in the way of you writting raw OpenGL calls
