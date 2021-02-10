@@ -30,3 +30,4 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 - There are inconsistencies between Classic and WebGL modes (like the coordinate system).
 - Circles are ugly in WebGL mode (not enough subdivisions / no adaptive subdivisions)
 - p5.Graphics are not practical to use / introduce in existing code : you have to prefix every drawing call with "pg.". I would rather wrap my code in a pair of beginDraw() / endDraw() functions, just as if you were binding / unbinding another render target. Or even nicer, just one *draw()* function that takes in a function pointer that does the drawing code. (It would enforce wrapping your code in a scope, and would make sure you don't forget to call *endDraw()*).
+- Javascript's modulo (%) uses the wrong convention for negative numbers (it introduces a discontinuity of behaviour between positive and negative numbers)
