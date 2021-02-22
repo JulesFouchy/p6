@@ -33,3 +33,4 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 - p5.Graphics are not practical to use / introduce in existing code : you have to prefix every drawing call with "pg.". I would rather wrap my code in a pair of beginDraw() / endDraw() functions, just as if you were binding / unbinding another render target. Or even nicer, just one *draw()* function that takes in a function pointer that does the drawing code. (It would enforce wrapping your code in a scope, and would make sure you don't forget to call *endDraw()*).
 - Javascript's modulo (%) uses the wrong convention for negative numbers (it introduces a discontinuity of behaviour between positive and negative numbers)
 - Pixel arrays are 1D and are indexed as such. I think this 1D nature should be hidden to the user and we should be able to use 2D indices.
+- noise() isn't defined for negative inputs
