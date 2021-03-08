@@ -21,7 +21,7 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 - *ellipse* and *rect* miss a rotation parameter.
 - There is no proper Color type
 - Colors are described with values in the range [0, 255] instead of [0, 1] by default. Hexadecimal strings are nice though.
-- If you describe colors with a string, you can't add a seconde parameter to specify an alpha value.
+- If you describe colors with a string, you can't add a second parameter to specify an alpha value.
 - *lerp* is a weird and confusing name. I much prefer *mix*, which also has the advantage of being the one used in *glsl*.
 - The default *noise* should use Simplex Noise instead of Classic Perlin Noise. Also, more noise types should be available (voronoise etc.)
 - The coordinate system should be expressed in relative coordinates (-1 to 1 for y and -aspectRatio to aspectRatio for x) [Maybe we could have the option to change the state so that x becomes the axis of reference going from -1 to 1 (usefull for vertical compositions)]
