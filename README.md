@@ -34,3 +34,7 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 - Javascript's modulo (%) uses the wrong convention for negative numbers (it introduces a discontinuity of behaviour between positive and negative numbers)
 - Pixel arrays are 1D and are indexed as such. I think this 1D nature should be hidden to the user and we should be able to use 2D indices.
 - noise() isn't defined for negative inputs
+
+## Thinks I dislike about computer graphics in general
+
+- Lacks a Custom Blend Mode option
