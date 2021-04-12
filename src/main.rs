@@ -12,7 +12,7 @@ use winit::{
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Vertex {
-    position: [f32; 3],
+    position: [f32; 2],
     tex_coords: [f32; 2],
 }
 
@@ -25,10 +25,10 @@ impl Vertex {
                 wgpu::VertexAttribute {
                     offset: 0,
                     shader_location: 0,
-                    format: wgpu::VertexFormat::Float3,
+                    format: wgpu::VertexFormat::Float2,
                 },
                 wgpu::VertexAttribute {
-                    offset: std::mem::size_of::<[f32; 3]>() as wgpu::BufferAddress,
+                    offset: std::mem::size_of::<[f32; 2]>() as wgpu::BufferAddress,
                     shader_location: 1,
                     format: wgpu::VertexFormat::Float2,
                 }
@@ -38,10 +38,10 @@ impl Vertex {
 }
 
 const VERTICES: &[Vertex] = &[
-    Vertex { position: [-1., -1., 0.], tex_coords: [0., 1.], },
-    Vertex { position: [ 1., -1., 0.], tex_coords: [1., 1.], },
-    Vertex { position: [ 1.,  1., 0.], tex_coords: [1., 0.], },
-    Vertex { position: [-1.,  1., 0.], tex_coords: [0., 0.], },
+    Vertex { position: [-1., -1.], tex_coords: [0., 1.], },
+    Vertex { position: [ 1., -1.], tex_coords: [1., 1.], },
+    Vertex { position: [ 1.,  1.], tex_coords: [1., 0.], },
+    Vertex { position: [-1.,  1.], tex_coords: [0., 0.], },
 ];
 
 const INDICES: &[u16] = &[
