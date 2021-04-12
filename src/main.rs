@@ -54,15 +54,17 @@ const INDICES: &[u16] = &[
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct Uniforms {
     model_matrix: [[f32; 4]; 4],
-    view_proj: [[f32; 4]; 4],
+    view_matrix: [[f32; 4]; 4],
+    aspect_ratio: f32,
 }
 
 impl Uniforms {
-    fn new() -> Self {
+    fn new(aspect_ratio: f32) -> Self {
         use cgmath::SquareMatrix;
         Self {
             model_matrix: cgmath::Matrix4::identity().into(),
-            view_proj: cgmath::Matrix4::identity().into(),
+            view_matrix: cgmath::Matrix4::identity().into(),
+            aspect_ratio,
         }
     }
 
@@ -99,6 +101,7 @@ struct State {
 impl State {
     async fn new(window: &Window) -> Self {
         let size = window.inner_size();
+        let aspect_ratio = size.width as f32 / size.height as f32;
 
         // The instance is a handle to our GPU
         // BackendBit::PRIMARY => Vulkan + Metal + DX12 + Browser WebGPU
@@ -183,7 +186,7 @@ impl State {
         let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
         let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
 
-        let mut uniforms = Uniforms::new();
+        let mut uniforms = Uniforms::new(aspect_ratio);
 
         let uniform_buffer = device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
@@ -308,6 +311,7 @@ impl State {
 
     fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
         self.size = new_size;
+        self.uniforms.aspect_ratio = new_size.width as f32 / new_size.height as f32;
         self.sc_desc.width = new_size.width;
         self.sc_desc.height = new_size.height;
         self.swap_chain = self.device.create_swap_chain(&self.surface, &self.sc_desc);
@@ -318,8 +322,6 @@ impl State {
     }
 
     fn update(&mut self) {
-        // self.camera.aspect = self.sc_desc.width as f32 / self.sc_desc.height as f32;
-        // self.uniforms.update_view_proj(&self.camera);
         self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[self.uniforms]));
     }
 
