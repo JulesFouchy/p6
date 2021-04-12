@@ -50,28 +50,6 @@ const INDICES: &[u16] = &[
     0, 1, 3,
 ];
 
-struct Camera {
-    eye: cgmath::Point3<f32>,
-    target: cgmath::Point3<f32>,
-    up: cgmath::Vector3<f32>,
-    aspect: f32,
-    fovy: f32,
-    znear: f32,
-    zfar: f32,
-}
-
-impl Camera {
-    fn build_view_projection_matrix(&self) -> cgmath::Matrix4<f32> {
-        // 1.
-        //let view = cgmath::Matrix4::look_at(self.eye, self.target, self.up);
-        // 2.
-        let proj = cgmath::ortho(-self.aspect, self.aspect, -1., 1., -1., 1.);
-
-        // 3.
-        return OPENGL_TO_WGPU_MATRIX * proj;
-    }
-}
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct Uniforms {
@@ -88,10 +66,6 @@ impl Uniforms {
         }
     }
 
-    fn update_view_proj(&mut self, camera: &Camera) {
-        self.view_proj = camera.build_view_projection_matrix().into();
-    }
-
     fn update_model_matrix(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
         self.model_matrix = 
         (
@@ -99,105 +73,6 @@ impl Uniforms {
             cgmath::Matrix4::from_angle_z(cgmath::Rad(rotation)) *
             cgmath::Matrix4::from_nonuniform_scale(w, h, 1.)
         ).into();
-    }
-}
-
-
-pub const OPENGL_TO_WGPU_MATRIX: cgmath::Matrix4<f32> = cgmath::Matrix4::new(
-    1.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 0.5, 0.0,
-    0.0, 0.0, 0.5, 1.0,
-);
-
-struct CameraController {
-    speed: f32,
-    is_up_pressed: bool,
-    is_down_pressed: bool,
-    is_forward_pressed: bool,
-    is_backward_pressed: bool,
-    is_left_pressed: bool,
-    is_right_pressed: bool,
-}
-
-impl CameraController {
-    fn new(speed: f32) -> Self {
-        Self {
-            speed,
-            is_up_pressed: false,
-            is_down_pressed: false,
-            is_forward_pressed: false,
-            is_backward_pressed: false,
-            is_left_pressed: false,
-            is_right_pressed: false,
-        }
-    }
-
-    fn process_events(&mut self, event: &WindowEvent) -> bool {
-        match event {
-            WindowEvent::KeyboardInput {
-                input: KeyboardInput {
-                    state,
-                    scancode,
-                    ..
-                },
-                ..
-            } => {
-                let is_pressed = *state == ElementState::Pressed;
-                match scancode {
-                    17 => {
-                        self.is_forward_pressed = is_pressed;
-                        true
-                    }
-                    30 => {
-                        self.is_left_pressed = is_pressed;
-                        true
-                    }
-                    31 => {
-                        self.is_backward_pressed = is_pressed;
-                        true
-                    }
-                    32 => {
-                        self.is_right_pressed = is_pressed;
-                        true
-                    }
-                    _ => false,
-                }
-            }
-            _ => false,
-        }
-    }
-
-    fn update_camera(&self, camera: &mut Camera) {
-        use cgmath::InnerSpace;
-        let forward = camera.target - camera.eye;
-        let forward_norm = forward.normalize();
-        let forward_mag = forward.magnitude();
-
-        // Prevents glitching when camera gets too close to the
-        // center of the scene.
-        if self.is_forward_pressed && forward_mag > self.speed {
-            camera.eye += forward_norm * self.speed;
-        }
-        if self.is_backward_pressed {
-            camera.eye -= forward_norm * self.speed;
-        }
-
-        let right = forward_norm.cross(camera.up);
-
-        // Redo radius calc in case the up/ down is pressed.
-        let forward = camera.target - camera.eye;
-        let forward_mag = forward.magnitude();
-
-        if self.is_right_pressed {
-            // Rescale the distance between the target and eye so 
-            // that it doesn't change. The eye therefore still 
-            // lies on the circle made by the target and eye.
-            camera.eye = camera.target - (forward + right * self.speed).normalize() * forward_mag;
-        }
-        if self.is_left_pressed {
-            camera.eye = camera.target - (forward - right * self.speed).normalize() * forward_mag;
-        }
     }
 }
 
@@ -215,8 +90,6 @@ struct State {
     num_indices: u32,
     diffuse_bind_group: wgpu::BindGroup,
     diffuse_texture: texture::Texture,
-    camera: Camera,
-    camera_controller: CameraController,
     uniforms: Uniforms,
     uniform_buffer: wgpu::Buffer,
     uniform_bind_group: wgpu::BindGroup,
@@ -310,22 +183,7 @@ impl State {
         let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
         let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
 
-        let camera = Camera {
-            // position the camera one unit up and 2 units back
-            // +z is out of the screen
-            eye: (0.0, 1.0, 2.0).into(),
-            // have it look at the origin
-            target: (0.0, 0.0, 0.0).into(),
-            // which way is "up"
-            up: cgmath::Vector3::unit_y(),
-            aspect: sc_desc.width as f32 / sc_desc.height as f32,
-            fovy: 45.0,
-            znear: 0.1,
-            zfar: 100.0,
-        };
-
         let mut uniforms = Uniforms::new();
-        uniforms.update_view_proj(&camera);
 
         let uniform_buffer = device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
@@ -427,8 +285,6 @@ impl State {
         );
         let num_indices = INDICES.len() as u32;
 
-        let camera_controller = CameraController::new(0.2);
-
         Self {
             surface,
             device,
@@ -443,8 +299,6 @@ impl State {
             num_indices,
             diffuse_bind_group,
             diffuse_texture,
-            camera,
-            camera_controller,
             uniforms,
             uniform_buffer,
             uniform_bind_group,
@@ -460,13 +314,12 @@ impl State {
     }
 
     fn input(&mut self, event: &WindowEvent) -> bool {
-        return self.camera_controller.process_events(event);
+        return false;
     }
 
     fn update(&mut self) {
-        self.camera.aspect = self.sc_desc.width as f32 / self.sc_desc.height as f32;
-        self.camera_controller.update_camera(&mut self.camera);
-        self.uniforms.update_view_proj(&self.camera);
+        // self.camera.aspect = self.sc_desc.width as f32 / self.sc_desc.height as f32;
+        // self.uniforms.update_view_proj(&self.camera);
         self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[self.uniforms]));
     }
 
