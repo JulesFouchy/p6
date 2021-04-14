@@ -184,7 +184,7 @@ impl State {
         );        
 
         let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
-        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.frag.spv"));
+        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/ellipse.frag.spv"));
 
         let mut uniforms = Uniforms::new(aspect_ratio);
 
