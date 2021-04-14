@@ -78,6 +78,19 @@ impl Uniforms {
     }
 }
 
+struct RenderPipelineFactory {
+    vs_module: wgpu::ShaderModule,
+}
+
+impl RenderPipelineFactory {
+    fn new(device: &wgpu::Device) -> Self {
+        let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
+        Self {
+            vs_module,
+        }
+    }
+}
+
 struct State {
     surface: wgpu::Surface,
     device: wgpu::Device,
@@ -183,7 +196,6 @@ impl State {
             }
         );        
 
-        let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
         let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/ellipse.frag.spv"));
 
         let mut uniforms = Uniforms::new(aspect_ratio);
@@ -233,11 +245,13 @@ impl State {
                 push_constant_ranges: &[],
             });
 
+        let render_pipeline_factory = RenderPipelineFactory::new(&device);
+
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
             vertex: wgpu::VertexState {
-                module: &vs_module,
+                module: &render_pipeline_factory.vs_module,
                 entry_point: "main",
                 buffers: &[
                     Vertex::desc(),
