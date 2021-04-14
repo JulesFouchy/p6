@@ -61,7 +61,8 @@ struct State {
     sc_desc: wgpu::SwapChainDescriptor,
     swap_chain: wgpu::SwapChain,
     size: winit::dpi::PhysicalSize<u32>,
-    render_pipeline: wgpu::RenderPipeline,
+    rect_render_pipeline: wgpu::RenderPipeline,
+    ellipse_render_pipeline: wgpu::RenderPipeline,
     vertex_buffer: wgpu::Buffer,
     num_vertices: u32,
     index_buffer: wgpu::Buffer, 
@@ -136,9 +137,9 @@ impl State {
 
 
         let rect_fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/rect.frag.spv"));
-        let render_pipeline = render_pipeline_factory.create(&device, rect_fs_module, sc_desc.format);
+        let rect_render_pipeline = render_pipeline_factory.create(&device, rect_fs_module, sc_desc.format);
         let ellipse_fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/ellipse.frag.spv"));
-        let render_pipeline2 = render_pipeline_factory.create(&device, ellipse_fs_module, sc_desc.format);
+        let ellipse_render_pipeline = render_pipeline_factory.create(&device, ellipse_fs_module, sc_desc.format);
 
         let vertex_buffer = device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
@@ -166,7 +167,8 @@ impl State {
             size,
             sc_desc,
             swap_chain,
-            render_pipeline,
+            rect_render_pipeline,
+            ellipse_render_pipeline,
             vertex_buffer,
             num_vertices,
             index_buffer,
@@ -214,7 +216,7 @@ impl State {
     fn render(&mut self) {
         self.background();
         self.rect(0.5, 0., 0.75, 0.75, 0.5 * std::f32::consts::TAU);
-        self.rect(0., 0., 0.25, 0.25, 0.25 * std::f32::consts::TAU);
+        self.ellipse(0., 0., 0.25, 0.25, 0.25 * std::f32::consts::TAU);
     }
 
     fn background(&mut self) {
@@ -248,7 +250,7 @@ impl State {
                         depth_stencil_attachment: None,
                     });
 
-                    render_pass.set_pipeline(&self.render_pipeline);
+                    render_pass.set_pipeline(&self.rect_render_pipeline);
                     render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
                     render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
                     render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
@@ -263,7 +265,7 @@ impl State {
         }
     }
 
-    fn rect(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
+    fn rect_with_shader(&self, x: f32, y: f32, w: f32, h: f32, rotation: f32, render_pipeline: &wgpu::RenderPipeline) {
         match &self.swap_chain_texture {
             Some(tex) => {
                 let mut encoder2 = self
@@ -272,7 +274,6 @@ impl State {
                     label: Some("Render Encoder"),
                 });
 
-                self.uniforms.update_model_matrix(x, y, w, h, rotation);
                 self.queue.write_buffer(&self.uniform_buffer, 0, bytemuck::cast_slice(&[self.uniforms]));
 
                 {
@@ -289,7 +290,7 @@ impl State {
                         depth_stencil_attachment: None,
                     });
 
-                    render_pass.set_pipeline(&self.render_pipeline);
+                    render_pass.set_pipeline(&render_pipeline);
                     render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
                     render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
                     render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
@@ -309,6 +310,16 @@ impl State {
 
             },
         }
+    }
+
+    fn rect(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
+        self.uniforms.update_model_matrix(x, y, w, h, rotation);
+        self.rect_with_shader(x, y, w, h, rotation, &self.rect_render_pipeline);
+    }
+
+    fn ellipse(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
+        self.uniforms.update_model_matrix(x, y, w, h, rotation);
+        self.rect_with_shader(x, y, w, h, rotation, &self.ellipse_render_pipeline);
     }
 }
 
