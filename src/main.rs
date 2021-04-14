@@ -80,19 +80,79 @@ impl Uniforms {
 
 struct RenderPipelineFactory {
     vs_module: wgpu::ShaderModule,
+    uniform_bind_group_layout: wgpu::BindGroupLayout,
+    render_pipeline_layout: wgpu::PipelineLayout,
 }
 
 impl RenderPipelineFactory {
     fn new(device: &wgpu::Device) -> Self {
         let vs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/shader.vert.spv"));
+        let uniform_bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            entries: &[
+                wgpu::BindGroupLayoutEntry {
+                    binding: 0,
+                    visibility: wgpu::ShaderStage::VERTEX,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Uniform,
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                }
+            ],
+            label: Some("uniform_bind_group_layout"),
+        });        
+        let render_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            label: Some("Render Pipeline Layout"),
+            bind_group_layouts: &[
+                &uniform_bind_group_layout,
+            ],
+            push_constant_ranges: &[],
+        });
         Self {
             vs_module,
+            uniform_bind_group_layout,
+            render_pipeline_layout,
         }
     }
 
-    // fn create(device: &wgpu::Device) -> wgpu::RenderPipeline {
-        
-    // }
+    fn create(&self, device: &wgpu::Device, fs_module: wgpu::ShaderModule, format: wgpu::TextureFormat) -> wgpu::RenderPipeline {
+        device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("Render Pipeline"),
+            layout: Some(&self.render_pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &self.vs_module,
+                entry_point: "main",
+                buffers: &[
+                    Vertex::desc(),
+                ],
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &fs_module,
+                entry_point: "main",
+                targets: &[wgpu::ColorTargetState {
+                    format: format,
+                    alpha_blend: wgpu::BlendState::REPLACE,
+                    color_blend: wgpu::BlendState::REPLACE,
+                    write_mask: wgpu::ColorWrite::ALL,
+                }],
+            }),
+            primitive: wgpu::PrimitiveState {
+                topology: wgpu::PrimitiveTopology::TriangleList,
+                strip_index_format: None,
+                front_face: wgpu::FrontFace::Ccw,
+                cull_mode: wgpu::CullMode::Back,
+                // Setting this to anything other than Fill requires Features::NON_FILL_POLYGON_MODE
+                polygon_mode: wgpu::PolygonMode::Fill,
+            },
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState {
+                count: 1,
+                mask: !0,
+                alpha_to_coverage_enabled: false,
+            },
+        })
+    }
 }
 
 struct State {
@@ -151,8 +211,6 @@ impl State {
         };
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        let fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/ellipse.frag.spv"));
-
         let mut uniforms = Uniforms::new(aspect_ratio);
 
         let uniform_buffer = device.create_buffer_init(
@@ -163,24 +221,10 @@ impl State {
             }
         );
 
-        let uniform_bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            entries: &[
-                wgpu::BindGroupLayoutEntry {
-                    binding: 0,
-                    visibility: wgpu::ShaderStage::VERTEX,
-                    ty: wgpu::BindingType::Buffer {
-                        ty: wgpu::BufferBindingType::Uniform,
-                        has_dynamic_offset: false,
-                        min_binding_size: None,
-                    },
-                    count: None,
-                }
-            ],
-            label: Some("uniform_bind_group_layout"),
-        });
+        let render_pipeline_factory = RenderPipelineFactory::new(&device);
         
         let uniform_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-            layout: &uniform_bind_group_layout,
+            layout: &render_pipeline_factory.uniform_bind_group_layout,
             entries: &[
                 wgpu::BindGroupEntry {
                     binding: 0,
@@ -190,52 +234,12 @@ impl State {
             label: Some("uniform_bind_group"),
         });
 
-        let render_pipeline_layout =
-            device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                label: Some("Render Pipeline Layout"),
-                bind_group_layouts: &[
-                    &uniform_bind_group_layout,
-                ],
-                push_constant_ranges: &[],
-            });
 
-        let render_pipeline_factory = RenderPipelineFactory::new(&device);
 
-        let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("Render Pipeline"),
-            layout: Some(&render_pipeline_layout),
-            vertex: wgpu::VertexState {
-                module: &render_pipeline_factory.vs_module,
-                entry_point: "main",
-                buffers: &[
-                    Vertex::desc(),
-                ],
-            },
-            fragment: Some(wgpu::FragmentState {
-                module: &fs_module,
-                entry_point: "main",
-                targets: &[wgpu::ColorTargetState {
-                    format: sc_desc.format,
-                    alpha_blend: wgpu::BlendState::REPLACE,
-                    color_blend: wgpu::BlendState::REPLACE,
-                    write_mask: wgpu::ColorWrite::ALL,
-                }],
-            }),
-            primitive: wgpu::PrimitiveState {
-                topology: wgpu::PrimitiveTopology::TriangleList,
-                strip_index_format: None,
-                front_face: wgpu::FrontFace::Ccw,
-                cull_mode: wgpu::CullMode::Back,
-                // Setting this to anything other than Fill requires Features::NON_FILL_POLYGON_MODE
-                polygon_mode: wgpu::PolygonMode::Fill,
-            },
-            depth_stencil: None,
-            multisample: wgpu::MultisampleState {
-                count: 1,
-                mask: !0,
-                alpha_to_coverage_enabled: false,
-            },
-        });
+        let rect_fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/rect.frag.spv"));
+        let render_pipeline = render_pipeline_factory.create(&device, rect_fs_module, sc_desc.format);
+        let ellipse_fs_module = device.create_shader_module(&wgpu::include_spirv!("shaders/ellipse.frag.spv"));
+        let render_pipeline2 = render_pipeline_factory.create(&device, ellipse_fs_module, sc_desc.format);
 
         let vertex_buffer = device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
