@@ -8,7 +8,6 @@ layout(location=0) out vec2 v_tex_coords;
 layout(set=0, binding=0)
 uniform Uniforms {
     mat4 u_model;
-    mat4 u_view;
     float u_aspect_ratio;
 };
 

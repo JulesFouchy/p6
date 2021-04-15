@@ -30,7 +30,6 @@ const INDICES: &[u16] = &[
 #[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
 struct Uniforms {
     model_matrix: [[f32; 4]; 4],
-    view_matrix: [[f32; 4]; 4],
     aspect_ratio: f32,
 }
 
@@ -39,7 +38,6 @@ impl Uniforms {
         use cgmath::SquareMatrix;
         Self {
             model_matrix: cgmath::Matrix4::identity().into(),
-            view_matrix: cgmath::Matrix4::identity().into(),
             aspect_ratio,
         }
     }
@@ -111,7 +109,7 @@ impl State {
         };
         let swap_chain = device.create_swap_chain(&surface, &sc_desc);
 
-        let mut uniforms = Uniforms::new(aspect_ratio);
+        let uniforms = Uniforms::new(aspect_ratio);
 
         let uniform_buffer = device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
@@ -265,7 +263,7 @@ impl State {
         }
     }
 
-    fn rect_with_shader(&self, x: f32, y: f32, w: f32, h: f32, rotation: f32, render_pipeline: &wgpu::RenderPipeline) {
+    fn rect_with_shader(&self, render_pipeline: &wgpu::RenderPipeline) {
         match &self.swap_chain_texture {
             Some(tex) => {
                 let mut encoder2 = self
@@ -296,13 +294,6 @@ impl State {
                     render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
                     render_pass.draw_indexed(0..6, 0, 0..1);
                 }
-
-                // let mut encoders = vec!();
-                // encoders.push(encoder1.finish());
-                // encoder2.finish();
-                // encoders.push(encoder2.finish());
-
-                // self.queue.submit(encoders.into_iter());
                 
                 self.queue.submit(iter::once(encoder2.finish()));
             },
@@ -314,12 +305,12 @@ impl State {
 
     fn rect(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
         self.uniforms.update_model_matrix(x, y, w, h, rotation);
-        self.rect_with_shader(x, y, w, h, rotation, &self.rect_render_pipeline);
+        self.rect_with_shader(&self.rect_render_pipeline);
     }
 
     fn ellipse(&mut self, x: f32, y: f32, w: f32, h: f32, rotation: f32) {
         self.uniforms.update_model_matrix(x, y, w, h, rotation);
-        self.rect_with_shader(x, y, w, h, rotation, &self.ellipse_render_pipeline);
+        self.rect_with_shader(&self.ellipse_render_pipeline);
     }
 }
 
