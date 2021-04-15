@@ -6,6 +6,7 @@ mod render_pipeline_factory;
 use render_pipeline_factory::RenderPipelineFactory;
 mod vertex;
 use vertex::Vertex;
+use rand::Rng;
 
 use winit::{
     event::*,
@@ -212,9 +213,10 @@ impl State {
     }
 
     fn render(&mut self) {
+        let mut rng = rand::thread_rng();
         self.background();
         self.rect(0.5, 0., 0.75, 0.75, 0.5 * std::f32::consts::TAU);
-        self.ellipse(0., 0., 0.25, 0.25, 0.25 * std::f32::consts::TAU);
+        self.ellipse(rng.gen_range(-1.0..1.0), 0., 0.25, 0.25, 0.25 * std::f32::consts::TAU);
     }
 
     fn background(&mut self) {
@@ -252,7 +254,7 @@ impl State {
                     render_pass.set_bind_group(0, &self.uniform_bind_group, &[]);
                     render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
                     render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-                    render_pass.draw_indexed(0..6, 0, 0..1);
+                    render_pass.draw_indexed(0..0, 0, 0..1);
                 }
 
                 self.queue.submit(iter::once(encoder1.finish()));
