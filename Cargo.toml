@@ -1,5 +1,5 @@
 [package]
-name = "learn-wgpu"
+name = "p6"
 version = "0.1.0"
 authors = ["Jules Fouchy <jules.fouchy@ntymail.com>"]
 edition = "2018"
