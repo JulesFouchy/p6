@@ -46,16 +46,24 @@ float Context::delta_time() const
 
 void Context::set_time_mode_realtime()
 {
-    const auto t = _clock->time();
-    _clock       = std::make_unique<details::Clock_Realtime>();
+    const auto t          = _clock->time();
+    const auto was_paused = !_clock->is_playing();
+    _clock                = std::make_unique<details::Clock_Realtime>();
     _clock->set_time(t);
+    if (was_paused) {
+        _clock->pause();
+    }
 }
 
 void Context::set_time_mode_fixedstep()
 {
-    const auto t = _clock->time();
-    _clock       = std::make_unique<details::Clock_FixedTimestep>(60.f);
+    const auto t          = _clock->time();
+    const auto was_paused = !_clock->is_playing();
+    _clock                = std::make_unique<details::Clock_FixedTimestep>(60.f);
     _clock->set_time(t);
+    if (was_paused) {
+        _clock->pause();
+    }
 }
 
 /* ------------------------------- *
