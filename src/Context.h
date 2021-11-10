@@ -26,6 +26,8 @@ public:
      * ---------DRAWING--------- *
      * ------------------------- */
 
+    /// Sets the color of each pixel of the canvas.
+    /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
 
     /* ---------------------- *
@@ -52,8 +54,11 @@ public:
      * ---------MISCELLANEOUS--------- *
      * ------------------------------- */
 
+    /// Starts the loop again if it was paused with no_loop()
     void loop();
+    /// Pauses the loop. No update() will be called, until you call loop(). User inputs are still processed.
     void no_loop();
+    /// Returns true iff we are currently looping. See loop() and no_loop()
     bool is_looping() const;
 
 private:
