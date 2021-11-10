@@ -11,11 +11,15 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
-        glClearColor(0.1f, 0.8f, 0.3f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(*_window);
         glfwPollEvents();
     }
+}
+
+void Context::background(Color color) const
+{
+    glClearColor(color.r(), color.g(), color.b(), color.a());
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 } // namespace p6
