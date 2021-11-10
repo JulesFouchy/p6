@@ -14,6 +14,7 @@ void Context::run()
         update();
         glfwSwapBuffers(*_window);
         glfwPollEvents();
+        _clock->update();
     }
 }
 
@@ -21,6 +22,16 @@ void Context::background(Color color) const
 {
     glClearColor(color.r(), color.g(), color.b(), color.a());
     glClear(GL_COLOR_BUFFER_BIT);
+}
+
+float Context::time() const
+{
+    return _clock->time();
+}
+
+float Context::delta_time() const
+{
+    return _clock->delta_time();
 }
 
 } // namespace p6

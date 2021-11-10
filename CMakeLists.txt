@@ -1,6 +1,9 @@
 add_library(P6 
     src/Context.cpp
     src/UniqueGlfwWindow.cpp
+    src/Time/Clock.cpp
+    src/Time/Clock_FixedTimestep.cpp
+    src/Time/Clock_Realtime.cpp
 )
 
 # ---Add OpenGL and glad---
