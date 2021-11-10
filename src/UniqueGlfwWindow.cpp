@@ -26,10 +26,13 @@ private:
     }
 };
 
-UniqueGlfwWindow::UniqueGlfwWindow()
+UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
 {
     WindowFactory::init();
-    _window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+    _window = glfwCreateWindow(window_creation_params.width,
+                               window_creation_params.height,
+                               window_creation_params.title,
+                               nullptr, nullptr);
     if (!_window) {
         glfwTerminate();
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to create a window");

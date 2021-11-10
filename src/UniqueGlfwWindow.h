@@ -3,11 +3,18 @@
 #include <GLFW/glfw3.h>
 
 namespace p6 {
+
+struct WindowCreationParams {
+    int         width  = 1280;
+    int         height = 720;
+    const char* title  = "p6";
+};
+
 namespace details {
 
 class UniqueGlfwWindow {
 public:
-    UniqueGlfwWindow();
+    UniqueGlfwWindow(WindowCreationParams window_creation_params);
     ~UniqueGlfwWindow();
     UniqueGlfwWindow(const UniqueGlfwWindow&) = delete;
     UniqueGlfwWindow& operator=(const UniqueGlfwWindow&) = delete;

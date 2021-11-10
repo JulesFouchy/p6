@@ -6,7 +6,7 @@ namespace p6 {
 
 class Context {
 public:
-    Context();
+    Context(WindowCreationParams window_creation_params = {});
     void run();
 
 private:

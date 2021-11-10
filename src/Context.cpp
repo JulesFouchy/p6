@@ -3,7 +3,8 @@
 
 namespace p6 {
 
-Context::Context()
+Context::Context(WindowCreationParams window_creation_params)
+    : _window{window_creation_params}
 {
 }
 
