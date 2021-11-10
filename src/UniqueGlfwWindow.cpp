@@ -12,6 +12,9 @@ public:
         static WindowFactory instance{};
     }
     WindowFactory(const WindowFactory&) = delete;
+    WindowFactory& operator=(const WindowFactory&) = delete;
+    WindowFactory(WindowFactory&&)                 = delete;
+    WindowFactory& operator=(WindowFactory&&) = delete;
 
 private:
     WindowFactory()
@@ -38,7 +41,7 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to create a window");
     }
     glfwMakeContextCurrent(_window);
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) { // NOLINT
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to intialize glad");
     }
 }

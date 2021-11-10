@@ -14,7 +14,7 @@ namespace details {
 
 class UniqueGlfwWindow {
 public:
-    UniqueGlfwWindow(WindowCreationParams window_creation_params);
+    explicit UniqueGlfwWindow(WindowCreationParams window_creation_params);
     ~UniqueGlfwWindow();
     UniqueGlfwWindow(const UniqueGlfwWindow&) = delete;
     UniqueGlfwWindow& operator=(const UniqueGlfwWindow&) = delete;
