@@ -11,6 +11,7 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
+        update();
         glfwSwapBuffers(*_window);
         glfwPollEvents();
     }

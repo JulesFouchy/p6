@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "Color.h"
 #include "UniqueGlfwWindow.h"
 
@@ -9,6 +10,8 @@ class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
     void run();
+
+    std::function<void()> update = []() {};
 
     void background(Color color) const;
 
