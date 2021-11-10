@@ -11,18 +11,28 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
-        update();
+        if (is_looping()) {
+            update();
+        }
         glfwSwapBuffers(*_window);
         glfwPollEvents();
         _clock->update();
     }
 }
 
+/* ------------------------- *
+ * ---------DRAWING--------- *
+ * ------------------------- */
+
 void Context::background(Color color) const
 {
     glClearColor(color.r(), color.g(), color.b(), color.a());
     glClear(GL_COLOR_BUFFER_BIT);
 }
+
+/* ---------------------- *
+ * ---------TIME--------- *
+ * ---------------------- */
 
 float Context::time() const
 {
@@ -32,6 +42,39 @@ float Context::time() const
 float Context::delta_time() const
 {
     return _clock->delta_time();
+}
+
+void Context::set_time_mode_realtime()
+{
+    const auto t = _clock->time();
+    _clock       = std::make_unique<details::Clock_Realtime>();
+    _clock->set_time(t);
+}
+
+void Context::set_time_mode_fixedstep()
+{
+    const auto t = _clock->time();
+    _clock       = std::make_unique<details::Clock_FixedTimestep>(60.f);
+    _clock->set_time(t);
+}
+
+/* ------------------------------- *
+ * ---------MISCELLANEOUS--------- *
+ * ------------------------------- */
+
+void Context::loop()
+{
+    _clock->play();
+}
+
+void Context::no_loop()
+{
+    _clock->pause();
+}
+
+bool Context::is_looping() const
+{
+    return _clock->is_playing();
 }
 
 } // namespace p6
