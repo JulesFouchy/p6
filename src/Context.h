@@ -45,6 +45,13 @@ public:
 
     void rect() const;
 
+    /* ----------------------- *
+     * ---------INPUT--------- *
+     * ----------------------- */
+
+    /// Returns the current mouse position
+    glm::vec2 mouse_position() const;
+
     /* ---------------------- *
      * ---------TIME--------- *
      * ---------------------- */
@@ -87,15 +94,15 @@ private:
     friend void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 private:
-    details::UniqueGlfwWindow       _window;
-    std::unique_ptr<details::Clock> _clock = std::make_unique<details::Clock_Realtime>();
-    details::RectRenderer           _rect_renderer;
-    int                             _width;
-    int                             _height;
-    glm::vec2                       _mouse_position{};
-    bool                            _mouse_position_is_initialized = false;
-    glm::vec2                       _drag_start_position{};
-    bool                            _is_dragging = false;
+    mutable details::UniqueGlfwWindow _window;
+    std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
+    details::RectRenderer             _rect_renderer;
+    int                               _width;
+    int                               _height;
+    glm::vec2                         _mouse_position{};
+    bool                              _mouse_position_is_initialized = false;
+    glm::vec2                         _drag_start_position{};
+    bool                              _is_dragging = false;
 };
 
 } // namespace p6

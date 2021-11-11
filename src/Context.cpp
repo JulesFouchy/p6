@@ -60,6 +60,22 @@ void Context::rect() const
     _rect_renderer.render();
 }
 
+/* ----------------------- *
+ * ---------INPUT--------- *
+ * ----------------------- */
+
+glm::vec2 Context::mouse_position() const
+{
+    if (_mouse_position_is_initialized) {
+        return _mouse_position;
+    }
+    else {
+        double x, y; // NOLINT
+        glfwGetCursorPos(*_window, &x, &y);
+        return window_to_relative_coords({x, y});
+    }
+}
+
 /* ---------------------- *
  * ---------TIME--------- *
  * ---------------------- */
