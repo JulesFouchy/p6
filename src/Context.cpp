@@ -64,7 +64,12 @@ void Context::on_mouse_move(double x, double y)
     const auto delta = _previous_position_is_initialized
                            ? pos - _previous_position
                            : glm::vec2{0.f, 0.f};
-    mouse_move({pos, delta});
+    if (_is_dragging) {
+        mouse_dragged({pos, delta, _drag_start_position});
+    }
+    else {
+        mouse_moved({pos, delta});
+    }
     _previous_position                = pos;
     _previous_position_is_initialized = true;
 }

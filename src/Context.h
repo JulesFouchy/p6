@@ -26,9 +26,9 @@ public:
     /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update() code is too slow then the next updates will necessarily be delayed).
     std::function<void()> update = []() {};
     /// This function is called whenever the mouse is moved
-    std::function<void(MouseMove)> mouse_move = [](MouseMove) {};
+    std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
     /// This function is called whenever the mouse is dragged
-    std::function<void(MouseDrag)> mouse_drag = [](MouseDrag) {};
+    std::function<void(MouseDrag)> mouse_dragged = [](MouseDrag) {};
 
     /* ------------------------- *
      * ---------DRAWING--------- *
@@ -87,6 +87,8 @@ private:
     int                             _height;
     glm::vec2                       _previous_position{};
     bool                            _previous_position_is_initialized = false;
+    glm::vec2                       _drag_start_position{};
+    bool                            _is_dragging = false;
 };
 
 } // namespace p6
