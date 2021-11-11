@@ -51,6 +51,9 @@ public:
      * ---------DRAWING--------- *
      * ------------------------- */
 
+    Color fill{1.f, 1.f, 1.f, 0.5f};
+    Color stroke{0.f, 0.f, 0.f};
+
     /// Sets the color and alpha of each pixel of the canvas.
     /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
@@ -138,8 +141,11 @@ private:
 in vec2 _uv;
 out vec4 _frag_color;
 
+uniform vec4 _fill_color;
+uniform vec4 _stroke_color;
+
 void main() {
-    _frag_color = vec4(_uv, 0., 1.);
+    _frag_color = _fill_color;
 }
     )"};
 };

@@ -74,6 +74,8 @@ void Context::rectangle(RectangleParams params) const
                                                                          params.position),
                                                           params.size),
                                                params.rotation));
+    _rect_shader.set("_fill_color", fill.as_vec4());
+    _rect_shader.set("_stroke_color", stroke.as_vec4());
     _rect_renderer.render();
 }
 
