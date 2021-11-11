@@ -73,10 +73,10 @@ void Context::rectangle(RectangleParams params) const
 {
     _rect_shader.bind();
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
-    _rect_shader.set("_transform", glm::rotate(glm::scale(glm::translate(glm::mat3{1.f},
+    _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
                                                                          params.position),
-                                                          params.size),
-                                               params.rotation));
+                                                          params.rotation),
+                                              params.size));
     _rect_shader.set("_fill_color", fill.as_vec4());
     _rect_shader.set("_stroke_color", stroke.as_vec4());
     _rect_renderer.render();
