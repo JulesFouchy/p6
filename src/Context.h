@@ -150,9 +150,9 @@ uniform vec2 _rect_size;
 
 void main() {
     vec2 dist = _rect_size - abs(_uv_canvas_scale);
-    const float m = 0.0001;
+    const float m = 0.0005;
     float t = smoothstep(-m, m, _stroke_weight - min(dist.x, dist.y));
-    _frag_color = vec4(vec3(t), 1.);
+    _frag_color = vec4(mix(_fill_color, _stroke_color, t));
 }
     )"};
 };
