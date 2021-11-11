@@ -52,6 +52,12 @@ public:
     /// Returns the current mouse position
     glm::vec2 mouse_position() const;
 
+    /* ------------------------ *
+     * ---------WINDOW--------- *
+     * ------------------------ */
+
+    float aspect_ratio() const;
+
     /* ---------------------- *
      * ---------TIME--------- *
      * ---------------------- */

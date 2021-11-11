@@ -76,6 +76,15 @@ glm::vec2 Context::mouse_position() const
     }
 }
 
+/* ------------------------ *
+ * ---------WINDOW--------- *
+ * ------------------------ */
+
+float Context::aspect_ratio() const
+{
+    return static_cast<float>(_width) / static_cast<float>(_height);
+}
+
 /* ---------------------- *
  * ---------TIME--------- *
  * ---------------------- */
