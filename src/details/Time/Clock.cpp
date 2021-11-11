@@ -6,13 +6,11 @@ namespace details {
 
 void Clock::play()
 {
-    assert(!_is_playing);
     _is_playing = true;
 }
 
 void Clock::pause()
 {
-    assert(_is_playing);
     _is_playing = false;
 }
 
