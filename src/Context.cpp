@@ -74,7 +74,7 @@ void Context::rect() const
  * ---------INPUT--------- *
  * ----------------------- */
 
-glm::vec2 Context::mouse_position() const
+glm::vec2 Context::mouse() const
 {
     if (_mouse_position_is_initialized) {
         return _mouse_position;
