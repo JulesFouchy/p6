@@ -95,9 +95,12 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
     }();
     const auto button_event = MouseButton{_previous_position, mouse_button};
     if (action == GLFW_PRESS) {
+        _is_dragging         = true;
+        _drag_start_position = _previous_position;
         mouse_pressed(button_event);
     }
     else if (action == GLFW_RELEASE) {
+        _is_dragging = false;
         mouse_released(button_event);
     }
     else {
