@@ -1,12 +1,12 @@
 add_library(P6 
     src/Context.cpp
-    src/UniqueGlfwWindow.cpp
-    src/Time/Clock.cpp
-    src/Time/Clock_FixedTimestep.cpp
-    src/Time/Clock_Realtime.cpp
-    src/OpenGL/UniqueVAO.cpp
-    src/OpenGL/UniqueBuffer.cpp
-    src/RectRenderer.cpp
+    src/details/UniqueGlfwWindow.cpp
+    src/details/Time/Clock.cpp
+    src/details/Time/Clock_FixedTimestep.cpp
+    src/details/Time/Clock_Realtime.cpp
+    src/details/OpenGL/UniqueVAO.cpp
+    src/details/OpenGL/UniqueBuffer.cpp
+    src/details/RectRenderer.cpp
 )
 
 # ---Add OpenGL and glad---
