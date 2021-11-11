@@ -35,3 +35,7 @@ target_link_libraries(P6 INTERFACE
     glfw
     GLAD
 )
+# ---Add glm---
+target_include_directories(P6 PUBLIC
+   third-party/glm
+)
