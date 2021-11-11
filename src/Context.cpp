@@ -1,5 +1,7 @@
 #include "Context.h"
 #include <glad/glad.h>
+#include <stdexcept>
+#include <string>
 
 namespace p6 {
 
@@ -7,15 +9,17 @@ static Context& get_context(GLFWwindow* window)
 {
     return *reinterpret_cast<p6::Context*>(glfwGetWindowUserPointer(window)); // NOLINT
 }
-
 void window_size_callback(GLFWwindow* window, int width, int height)
 {
     get_context(window).on_window_resize(width, height);
 }
-
 void cursor_position_callback(GLFWwindow* window, double x, double y)
 {
     get_context(window).on_mouse_move(x, y);
+}
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    get_context(window).on_mouse_button(button, action, mods);
 }
 
 Context::Context(WindowCreationParams window_creation_params)
@@ -26,6 +30,7 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetCursorPosCallback(*_window, &cursor_position_callback);
+    glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
 }
 
 void Context::run()
@@ -72,6 +77,32 @@ void Context::on_mouse_move(double x, double y)
     }
     _previous_position                = pos;
     _previous_position_is_initialized = true;
+}
+
+void Context::on_mouse_button(int button, int action, int /*mods*/)
+{
+    const auto mouse_button = [&]() {
+        switch (button) {
+        case GLFW_MOUSE_BUTTON_LEFT:
+            return Button::Left;
+        case GLFW_MOUSE_BUTTON_RIGHT:
+            return Button::Right;
+        case GLFW_MOUSE_BUTTON_MIDDLE:
+            return Button::Middle;
+        default:
+            throw std::runtime_error("[p6 internal error] Unknown mouse button: " + std::to_string(button));
+        };
+    }();
+    const auto button_event = MouseButton{_previous_position, mouse_button};
+    if (action == GLFW_PRESS) {
+        mouse_pressed(button_event);
+    }
+    else if (action == GLFW_RELEASE) {
+        mouse_released(button_event);
+    }
+    else {
+        throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
+    }
 }
 
 /* ------------------------- *
