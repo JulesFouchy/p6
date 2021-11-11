@@ -62,6 +62,13 @@ public:
     /// Returns the current mouse position
     glm::vec2 mouse_position() const;
 
+    /// Returns true iff the CTRL key is pressed (or CMD on Mac)
+    bool ctrl();
+    /// Returns true iff the SHIFT key is pressed
+    bool shift();
+    /// Returns true iff the ALT key is pressed
+    bool alt();
+
     /* ------------------------ *
      * ---------WINDOW--------- *
      * ------------------------ */

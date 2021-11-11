@@ -86,6 +86,24 @@ glm::vec2 Context::mouse_position() const
     }
 }
 
+bool Context::ctrl()
+{
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
+           glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
+}
+
+bool Context::shift()
+{
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+           glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+}
+
+bool Context::alt()
+{
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS ||
+           glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+}
+
 /* ------------------------ *
  * ---------WINDOW--------- *
  * ------------------------ */
