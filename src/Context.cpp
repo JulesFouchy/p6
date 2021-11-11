@@ -45,69 +45,6 @@ void Context::run()
     }
 }
 
-glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
-{
-    const auto w = static_cast<float>(_width);
-    const auto h = static_cast<float>(_height);
-
-    pos.y = h - pos.y;    // Make y-axis point up
-    pos.x -= w / 2.f;     // Center around 0
-    pos.y -= h / 2.f;     // Center around 0
-    return pos / h * 2.f; // Normalize
-}
-
-void Context::on_window_resize(int width, int height)
-{
-    _width  = width;
-    _height = height;
-    glViewport(0, 0, width, height);
-}
-
-void Context::on_mouse_move(double x, double y)
-{
-    const auto pos   = window_to_relative_coords({x, y});
-    const auto delta = _previous_position_is_initialized
-                           ? pos - _previous_position
-                           : glm::vec2{0.f, 0.f};
-    if (_is_dragging) {
-        mouse_dragged({pos, delta, _drag_start_position});
-    }
-    else {
-        mouse_moved({pos, delta});
-    }
-    _previous_position                = pos;
-    _previous_position_is_initialized = true;
-}
-
-void Context::on_mouse_button(int button, int action, int /*mods*/)
-{
-    const auto mouse_button = [&]() {
-        switch (button) {
-        case GLFW_MOUSE_BUTTON_LEFT:
-            return Button::Left;
-        case GLFW_MOUSE_BUTTON_RIGHT:
-            return Button::Right;
-        case GLFW_MOUSE_BUTTON_MIDDLE:
-            return Button::Middle;
-        default:
-            throw std::runtime_error("[p6 internal error] Unknown mouse button: " + std::to_string(button));
-        };
-    }();
-    const auto button_event = MouseButton{_previous_position, mouse_button};
-    if (action == GLFW_PRESS) {
-        _is_dragging         = true;
-        _drag_start_position = _previous_position;
-        mouse_pressed(button_event);
-    }
-    else if (action == GLFW_RELEASE) {
-        _is_dragging = false;
-        mouse_released(button_event);
-    }
-    else {
-        throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
-    }
-}
-
 /* ------------------------- *
  * ---------DRAWING--------- *
  * ------------------------- */
@@ -176,6 +113,73 @@ void Context::no_loop()
 bool Context::is_looping() const
 {
     return _clock->is_playing();
+}
+
+/* ------------------------- *
+ * ---------PRIVATE--------- *
+ * ------------------------- */
+
+glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
+{
+    const auto w = static_cast<float>(_width);
+    const auto h = static_cast<float>(_height);
+
+    pos.y = h - pos.y;    // Make y-axis point up
+    pos.x -= w / 2.f;     // Center around 0
+    pos.y -= h / 2.f;     // Center around 0
+    return pos / h * 2.f; // Normalize
+}
+
+void Context::on_window_resize(int width, int height)
+{
+    _width  = width;
+    _height = height;
+    glViewport(0, 0, width, height);
+}
+
+void Context::on_mouse_move(double x, double y)
+{
+    const auto pos   = window_to_relative_coords({x, y});
+    const auto delta = _mouse_position_is_initialized
+                           ? pos - _mouse_position
+                           : glm::vec2{0.f, 0.f};
+    if (_is_dragging) {
+        mouse_dragged({pos, delta, _drag_start_position});
+    }
+    else {
+        mouse_moved({pos, delta});
+    }
+    _mouse_position                = pos;
+    _mouse_position_is_initialized = true;
+}
+
+void Context::on_mouse_button(int button, int action, int /*mods*/)
+{
+    const auto mouse_button = [&]() {
+        switch (button) {
+        case GLFW_MOUSE_BUTTON_LEFT:
+            return Button::Left;
+        case GLFW_MOUSE_BUTTON_RIGHT:
+            return Button::Right;
+        case GLFW_MOUSE_BUTTON_MIDDLE:
+            return Button::Middle;
+        default:
+            throw std::runtime_error("[p6 internal error] Unknown mouse button: " + std::to_string(button));
+        };
+    }();
+    const auto button_event = MouseButton{_mouse_position, mouse_button};
+    if (action == GLFW_PRESS) {
+        _is_dragging         = true;
+        _drag_start_position = _mouse_position;
+        mouse_pressed(button_event);
+    }
+    else if (action == GLFW_RELEASE) {
+        _is_dragging = false;
+        mouse_released(button_event);
+    }
+    else {
+        throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
+    }
 }
 
 } // namespace p6

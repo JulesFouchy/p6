@@ -92,8 +92,8 @@ private:
     details::RectRenderer           _rect_renderer;
     int                             _width;
     int                             _height;
-    glm::vec2                       _previous_position{};
-    bool                            _previous_position_is_initialized = false;
+    glm::vec2                       _mouse_position{};
+    bool                            _mouse_position_is_initialized = false;
     glm::vec2                       _drag_start_position{};
     bool                            _is_dragging = false;
 };
