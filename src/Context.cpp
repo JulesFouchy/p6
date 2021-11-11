@@ -30,6 +30,11 @@ void Context::background(Color color) const
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void Context::rect() const
+{
+    _rect_renderer.render();
+}
+
 /* ---------------------- *
  * ---------TIME--------- *
  * ---------------------- */

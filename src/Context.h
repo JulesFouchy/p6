@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include "Color.h"
+#include "RectRenderer.h"
 #include "Time/Clock.h"
 #include "Time/Clock_FixedTimestep.h"
 #include "Time/Clock_Realtime.h"
@@ -29,6 +30,8 @@ public:
     /// Sets the color of each pixel of the canvas.
     /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
+
+    void rect() const;
 
     /* ---------------------- *
      * ---------TIME--------- *
@@ -64,6 +67,7 @@ public:
 private:
     details::UniqueGlfwWindow       _window;
     std::unique_ptr<details::Clock> _clock = std::make_unique<details::Clock_Realtime>();
+    details::RectRenderer           _rect_renderer;
 };
 
 } // namespace p6

@@ -4,6 +4,9 @@ add_library(P6
     src/Time/Clock.cpp
     src/Time/Clock_FixedTimestep.cpp
     src/Time/Clock_Realtime.cpp
+    src/OpenGL/UniqueVAO.cpp
+    src/OpenGL/UniqueBuffer.cpp
+    src/RectRenderer.cpp
 )
 
 # ---Add OpenGL and glad---
@@ -12,7 +15,7 @@ add_library(GLAD STATIC third-party/glad/src/glad.c)
 target_include_directories(GLAD PRIVATE
     third-party/glad/include
 )
-target_include_directories(P6 PRIVATE
+target_include_directories(P6 PUBLIC
     ${OPENGL_INCLUDE_DIR}
     third-party/glad/include
 )
