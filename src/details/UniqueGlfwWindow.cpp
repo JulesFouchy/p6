@@ -32,6 +32,12 @@ private:
 UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
 {
     WindowFactory::init();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+#if defined(__APPLE__)
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
     _window = glfwCreateWindow(window_creation_params.width,
                                window_creation_params.height,
                                window_creation_params.title,
