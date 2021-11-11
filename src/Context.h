@@ -134,10 +134,11 @@ private:
     Shader                            _rect_shader{R"(
 #version 330
 
+in vec2 _uv;
 out vec4 _frag_color;
 
 void main() {
-    _frag_color = vec4(1., 0.5, 0.8, 1.);
+    _frag_color = vec4(_uv, 0., 1.);
 }
     )"};
 };

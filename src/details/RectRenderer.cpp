@@ -9,17 +9,20 @@ RectRenderer::RectRenderer()
     // VAO
     glBindVertexArray(*_vao);
     // VBO
-    const std::array<float, 8> vertices = {
-        -1.f, -1.f,
-        -1.f, +1.f,
-        +1.f, +1.f,
-        +1.f, -1.f};
+    const std::array<float, 16> vertices = {
+        -1.f, -1.f, 0.f, 0.f,
+        -1.f, +1.f, 0.f, 1.f,
+        +1.f, +1.f, 1.f, 1.f,
+        +1.f, -1.f, 1.f, 0.f};
     const auto vertices_size_in_bytes = vertices.size() * sizeof(float);
     glBindBuffer(GL_ARRAY_BUFFER, *_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices_size_in_bytes, nullptr, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices_size_in_bytes, vertices.data());
+    const auto stride = 4 * sizeof(float);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, nullptr);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(2 * sizeof(float))); // NOLINT
     // IBO
     const std::array<GLuint, 6> indices = {
         0, 1, 2,
