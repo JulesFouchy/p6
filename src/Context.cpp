@@ -21,6 +21,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     get_context(window).on_mouse_button(button, action, mods);
 }
+void scroll_callback(GLFWwindow* window, double x, double y)
+{
+    get_context(window).on_mouse_scroll(x, y);
+}
 
 Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
@@ -31,6 +35,7 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetCursorPosCallback(*_window, &cursor_position_callback);
     glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
+    glfwSetScrollCallback(*_window, &scroll_callback);
 }
 
 void Context::run()
@@ -205,6 +210,12 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
     else {
         throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
     }
+}
+
+void Context::on_mouse_scroll(double x, double y)
+{
+    mouse_scrolled({static_cast<float>(x),
+                    static_cast<float>(y)});
 }
 
 } // namespace p6

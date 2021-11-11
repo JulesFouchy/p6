@@ -7,6 +7,7 @@
 #include "MouseButton.h"
 #include "MouseDrag.h"
 #include "MouseMove.h"
+#include "MouseScroll.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
@@ -34,6 +35,8 @@ public:
     std::function<void(MouseButton)> mouse_pressed = [](MouseButton) {};
     /// This function is called whenever a mouse button is released
     std::function<void(MouseButton)> mouse_released = [](MouseButton) {};
+    /// This function is called whenever the mouse wheel is scrolled
+    std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {};
 
     /* ------------------------- *
      * ---------DRAWING--------- *
@@ -96,6 +99,8 @@ private:
     friend void window_size_callback(GLFWwindow* window, int width, int height);
     void        on_mouse_move(double x, double y);
     friend void cursor_position_callback(GLFWwindow* window, double x, double y);
+    void        on_mouse_scroll(double x, double y);
+    friend void scroll_callback(GLFWwindow* window, double x, double y);
     void        on_mouse_button(int button, int action, int mods);
     friend void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
