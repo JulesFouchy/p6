@@ -68,6 +68,8 @@ void Context::background(Color color) const
 void Context::rect() const
 {
     _rect_shader.bind();
+    _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
+    _rect_shader.set("_transform", glm::mat3(1.f));
     _rect_renderer.render();
 }
 

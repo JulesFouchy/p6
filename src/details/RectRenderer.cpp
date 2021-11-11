@@ -10,10 +10,10 @@ RectRenderer::RectRenderer()
     glBindVertexArray(*_vao);
     // VBO
     const std::array<float, 8> vertices = {
-        -.5f, -.5f,
-        -.5f, +.5f,
-        +.5f, +.5f,
-        +.5f, -.5f};
+        -1.f, -1.f,
+        -1.f, +1.f,
+        +1.f, +1.f,
+        +1.f, -1.f};
     const auto vertices_size_in_bytes = vertices.size() * sizeof(float);
     glBindBuffer(GL_ARRAY_BUFFER, *_vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices_size_in_bytes, nullptr, GL_STATIC_DRAW);

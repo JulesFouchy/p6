@@ -39,9 +39,16 @@ Shader::Shader(const std::string& fragment_source_code)
 layout(location = 0) in vec2 _vertex_position;
 // layout(location = 0) out vec2 _uv;
 
+uniform mat3 _transform;
+uniform float _inverse_aspect_ratio;
+
 void main()
 {
-    gl_Position = vec4(_vertex_position, 0., 1.);
+    vec2 pos = _vertex_position;
+    pos.x *= _inverse_aspect_ratio;
+    vec3 pos3 = _transform * vec3(pos, 1.);
+    pos = pos3.xy / pos3.z;
+    gl_Position = vec4(pos, 0., 1.);
 }
     )",
                                                     details::ShaderKind::Vertex, "p6 Default Vertex Shader"}};
