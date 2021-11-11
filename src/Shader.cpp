@@ -39,9 +39,11 @@ Shader::Shader(const std::string& fragment_source_code)
 layout(location = 0) in vec2 _vertex_position;
 layout(location = 1) in vec2 _texture_coordinates;
 out vec2 _uv;
+out vec2 _uv_canvas_scale;
 
 uniform mat3 _transform;
 uniform float _inverse_aspect_ratio;
+uniform vec2 _rect_size;
 
 void main()
 {
@@ -51,6 +53,7 @@ void main()
     pos.x *= _inverse_aspect_ratio;
     gl_Position = vec4(pos, 0., 1.);
     _uv = _texture_coordinates;
+    _uv_canvas_scale = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )",
                                                     details::ShaderKind::Vertex, "p6 Default Vertex Shader"}};
