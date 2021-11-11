@@ -25,6 +25,10 @@ void scroll_callback(GLFWwindow* window, double x, double y)
 {
     get_context(window).on_mouse_scroll(x, y);
 }
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    get_context(window).on_key(key, scancode, action, mods);
+}
 
 Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
@@ -36,6 +40,7 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetCursorPosCallback(*_window, &cursor_position_callback);
     glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
     glfwSetScrollCallback(*_window, &scroll_callback);
+    glfwSetKeyCallback(*_window, &key_callback);
 }
 
 void Context::run()
@@ -216,6 +221,26 @@ void Context::on_mouse_scroll(double x, double y)
 {
     mouse_scrolled({static_cast<float>(x),
                     static_cast<float>(y)});
+}
+
+void Context::on_key(int key, int scancode, int action, int /*mods*/)
+{
+    const char* key_name  = glfwGetKeyName(key, scancode);
+    const auto  key_event = KeyEvent{key == GLFW_KEY_SPACE ? " " : key_name ? key_name
+                                                                            : "",
+                                    key};
+    if (action == GLFW_PRESS) {
+        key_pressed(key_event);
+    }
+    else if (action == GLFW_REPEAT) {
+        key_repeated(key_event);
+    }
+    else if (action == GLFW_RELEASE) {
+        key_released(key_event);
+    }
+    else {
+        throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
+    }
 }
 
 } // namespace p6

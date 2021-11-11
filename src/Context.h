@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include "Color.h"
+#include "KeyEvent.h"
 #include "MouseButton.h"
 #include "MouseDrag.h"
 #include "MouseMove.h"
@@ -37,6 +38,12 @@ public:
     std::function<void(MouseButton)> mouse_released = [](MouseButton) {};
     /// This function is called whenever the mouse wheel is scrolled
     std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {};
+    /// This function is called whenever a keyboard key is pressed
+    std::function<void(KeyEvent)> key_pressed = [](KeyEvent) {};
+    /// This function is called whenever a keyboard key is released
+    std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
+    /// This function is called whenever a keyboard key is held for a little while.
+    std::function<void(KeyEvent)> key_repeated = [](KeyEvent) {};
 
     /* ------------------------- *
      * ---------DRAWING--------- *
@@ -103,6 +110,8 @@ private:
     friend void scroll_callback(GLFWwindow* window, double x, double y);
     void        on_mouse_button(int button, int action, int mods);
     friend void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+    void        on_key(int key, int scancode, int action, int mods);
+    friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 private:
     mutable details::UniqueGlfwWindow _window;
