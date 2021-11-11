@@ -1,9 +1,11 @@
 #pragma once
 
 #include <functional>
+#include <glm/glm.hpp>
 #include <memory>
 #include "Color.h"
-#include "RectRenderer.h"
+#include "MouseDrag.h"
+#include "MouseMove.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
@@ -23,6 +25,10 @@ public:
 
     /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update() code is too slow then the next updates will necessarily be delayed).
     std::function<void()> update = []() {};
+    /// This function is called whenever the mouse is moved
+    std::function<void(MouseMove)> mouse_move = [](MouseMove) {};
+    /// This function is called whenever the mouse is dragged
+    std::function<void(MouseDrag)> mouse_drag = [](MouseDrag) {};
 
     /* ------------------------- *
      * ---------DRAWING--------- *
@@ -66,8 +72,12 @@ public:
     bool is_looping() const;
 
 private:
+    glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
+
     void        on_window_resize(int width, int height);
     friend void window_size_callback(GLFWwindow* window, int width, int height);
+    void        on_mouse_move(double x, double y);
+    friend void cursor_position_callback(GLFWwindow* window, double x, double y);
 
 private:
     details::UniqueGlfwWindow       _window;
@@ -75,6 +85,8 @@ private:
     details::RectRenderer           _rect_renderer;
     int                             _width;
     int                             _height;
+    glm::vec2                       _previous_position{};
+    bool                            _previous_position_is_initialized = false;
 };
 
 } // namespace p6
