@@ -9,6 +9,7 @@
 #include "MouseDrag.h"
 #include "MouseMove.h"
 #include "MouseScroll.h"
+#include "Shader.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
@@ -130,6 +131,15 @@ private:
     bool                              _mouse_position_is_initialized = false;
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
+    Shader                            _rect_shader{R"(
+#version 330
+
+out vec4 _frag_color;
+
+void main() {
+    _frag_color = vec4(1., 0.5, 0.8, 1.);
+}
+    )"};
 };
 
 } // namespace p6

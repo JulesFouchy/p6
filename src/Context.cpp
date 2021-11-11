@@ -67,6 +67,7 @@ void Context::background(Color color) const
 
 void Context::rect() const
 {
+    _rect_shader.bind();
     _rect_renderer.render();
 }
 
