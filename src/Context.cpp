@@ -36,6 +36,9 @@ Context::Context(WindowCreationParams window_creation_params)
     , _width{window_creation_params.width}
     , _height{window_creation_params.height}
 {
+    glEnable(GL_BLEND);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetCursorPosCallback(*_window, &cursor_position_callback);
