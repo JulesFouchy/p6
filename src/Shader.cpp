@@ -46,9 +46,9 @@ uniform float _inverse_aspect_ratio;
 void main()
 {
     vec2 pos = _vertex_position;
-    pos.x *= _inverse_aspect_ratio;
     vec3 pos3 = _transform * vec3(pos, 1.);
     pos = pos3.xy / pos3.z;
+    pos.x *= _inverse_aspect_ratio;
     gl_Position = vec4(pos, 0., 1.);
     _uv = _texture_coordinates;
 }

@@ -9,6 +9,7 @@
 #include "MouseDrag.h"
 #include "MouseMove.h"
 #include "MouseScroll.h"
+#include "RectangleParams.h"
 #include "Shader.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
@@ -54,7 +55,7 @@ public:
     /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
 
-    void rect() const;
+    void rectangle(RectangleParams params) const;
 
     /* ----------------------- *
      * ---------INPUT--------- *

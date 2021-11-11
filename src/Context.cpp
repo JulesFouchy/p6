@@ -1,5 +1,6 @@
 #include "Context.h"
 #include <glad/glad.h>
+#include <glm/gtx/matrix_transform_2d.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -65,11 +66,14 @@ void Context::background(Color color) const
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Context::rect() const
+void Context::rectangle(RectangleParams params) const
 {
     _rect_shader.bind();
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
-    _rect_shader.set("_transform", glm::mat3(1.f));
+    _rect_shader.set("_transform", glm::rotate(glm::scale(glm::translate(glm::mat3{1.f},
+                                                                         params.position),
+                                                          params.size),
+                                               params.rotation));
     _rect_renderer.render();
 }
 
