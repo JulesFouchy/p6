@@ -38,3 +38,11 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 ## Thinks I dislike about computer graphics in general
 
 - Lacks a Custom Blend Mode option
+
+## Documentation
+
+### width, height and aspect_ratio
+
+There is intentionnally no way of querying the width or height of the window. This is because I am strongly convinced that you should always be working in relative coordinates and that any call to `width` or `height` would be a code smell. If you believe that you have a good use case for `width` and `height` please raise an issue! I would love to hear about it and it might change my mind.
+
+Currently you can only query the `aspect_ratio()` a.k.a. `width / height`.
