@@ -3,9 +3,23 @@
 
 namespace p6 {
 
+static Context& get_context(GLFWwindow* window)
+{
+    return *reinterpret_cast<p6::Context*>(glfwGetWindowUserPointer(window)); // NOLINT
+}
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+    get_context(window).on_window_resize(width, height);
+}
+
 Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
+    , _width{window_creation_params.width}
+    , _height{window_creation_params.height}
 {
+    glfwSetWindowUserPointer(*_window, this);
+    glfwSetWindowSizeCallback(*_window, &window_size_callback);
 }
 
 void Context::run()
@@ -18,6 +32,13 @@ void Context::run()
         glfwPollEvents();
         _clock->update();
     }
+}
+
+void Context::on_window_resize(int width, int height)
+{
+    _width  = width;
+    _height = height;
+    glViewport(0, 0, width, height);
 }
 
 /* ------------------------- *

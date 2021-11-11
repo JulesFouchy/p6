@@ -65,9 +65,15 @@ public:
     bool is_looping() const;
 
 private:
+    void        on_window_resize(int width, int height);
+    friend void window_size_callback(GLFWwindow* window, int width, int height);
+
+private:
     details::UniqueGlfwWindow       _window;
     std::unique_ptr<details::Clock> _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer           _rect_renderer;
+    int                             _width;
+    int                             _height;
 };
 
 } // namespace p6
