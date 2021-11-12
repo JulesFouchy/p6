@@ -3,8 +3,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <stdexcept>
-#include "details/OpenGL/GLDebug.h"
-#include "details/OpenGL/ShaderModule.h"
 
 namespace p6 {
 

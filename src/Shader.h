@@ -1,11 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glpp/glpp.hpp>
 #include <string>
 #include <utility>
 #include <vector>
-#include "details/OpenGL/UniqueShader.h"
 
 namespace p6 {
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "OpenGL/UniqueBuffer.h"
-#include "OpenGL/UniqueVAO.h"
-
+#include <glpp/glpp.hpp>
 
 namespace p6 {
 namespace details {

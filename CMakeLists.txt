@@ -7,12 +7,6 @@ add_library(p6
     src/details/Time/Clock.cpp
     src/details/Time/Clock_FixedTimestep.cpp
     src/details/Time/Clock_Realtime.cpp
-    src/details/OpenGL/GLDebug.cpp
-    src/details/OpenGL/UniqueVAO.cpp
-    src/details/OpenGL/UniqueBuffer.cpp
-    src/details/OpenGL/UniqueShader.cpp
-    src/details/OpenGL/UniqueShaderModule.cpp
-    src/details/OpenGL/ShaderModule.cpp
     src/details/RectRenderer.cpp
 )
 target_include_directories(p6 PUBLIC include)
@@ -23,16 +17,9 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
-# ---Add OpenGL and glad---
-find_package(OpenGL REQUIRED)
-add_library(GLAD STATIC third-party/glad/src/glad.c)
-target_include_directories(GLAD PRIVATE
-    third-party/glad/include
-)
-target_include_directories(p6 PUBLIC
-    ${OPENGL_INCLUDE_DIR}
-    third-party/glad/include
-)
+# ---Add glpp---
+add_subdirectory(third-party/glpp)
+target_link_libraries(p6 PUBLIC glpp)
 # ---Add glfw---
 set(GLFW_DIR third-party/glfw)
 option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
@@ -47,7 +34,6 @@ target_include_directories(p6 PRIVATE
 )
 target_link_libraries(p6 INTERFACE
     glfw
-    GLAD
 )
 # ---Add glm---
 target_include_directories(p6 PUBLIC
