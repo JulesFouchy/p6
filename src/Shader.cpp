@@ -21,7 +21,7 @@ static void validate_shader(GLuint id)
     }
 }
 
-static void make_shader(GLuint id, const details::ShaderModule& vertex_module, const details::ShaderModule& fragment_module)
+static void make_shader(GLuint id, const glpp::ShaderModule& vertex_module, const glpp::ShaderModule& fragment_module)
 {
     GLDebug(glAttachShader(id, *vertex_module));
     GLDebug(glAttachShader(id, *fragment_module));
@@ -31,7 +31,7 @@ static void make_shader(GLuint id, const details::ShaderModule& vertex_module, c
 
 Shader::Shader(const std::string& fragment_source_code)
 {
-    static const auto vert = details::ShaderModule{{R"(
+    static const auto vert = glpp::ShaderModule{{R"(
 #version 330
 
 layout(location = 0) in vec2 _vertex_position;
@@ -54,8 +54,8 @@ void main()
     _uv_canvas_scale = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )",
-                                                    details::ShaderKind::Vertex, "p6 Default Vertex Shader"}};
-    const auto        frag = details::ShaderModule{{fragment_source_code, details::ShaderKind::Fragment, "User Fragment Shader"}};
+                                                 glpp::ShaderKind::Vertex, "p6 Default Vertex Shader"}};
+    const auto        frag = glpp::ShaderModule{{fragment_source_code, glpp::ShaderKind::Fragment, "User Fragment Shader"}};
     make_shader(*_shader, vert, frag);
 }
 

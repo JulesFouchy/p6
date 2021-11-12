@@ -29,7 +29,7 @@ private:
     GLint uniform_location(const std::string& uniform_name) const;
 
 private:
-    details::UniqueShader                              _shader;
+    glpp::UniqueShader                                 _shader;
     mutable std::vector<std::pair<std::string, GLint>> _uniform_locations;
 };
 
