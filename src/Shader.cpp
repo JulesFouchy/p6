@@ -8,24 +8,31 @@ namespace p6 {
 
 static void validate_shader(GLuint id)
 {
-    GLDebug(glValidateProgram(id));
+    glValidateProgram(id);
+    glpp::check_errors();
     GLint result; // NOLINT
-    GLDebug(glGetProgramiv(id, GL_VALIDATE_STATUS, &result));
+    glGetProgramiv(id, GL_VALIDATE_STATUS, &result);
+    glpp::check_errors();
     if (result == GL_FALSE) {
         GLsizei length;
-        GLDebug(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length));
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length);
+        glpp::check_errors();
         std::vector<GLchar> error_message;
         error_message.reserve(length);
-        GLDebug(glGetProgramInfoLog(id, length, nullptr, error_message.data()));
+        glGetProgramInfoLog(id, length, nullptr, error_message.data());
+        glpp::check_errors();
         throw std::runtime_error(std::string{"Linking failed:\n"} + error_message.data());
     }
 }
 
 static void make_shader(GLuint id, const glpp::ShaderModule& vertex_module, const glpp::ShaderModule& fragment_module)
 {
-    GLDebug(glAttachShader(id, *vertex_module));
-    GLDebug(glAttachShader(id, *fragment_module));
-    GLDebug(glLinkProgram(id));
+    glAttachShader(id, *vertex_module);
+    glpp::check_errors();
+    glAttachShader(id, *fragment_module);
+    glpp::check_errors();
+    glLinkProgram(id);
+    glpp::check_errors();
     validate_shader(id);
 }
 
@@ -73,7 +80,8 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
         return it->second;
     }
     else {
-        GLDebug(GLint location = glGetUniformLocation(*_shader, uniform_name.c_str()));
+        GLint location = glGetUniformLocation(*_shader, uniform_name.c_str());
+        glpp::check_errors();
         std::cout << "Computing uniform location\n";
         _uniform_locations.emplace_back(uniform_name, location);
         return location;
@@ -83,7 +91,8 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
 void Shader::set(const std::string& uniform_name, int v) const
 {
     bind();
-    GLDebug(glUniform1i(uniform_location(uniform_name), v));
+    glUniform1i(uniform_location(uniform_name), v);
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, unsigned int v) const
 {
@@ -96,37 +105,44 @@ void Shader::set(const std::string& uniform_name, bool v) const
 void Shader::set(const std::string& uniform_name, float v) const
 {
     bind();
-    GLDebug(glUniform1f(uniform_location(uniform_name), v));
+    glUniform1f(uniform_location(uniform_name), v);
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::vec2& v) const
 {
     bind();
-    GLDebug(glUniform2f(uniform_location(uniform_name), v.x, v.y));
+    glUniform2f(uniform_location(uniform_name), v.x, v.y);
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::vec3& v) const
 {
     bind();
-    GLDebug(glUniform3f(uniform_location(uniform_name), v.x, v.y, v.z));
+    glUniform3f(uniform_location(uniform_name), v.x, v.y, v.z);
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::vec4& v) const
 {
     bind();
-    GLDebug(glUniform4f(uniform_location(uniform_name), v.x, v.y, v.z, v.w));
+    glUniform4f(uniform_location(uniform_name), v.x, v.y, v.z, v.w);
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::mat2& mat) const
 {
     bind();
-    GLDebug(glUniformMatrix2fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat)));
+    glUniformMatrix2fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::mat3& mat) const
 {
     bind();
-    GLDebug(glUniformMatrix3fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat)));
+    glUniformMatrix3fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
+    glpp::check_errors();
 }
 void Shader::set(const std::string& uniform_name, const glm::mat4& mat) const
 {
     bind();
-    GLDebug(glUniformMatrix4fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat)));
+    glUniformMatrix4fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
+    glpp::check_errors();
 }
 
 } // namespace p6
