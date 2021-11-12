@@ -3,6 +3,7 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <memory>
+#include <stdexcept>
 #include "Color.h"
 #include "KeyEvent.h"
 #include "MouseButton.h"
@@ -46,6 +47,10 @@ public:
     std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
     /// This function is called whenever a keyboard key is held for a little while.
     std::function<void(KeyEvent)> key_repeated = [](KeyEvent) {};
+    /// This function is called whenever an error occurs.
+    std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
+        throw std::runtime_error{error_message};
+    };
 
     /* ------------------------- *
      * ---------DRAWING--------- *

@@ -69,6 +69,7 @@ void main()
 void Shader::bind() const
 {
     glUseProgram(*_shader);
+    glpp::check_errors();
 }
 
 GLint Shader::uniform_location(const std::string& uniform_name) const

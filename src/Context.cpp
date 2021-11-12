@@ -36,6 +36,9 @@ Context::Context(WindowCreationParams window_creation_params)
     , _width{window_creation_params.width}
     , _height{window_creation_params.height}
 {
+    glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
+        on_error(std::move(error_message));
+    });
     glEnable(GL_BLEND);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
