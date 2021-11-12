@@ -1,4 +1,4 @@
-add_library(P6 
+add_library(p6 
     src/Context.cpp
     src/Shader.cpp
     src/details/UniqueGlfwWindow.cpp
@@ -14,7 +14,7 @@ add_library(P6
     src/details/RectRenderer.cpp
 )
 
-target_include_directories(P6 PUBLIC include)
+target_include_directories(p6 PUBLIC include)
 
 # ---Add OpenGL and glad---
 find_package(OpenGL REQUIRED)
@@ -22,7 +22,7 @@ add_library(GLAD STATIC third-party/glad/src/glad.c)
 target_include_directories(GLAD PRIVATE
     third-party/glad/include
 )
-target_include_directories(P6 PUBLIC
+target_include_directories(p6 PUBLIC
     ${OPENGL_INCLUDE_DIR}
     third-party/glad/include
 )
@@ -34,15 +34,15 @@ option(GLFW_BUILD_DOCS "Build the GLFW documentation" OFF)
 option(GLFW_INSTALL "Generate installation target" OFF)
 option(GLFW_DOCUMENT_INTERNALS "Include internals in documentation" OFF)
 add_subdirectory(${GLFW_DIR} binary_dir EXCLUDE_FROM_ALL)
-target_include_directories(P6 PRIVATE
+target_include_directories(p6 PRIVATE
     ${GLFW_DIR}/include
     ${GLFW_DIR}/deps
 )
-target_link_libraries(P6 INTERFACE
+target_link_libraries(p6 INTERFACE
     glfw
     GLAD
 )
 # ---Add glm---
-target_include_directories(P6 PUBLIC
+target_include_directories(p6 PUBLIC
    third-party/glm
 )
