@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.4)
+
 add_library(p6 
     src/Context.cpp
     src/Shader.cpp
@@ -13,7 +15,6 @@ add_library(p6
     src/details/OpenGL/ShaderModule.cpp
     src/details/RectRenderer.cpp
 )
-
 target_include_directories(p6 PUBLIC include)
 
 # ---Add OpenGL and glad---
