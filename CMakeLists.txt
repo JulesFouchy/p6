@@ -17,6 +17,12 @@ add_library(p6
 )
 target_include_directories(p6 PUBLIC include)
 
+if(MSVC)
+    target_compile_options(p6 PRIVATE /WX /W4)
+else()
+    target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
+endif()
+
 # ---Add OpenGL and glad---
 find_package(OpenGL REQUIRED)
 add_library(GLAD STATIC third-party/glad/src/glad.c)
