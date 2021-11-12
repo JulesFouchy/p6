@@ -1,0 +1,3 @@
+[submodule "third-party/glpp"]
+	path = third-party/glpp
+	url = https://github.com/CoolLibs/glpp
