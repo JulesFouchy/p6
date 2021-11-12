@@ -1,15 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 
-add_library(p6 
-    src/Context.cpp
-    src/Shader.cpp
-    src/details/UniqueGlfwWindow.cpp
-    src/details/Time/Clock.cpp
-    src/details/Time/Clock_FixedTimestep.cpp
-    src/details/Time/Clock_Realtime.cpp
-    src/details/RectRenderer.cpp
-)
-target_include_directories(p6 PUBLIC include)
+add_library(p6)
+add_library(p6::p6 ALIAS p6)
+target_compile_features(p6 PRIVATE cxx_std_11)
 
 if(MSVC)
     target_compile_options(p6 PRIVATE /WX /W4)
@@ -17,9 +10,11 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
+target_include_directories(p6 PUBLIC include)
+
 # ---Add glpp---
 add_subdirectory(third-party/glpp)
-target_link_libraries(p6 PUBLIC glpp)
+target_link_libraries(p6 PUBLIC glpp::glpp)
 # ---Add glfw---
 set(GLFW_DIR third-party/glfw)
 option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
@@ -38,4 +33,15 @@ target_link_libraries(p6 INTERFACE
 # ---Add glm---
 target_include_directories(p6 PUBLIC
    third-party/glm
+)
+
+# ---Add p6 sources---
+target_sources(p6 PRIVATE
+    src/Context.cpp
+    src/Shader.cpp
+    src/details/UniqueGlfwWindow.cpp
+    src/details/Time/Clock.cpp
+    src/details/Time/Clock_FixedTimestep.cpp
+    src/details/Time/Clock_Realtime.cpp
+    src/details/RectRenderer.cpp
 )
