@@ -83,7 +83,6 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
     else {
         GLint location = glGetUniformLocation(*_shader, uniform_name.c_str());
         glpp::check_errors();
-        std::cout << "Computing uniform location\n";
         _uniform_locations.emplace_back(uniform_name, location);
         return location;
     }
