@@ -14,6 +14,8 @@ add_library(P6
     src/details/RectRenderer.cpp
 )
 
+target_include_directories(P6 PUBLIC include)
+
 # ---Add OpenGL and glad---
 find_package(OpenGL REQUIRED)
 add_library(GLAD STATIC third-party/glad/src/glad.c)
