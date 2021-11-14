@@ -14,7 +14,7 @@ target_include_directories(p6 PUBLIC include)
 
 # ---Add glpp---
 add_subdirectory(third-party/glpp)
-target_link_libraries(p6 PUBLIC glpp::)
+target_link_libraries(p6 PUBLIC glpp::glpp)
 # ---Add glfw---
 set(GLFW_DIR third-party/glfw)
 option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
