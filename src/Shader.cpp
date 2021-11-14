@@ -18,7 +18,7 @@ static void validate_shader(GLuint id)
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length);
         glpp::check_errors();
         std::vector<GLchar> error_message;
-        error_message.reserve(length);
+        error_message.reserve(static_cast<size_t>(length));
         glGetProgramInfoLog(id, length, nullptr, error_message.data());
         glpp::check_errors();
         throw std::runtime_error(std::string{"Linking failed:\n"} + error_message.data());
