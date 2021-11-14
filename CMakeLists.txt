@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 add_library(p6)
-add_library(p6:: ALIAS p6)
+add_library(p6::p6 ALIAS p6)
 target_compile_features(p6 PRIVATE cxx_std_11)
 
 if(MSVC)
