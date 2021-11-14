@@ -10,32 +10,18 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
-target_include_directories(p6 PUBLIC include)
-
 # ---Add glpp---
 add_subdirectory(third-party/glpp)
 target_link_libraries(p6 PUBLIC glpp::glpp)
 # ---Add glfw---
-set(GLFW_DIR third-party/glfw)
-option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
-option(GLFW_BUILD_TESTS "Build the GLFW test programs" OFF)
-option(GLFW_BUILD_DOCS "Build the GLFW documentation" OFF)
-option(GLFW_INSTALL "Generate installation target" OFF)
-option(GLFW_DOCUMENT_INTERNALS "Include internals in documentation" OFF)
-add_subdirectory(${GLFW_DIR} binary_dir EXCLUDE_FROM_ALL)
-target_include_directories(p6 PRIVATE
-    ${GLFW_DIR}/include
-    ${GLFW_DIR}/deps
-)
-target_link_libraries(p6 INTERFACE
-    glfw
-)
+add_subdirectory(third-party/glfw)
+target_link_libraries(p6 PUBLIC glfw)
 # ---Add glm---
-target_include_directories(p6 PUBLIC
-   third-party/glm
-)
+add_subdirectory(third-party/glm)
+target_link_libraries(p6 PUBLIC glm)
 
-# ---Add p6 sources---
+# ---Add p6 files---
+target_include_directories(p6 PUBLIC include)
 target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
