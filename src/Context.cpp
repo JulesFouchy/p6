@@ -126,11 +126,6 @@ bool Context::alt() const
            glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
 }
 
-bool Context::window_is_focused() const
-{
-    return static_cast<bool>(glfwGetWindowAttrib(*_window, GLFW_FOCUSED));
-}
-
 /* ------------------------ *
  * ---------WINDOW--------- *
  * ------------------------ */
@@ -138,6 +133,16 @@ bool Context::window_is_focused() const
 float Context::aspect_ratio() const
 {
     return static_cast<float>(_width) / static_cast<float>(_height);
+}
+
+bool Context::window_is_focused() const
+{
+    return static_cast<bool>(glfwGetWindowAttrib(*_window, GLFW_FOCUSED));
+}
+
+void Context::maximize_window()
+{
+    glfwMaximizeWindow(*_window);
 }
 
 /* ---------------------- *

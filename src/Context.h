@@ -84,14 +84,16 @@ public:
     /// Returns true iff the ALT key is pressed
     bool alt() const;
 
-    /// Returns true iff the window is currently focused
-    bool window_is_focused() const;
-
     /* ------------------------ *
      * ---------WINDOW--------- *
      * ------------------------ */
 
+    /// Returns the aspect ratio of the window (a.k.a. width / height)
     float aspect_ratio() const;
+    /// Returns true iff the window is currently focused
+    bool window_is_focused() const;
+    /// Maximizes the window
+    void maximize_window();
 
     /* ---------------------- *
      * ---------TIME--------- *
