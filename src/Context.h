@@ -72,13 +72,20 @@ public:
 
     /// Returns the current mouse position
     glm::vec2 mouse() const;
+    /// Returns the movement of the mouse since last update()
+    glm::vec2 mouse_delta() const;
+    /// Returns true iff the coordinates returned by mouse() correspond to a position inside the window, and the window is focused
+    bool mouse_is_in_window() const;
 
     /// Returns true iff the CTRL key is pressed (or CMD on Mac)
-    bool ctrl();
+    bool ctrl() const;
     /// Returns true iff the SHIFT key is pressed
-    bool shift();
+    bool shift() const;
     /// Returns true iff the ALT key is pressed
-    bool alt();
+    bool alt() const;
+
+    /// Returns true iff the window is currently focused
+    bool window_is_focused() const;
 
     /* ------------------------ *
      * ---------WINDOW--------- *
@@ -122,8 +129,6 @@ private:
 
     void        on_window_resize(int width, int height);
     friend void window_size_callback(GLFWwindow* window, int width, int height);
-    void        on_mouse_move(double x, double y);
-    friend void cursor_position_callback(GLFWwindow* window, double x, double y);
     void        on_mouse_scroll(double x, double y);
     friend void scroll_callback(GLFWwindow* window, double x, double y);
     void        on_mouse_button(int button, int action, int mods);
@@ -131,14 +136,18 @@ private:
     void        on_key(int key, int scancode, int action, int mods);
     friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+    void      on_mouse_move();
+    void      check_for_mouse_movements();
+    glm::vec2 compute_mouse_position() const;
+
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
     int                               _width;
     int                               _height;
-    glm::vec2                         _mouse_position{};
-    bool                              _mouse_position_is_initialized = false;
+    glm::vec2                         _mouse_position;
+    glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
     Shader                            _rect_shader{R"(

@@ -14,10 +14,6 @@ void window_size_callback(GLFWwindow* window, int width, int height)
 {
     get_context(window).on_window_resize(width, height);
 }
-void cursor_position_callback(GLFWwindow* window, double x, double y)
-{
-    get_context(window).on_mouse_move(x, y);
-}
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     get_context(window).on_mouse_button(button, action, mods);
@@ -35,6 +31,7 @@ Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
     , _width{window_creation_params.width}
     , _height{window_creation_params.height}
+    , _mouse_position{compute_mouse_position()}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -44,7 +41,6 @@ Context::Context(WindowCreationParams window_creation_params)
 
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
-    glfwSetCursorPosCallback(*_window, &cursor_position_callback);
     glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
     glfwSetScrollCallback(*_window, &scroll_callback);
     glfwSetKeyCallback(*_window, &key_callback);
@@ -53,6 +49,7 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
+        check_for_mouse_movements();
         if (is_looping()) {
             update();
         }
@@ -93,32 +90,45 @@ void Context::rectangle(RectangleParams params) const
 
 glm::vec2 Context::mouse() const
 {
-    if (_mouse_position_is_initialized) {
-        return _mouse_position;
-    }
-    else {
-        double x, y; // NOLINT
-        glfwGetCursorPos(*_window, &x, &y);
-        return window_to_relative_coords({x, y});
-    }
+    return _mouse_position;
 }
 
-bool Context::ctrl()
+glm::vec2 Context::mouse_delta() const
+{
+    return _mouse_position_delta;
+}
+
+bool Context::mouse_is_in_window() const
+{
+    if (!window_is_focused()) {
+        return false;
+    }
+    const auto pos = mouse();
+    return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() &&
+           pos.y >= -1.f && pos.y <= 1.f;
+}
+
+bool Context::ctrl() const
 {
     return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
            glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
 }
 
-bool Context::shift()
+bool Context::shift() const
 {
     return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
            glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
 }
 
-bool Context::alt()
+bool Context::alt() const
 {
     return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS ||
            glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+}
+
+bool Context::window_is_focused() const
+{
+    return static_cast<bool>(glfwGetWindowAttrib(*_window, GLFW_FOCUSED));
 }
 
 /* ------------------------ *
@@ -207,22 +217,6 @@ void Context::on_window_resize(int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void Context::on_mouse_move(double x, double y)
-{
-    const auto pos   = window_to_relative_coords({x, y});
-    const auto delta = _mouse_position_is_initialized
-                           ? pos - _mouse_position
-                           : glm::vec2{0.f, 0.f};
-    if (_is_dragging) {
-        mouse_dragged({pos, delta, _drag_start_position});
-    }
-    else {
-        mouse_moved({pos, delta});
-    }
-    _mouse_position                = pos;
-    _mouse_position_is_initialized = true;
-}
-
 void Context::on_mouse_button(int button, int action, int /*mods*/)
 {
     const auto mouse_button = [&]() {
@@ -276,6 +270,38 @@ void Context::on_key(int key, int scancode, int action, int /*mods*/)
     else {
         throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
     }
+}
+
+void Context::on_mouse_move()
+{
+    if (_is_dragging) {
+        mouse_dragged({mouse(), mouse_delta(), _drag_start_position});
+    }
+    else {
+        mouse_moved({mouse(), mouse_delta()});
+    }
+}
+
+void Context::check_for_mouse_movements()
+{
+    const auto mouse_pos = compute_mouse_position();
+    if (mouse_pos != _mouse_position) {
+        _mouse_position_delta = mouse_pos - _mouse_position;
+        _mouse_position       = mouse_pos;
+        if (window_is_focused()) {
+            on_mouse_move();
+        }
+    }
+    else {
+        _mouse_position_delta = glm::vec2{0.f};
+    }
+}
+
+glm::vec2 Context::compute_mouse_position() const
+{
+    double x, y; // NOLINT
+    glfwGetCursorPos(*_window, &x, &y);
+    return window_to_relative_coords({x, y});
 }
 
 } // namespace p6
