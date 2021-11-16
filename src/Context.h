@@ -170,21 +170,41 @@ uniform vec4 _stroke_color;
 uniform float _stroke_weight;
 uniform vec2 _rect_size;
 
+// Thanks to https://iquilezles.org/www/articles/ellipsedist/ellipsedist.htm
+float sdEllipse(  vec2 p,  vec2 ab ) {
+    p = abs( p );
+    bool s = dot(p/ab,p/ab)>1.0;
+    float w = s ? atan(p.y*ab.x, p.x*ab.y) : 
+                  ((ab.x*(p.x-ab.x)<ab.y*(p.y-ab.y))? 1.5707963 : 0.0);
+    // find root with Newton solver
+    for( int i=0; i<5; i++ ) {
+        vec2 cs = vec2(cos(w),sin(w));
+        vec2 u = ab*vec2( cs.x,cs.y);
+        vec2 v = ab*vec2(-cs.y,cs.x);
+        w = w + dot(p-u,v)/(dot(p-u,u)+dot(v,v));
+    }
+    return length(p-ab*vec2(cos(w),sin(w))) * (s?1.0:-1.0);
+}
+
 void main() {
-    { // Fill vs Stroke
-        vec2 dist = _is_ellipse ? vec2(1.)
-                    /*is_rect*/ : _rect_size - abs(_uv_canvas_scale);
-        const float m = 0.0005;
-        float t = smoothstep(-m, m, _stroke_weight - min(dist.x, dist.y));
-        _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+    float dist;
+    if (_is_ellipse) {
+        dist = -sdEllipse(_uv_canvas_scale, _rect_size);
     }
+    else /*is_rect*/ { 
+        vec2 dd = _rect_size - abs(_uv_canvas_scale);
+        dist = min(dd.x, dd.y);
+    }
+
+    // Fill vs Stroke
+    const float m = 0.0005;
+    float t = smoothstep(-m, m, _stroke_weight - dist);
+    _frag_color = vec4(mix(_fill_color, _stroke_color, t));
     
-    { // Shape
-        const float m = 0.0005;
-        float shape_factor = _is_ellipse ? smoothstep(-m, m, 0.5 - length(_uv - 0.5))
-                            /*is_rect*/ : 1.;
-        _frag_color.a *= shape_factor;
-    }
+    // Shape
+    float shape_factor = _is_ellipse ? smoothstep(-m, m, dist)
+                        /*is_rect*/  : 1.;
+    _frag_color.a *= shape_factor;
 }
     )"};
 };
