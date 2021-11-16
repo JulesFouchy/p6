@@ -64,7 +64,10 @@ public:
     /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
 
+    /// Draws a rectangle
     void rectangle(RectangleParams params) const;
+    /// Draws an ellipse
+    void ellipse(RectangleParams params) const;
 
     /* ----------------------- *
      * ---------INPUT--------- *
@@ -142,6 +145,8 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
+    void render_with_rect_shader(RectangleParams params, bool is_ellipse) const;
+
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
@@ -159,16 +164,27 @@ in vec2 _uv;
 in vec2 _uv_canvas_scale;
 out vec4 _frag_color;
 
+uniform bool _is_ellipse;
 uniform vec4 _fill_color;
 uniform vec4 _stroke_color;
 uniform float _stroke_weight;
 uniform vec2 _rect_size;
 
 void main() {
-    vec2 dist = _rect_size - abs(_uv_canvas_scale);
-    const float m = 0.0005;
-    float t = smoothstep(-m, m, _stroke_weight - min(dist.x, dist.y));
-    _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+    { // Fill vs Stroke
+        vec2 dist = _is_ellipse ? vec2(1.)
+                    /*is_rect*/ : _rect_size - abs(_uv_canvas_scale);
+        const float m = 0.0005;
+        float t = smoothstep(-m, m, _stroke_weight - min(dist.x, dist.y));
+        _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+    }
+    
+    { // Shape
+        const float m = 0.0005;
+        float shape_factor = _is_ellipse ? smoothstep(-m, m, 0.5 - length(_uv - 0.5))
+                            /*is_rect*/ : 1.;
+        _frag_color.a *= shape_factor;
+    }
 }
     )"};
 };

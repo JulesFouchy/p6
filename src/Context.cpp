@@ -71,7 +71,18 @@ void Context::background(Color color) const
 
 void Context::rectangle(RectangleParams params) const
 {
+    render_with_rect_shader(params, false);
+}
+
+void Context::ellipse(RectangleParams params) const
+{
+    render_with_rect_shader(params, true);
+}
+
+void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse) const
+{
     _rect_shader.bind();
+    _rect_shader.set("_is_ellipse", is_ellipse);
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
     _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
                                                                          params.position),
