@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ObGL/ObGL.hpp>
 #include <functional>
 #include <glm/glm.hpp>
 #include <memory>
@@ -157,6 +158,7 @@ private:
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
+    glpp::Texture                     _texture;
     Shader                            _rect_shader{R"(
 #version 330
 
