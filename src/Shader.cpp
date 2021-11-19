@@ -25,7 +25,7 @@ static void validate_shader(GLuint id)
     }
 }
 
-static void make_shader(GLuint id, const glpp::ShaderModule& vertex_module, const glpp::ShaderModule& fragment_module)
+static void make_shader(GLuint id, const glpp::VertexShader& vertex_module, const glpp::FragmentShader& fragment_module)
 {
     glAttachShader(id, *vertex_module);
     glpp::check_errors();
@@ -38,7 +38,7 @@ static void make_shader(GLuint id, const glpp::ShaderModule& vertex_module, cons
 
 Shader::Shader(const std::string& fragment_source_code)
 {
-    static const auto vert = glpp::ShaderModule{{R"(
+    static const auto vert = glpp::VertexShader{R"(
 #version 330
 
 layout(location = 0) in vec2 _vertex_position;
@@ -60,15 +60,14 @@ void main()
     _uv = _texture_coordinates;
     _uv_canvas_scale = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
-    )",
-                                                 glpp::ShaderKind::Vertex, "p6 Default Vertex Shader"}};
-    const auto        frag = glpp::ShaderModule{{fragment_source_code, glpp::ShaderKind::Fragment, "User Fragment Shader"}};
-    make_shader(*_shader, vert, frag);
+    )"};
+    const auto        frag = glpp::FragmentShader{fragment_source_code.c_str()};
+    make_shader(*_program, vert, frag);
 }
 
 void Shader::bind() const
 {
-    glUseProgram(*_shader);
+    glUseProgram(*_program);
     glpp::check_errors();
 }
 
@@ -81,7 +80,7 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
         return it->second;
     }
     else {
-        GLint location = glGetUniformLocation(*_shader, uniform_name.c_str());
+        GLint location = glGetUniformLocation(*_program, uniform_name.c_str());
         glpp::check_errors();
         _uniform_locations.emplace_back(uniform_name, location);
         return location;

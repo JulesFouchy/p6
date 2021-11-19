@@ -11,9 +11,9 @@ public:
     void render() const;
 
 private:
-    glpp::UniqueVAO    _vao;
-    glpp::UniqueBuffer _vbo;
-    glpp::UniqueBuffer _ibo;
+    glpp::UniqueVertexArray _vao;
+    glpp::UniqueBuffer      _vbo;
+    glpp::UniqueBuffer      _ibo;
 };
 
 } // namespace details

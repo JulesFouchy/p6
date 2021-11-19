@@ -1,5 +1,5 @@
 #include "UniqueGlfwWindow.h"
-#include <glad/glad.h>
+#include <glpp/glpp.hpp>
 #include <stdexcept>
 
 namespace p6 {
@@ -54,6 +54,7 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
 
 UniqueGlfwWindow::~UniqueGlfwWindow()
 {
+    glpp::shut_down();
     glfwDestroyWindow(_window);
 }
 
