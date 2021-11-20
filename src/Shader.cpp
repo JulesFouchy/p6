@@ -6,34 +6,15 @@
 
 namespace p6 {
 
-static void validate_shader(GLuint id)
+static void make_shader(const glpp::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
-    glValidateProgram(id);
-    glpp::check_errors();
-    GLint result; // NOLINT
-    glGetProgramiv(id, GL_VALIDATE_STATUS, &result);
-    glpp::check_errors();
-    if (result == GL_FALSE) {
-        GLsizei length;
-        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length);
-        glpp::check_errors();
-        std::vector<GLchar> error_message;
-        error_message.reserve(static_cast<size_t>(length));
-        glGetProgramInfoLog(id, length, nullptr, error_message.data());
-        glpp::check_errors();
-        throw std::runtime_error(std::string{"Linking failed:\n"} + error_message.data());
+    program.attach_shader(*vertex_shader);
+    program.attach_shader(*fragment_shader);
+    program.link();
+    const auto err = program.check_linking_errors();
+    if (err) {
+        throw std::runtime_error{"Shader linking failed:\n" + err.message()};
     }
-}
-
-static void make_shader(GLuint id, const glpp::VertexShader& vertex_module, const glpp::FragmentShader& fragment_module)
-{
-    glAttachShader(id, *vertex_module);
-    glpp::check_errors();
-    glAttachShader(id, *fragment_module);
-    glpp::check_errors();
-    glLinkProgram(id);
-    glpp::check_errors();
-    validate_shader(id);
 }
 
 Shader::Shader(const std::string& fragment_source_code)
@@ -62,13 +43,12 @@ void main()
 }
     )"};
     const auto        frag = glpp::FragmentShader{fragment_source_code.c_str()};
-    make_shader(*_program, vert, frag);
+    make_shader(_program, vert, frag);
 }
 
 void Shader::bind() const
 {
-    glUseProgram(*_program);
-    glpp::check_errors();
+    _program.use();
 }
 
 GLint Shader::uniform_location(const std::string& uniform_name) const
@@ -80,8 +60,7 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
         return it->second;
     }
     else {
-        GLint location = glGetUniformLocation(*_program, uniform_name.c_str());
-        glpp::check_errors();
+        const auto location = _program.compute_uniform_location(uniform_name.c_str());
         _uniform_locations.emplace_back(uniform_name, location);
         return location;
     }
@@ -90,8 +69,7 @@ GLint Shader::uniform_location(const std::string& uniform_name) const
 void Shader::set(const std::string& uniform_name, int v) const
 {
     bind();
-    glUniform1i(uniform_location(uniform_name), v);
-    glpp::check_errors();
+    _program.set_uniform(uniform_location(uniform_name), v);
 }
 void Shader::set(const std::string& uniform_name, unsigned int v) const
 {
@@ -104,44 +82,37 @@ void Shader::set(const std::string& uniform_name, bool v) const
 void Shader::set(const std::string& uniform_name, float v) const
 {
     bind();
-    glUniform1f(uniform_location(uniform_name), v);
-    glpp::check_errors();
+    _program.set_uniform(uniform_location(uniform_name), v);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec2& v) const
 {
     bind();
-    glUniform2f(uniform_location(uniform_name), v.x, v.y);
-    glpp::check_errors();
+    _program.set_uniform(uniform_location(uniform_name), v.x, v.y);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec3& v) const
 {
     bind();
-    glUniform3f(uniform_location(uniform_name), v.x, v.y, v.z);
-    glpp::check_errors();
+    _program.set_uniform(uniform_location(uniform_name), v.x, v.y, v.z);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec4& v) const
 {
     bind();
-    glUniform4f(uniform_location(uniform_name), v.x, v.y, v.z, v.w);
-    glpp::check_errors();
+    _program.set_uniform(uniform_location(uniform_name), v.x, v.y, v.z, v.w);
 }
 void Shader::set(const std::string& uniform_name, const glm::mat2& mat) const
 {
     bind();
-    glUniformMatrix2fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
-    glpp::check_errors();
+    _program.set_uniform_mat2(uniform_location(uniform_name), glm::value_ptr(mat));
 }
 void Shader::set(const std::string& uniform_name, const glm::mat3& mat) const
 {
     bind();
-    glUniformMatrix3fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
-    glpp::check_errors();
+    _program.set_uniform_mat3(uniform_location(uniform_name), glm::value_ptr(mat));
 }
 void Shader::set(const std::string& uniform_name, const glm::mat4& mat) const
 {
     bind();
-    glUniformMatrix4fv(uniform_location(uniform_name), 1, GL_FALSE, glm::value_ptr(mat));
-    glpp::check_errors();
+    _program.set_uniform_mat4(uniform_location(uniform_name), glm::value_ptr(mat));
 }
 
 } // namespace p6

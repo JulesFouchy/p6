@@ -29,7 +29,7 @@ private:
     GLint uniform_location(const std::string& uniform_name) const;
 
 private:
-    glpp::UniqueProgram                                _program;
+    glpp::Program                                      _program;
     mutable std::vector<std::pair<std::string, GLint>> _uniform_locations;
 };
 
