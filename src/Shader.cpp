@@ -3,15 +3,17 @@
 
 namespace p6 {
 
-static void compile_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
+static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
     program.attach_shader(*vertex_shader);
     program.attach_shader(*fragment_shader);
     program.link();
+#if !defined(NDEBUG)
     const auto err = program.check_linking_errors();
     if (err) {
         throw std::runtime_error{"Shader linking failed:\n" + err.message()};
     }
+#endif
 }
 
 Shader::Shader(const std::string& fragment_source_code)
@@ -39,20 +41,22 @@ void main()
     _uv_canvas_scale = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )"};
+    const auto        frag = glpp::FragmentShader{fragment_source_code.c_str()};
+#if !defined(NDEBUG)
     {
         const auto err = vert.check_compilation_errors();
         if (err) {
             throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
         }
     }
-    const auto frag = glpp::FragmentShader{fragment_source_code.c_str()};
     {
         const auto err = frag.check_compilation_errors();
         if (err) {
             throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
         }
     }
-    compile_program(_program, vert, frag);
+#endif
+    link_program(_program, vert, frag);
 }
 
 void Shader::bind() const
