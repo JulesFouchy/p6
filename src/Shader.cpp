@@ -1,12 +1,9 @@
 #include "Shader.h"
-#include <algorithm>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 #include <stdexcept>
 
 namespace p6 {
 
-static void make_shader(const glpp::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
+static void compile_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
     program.attach_shader(*vertex_shader);
     program.attach_shader(*fragment_shader);
@@ -42,8 +39,20 @@ void main()
     _uv_canvas_scale = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )"};
-    const auto        frag = glpp::FragmentShader{fragment_source_code.c_str()};
-    make_shader(_program, vert, frag);
+    {
+        const auto err = vert.check_compilation_errors();
+        if (err) {
+            throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
+        }
+    }
+    const auto frag = glpp::FragmentShader{fragment_source_code.c_str()};
+    {
+        const auto err = frag.check_compilation_errors();
+        if (err) {
+            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
+        }
+    }
+    compile_program(_program, vert, frag);
 }
 
 void Shader::bind() const
@@ -51,68 +60,51 @@ void Shader::bind() const
     _program.use();
 }
 
-GLint Shader::uniform_location(const std::string& uniform_name) const
+template<typename T>
+void set_uniform(const glpp::ext::Program& program, const std::string& uniform_name, T&& v)
 {
-    const auto it = std::find_if(_uniform_locations.begin(), _uniform_locations.end(), [&](auto&& pair) {
-        return pair.first == uniform_name;
-    });
-    if (it != _uniform_locations.end()) {
-        return it->second;
-    }
-    else {
-        const auto location = _program.compute_uniform_location(uniform_name.c_str());
-        _uniform_locations.emplace_back(uniform_name, location);
-        return location;
-    }
+    program.use();
+    program.set(uniform_name, v);
 }
-
 void Shader::set(const std::string& uniform_name, int v) const
 {
-    bind();
-    _program.set_uniform(uniform_location(uniform_name), v);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, unsigned int v) const
 {
-    set(uniform_name, static_cast<int>(v));
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, bool v) const
 {
-    set(uniform_name, v ? 1 : 0);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, float v) const
 {
-    bind();
-    _program.set_uniform(uniform_location(uniform_name), v);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec2& v) const
 {
-    bind();
-    _program.set_uniform(uniform_location(uniform_name), v.x, v.y);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec3& v) const
 {
-    bind();
-    _program.set_uniform(uniform_location(uniform_name), v.x, v.y, v.z);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, const glm::vec4& v) const
 {
-    bind();
-    _program.set_uniform(uniform_location(uniform_name), v.x, v.y, v.z, v.w);
+    set_uniform(_program, uniform_name, v);
 }
 void Shader::set(const std::string& uniform_name, const glm::mat2& mat) const
 {
-    bind();
-    _program.set_uniform_mat2(uniform_location(uniform_name), glm::value_ptr(mat));
+    set_uniform(_program, uniform_name, mat);
 }
 void Shader::set(const std::string& uniform_name, const glm::mat3& mat) const
 {
-    bind();
-    _program.set_uniform_mat3(uniform_location(uniform_name), glm::value_ptr(mat));
+    set_uniform(_program, uniform_name, mat);
 }
 void Shader::set(const std::string& uniform_name, const glm::mat4& mat) const
 {
-    bind();
-    _program.set_uniform_mat4(uniform_location(uniform_name), glm::value_ptr(mat));
+    set_uniform(_program, uniform_name, mat);
 }
 
 } // namespace p6

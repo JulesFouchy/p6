@@ -1,10 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glpp/glpp.hpp>
-#include <string>
-#include <utility>
-#include <vector>
+#include <glpp/extended.hpp>
 
 namespace p6 {
 
@@ -26,11 +22,7 @@ public:
     void set(const std::string& uniform_name, const glm::mat4& mat) const;
 
 private:
-    GLint uniform_location(const std::string& uniform_name) const;
-
-private:
-    glpp::Program                                      _program;
-    mutable std::vector<std::pair<std::string, GLint>> _uniform_locations;
+    glpp::ext::Program _program;
 };
 
 } // namespace p6

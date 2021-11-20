@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ObGL/ObGL.hpp>
 #include <functional>
 #include <glm/glm.hpp>
+#include <glpp/extended.hpp>
 #include <memory>
 #include <stdexcept>
 #include "Color.h"
