@@ -10,15 +10,12 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
-# ---Add ObGL---
-add_subdirectory(third-party/ObGL)
-target_link_libraries(p6 PUBLIC ObGL::ObGL)
+# ---Add glpp-extended---
+add_subdirectory(third-party/glpp-extended)
+target_link_libraries(p6 PUBLIC glpp::extended)
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
-# ---Add glm---
-add_subdirectory(third-party/glm)
-target_link_libraries(p6 PUBLIC glm)
 
 # ---Add p6 files---
 target_include_directories(p6 PUBLIC include)
