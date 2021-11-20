@@ -1,9 +1,0 @@
-[submodule "third-party/glpp"]
-	path = third-party/glpp
-	url = https://github.com/CoolLibs/glpp
-[submodule "third-party/glm"]
-	path = third-party/glm
-	url = https://github.com/CoolLibs/glm
-[submodule "third-party/ObGL"]
-	path = third-party/ObGL
-	url = https://github.com/CoolLibs/ObGL
