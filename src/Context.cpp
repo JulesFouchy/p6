@@ -266,7 +266,7 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 void Context::on_window_resize(int width, int height)
 {
     _window_size = {width, height};
-    _render_target.resize(_window_size);
+    _render_target.conservative_resize(_window_size);
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
