@@ -12,6 +12,7 @@
 #include "MouseMove.h"
 #include "MouseScroll.h"
 #include "RectangleParams.h"
+#include "RenderTarget.h"
 #include "Shader.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
@@ -69,6 +70,15 @@ public:
     void rectangle(RectangleParams params) const;
     /// Draws an ellipse
     void ellipse(RectangleParams params) const;
+
+    /* -------------------------------- *
+     * ---------RENDER TARGETS--------- *
+     * -------------------------------- */
+
+    /// Sets the target where all the drawing commands will happen on
+    void set_render_target(const RenderTarget& render_target) const;
+    /// Reset to p6's default render target (a.k.a. what you will see on the screen)
+    void reset_render_target() const;
 
     /* ----------------------- *
      * ---------INPUT--------- *
@@ -158,7 +168,7 @@ private:
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
-    glpp::Texture                     _texture;
+    RenderTarget                      _render_target;
     Shader                            _rect_shader{R"(
 #version 330
 

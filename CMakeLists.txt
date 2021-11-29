@@ -12,6 +12,7 @@ endif()
 
 # ---Add glpp-extended---
 add_subdirectory(third-party/glpp-extended)
+target_compile_definitions(glpp PRIVATE $<$<CONFIG:Debug>:GLPP_CHECK_ERRORS>)
 target_link_libraries(p6 PUBLIC glpp::extended)
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
@@ -22,6 +23,7 @@ target_include_directories(p6 PUBLIC include)
 target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
+    src/RenderTarget.cpp
     src/details/UniqueGlfwWindow.cpp
     src/details/Time/Clock.cpp
     src/details/Time/Clock_FixedTimestep.cpp

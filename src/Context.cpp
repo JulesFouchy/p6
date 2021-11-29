@@ -49,10 +49,17 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
+        _render_target.bind();
         check_for_mouse_movements();
         if (is_looping()) {
             update();
         }
+        glpp::bind_framebuffer_as_draw(0);
+        glpp::bind_framebuffer_as_read(*_render_target.framebuffer());
+        glpp::blit_framebuffer(0, 0, _width, _height,
+                               0, 0, _width, _height,
+                               GL_COLOR_BUFFER_BIT, glpp::Interpolation::NearestNeighbour);
+        glpp::bind_framebuffer(0);
         glfwSwapBuffers(*_window);
         glfwPollEvents();
         _clock->update();
@@ -94,12 +101,26 @@ void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse) c
     _rect_shader.set("_stroke_weight", stroke_weight);
     _rect_renderer.render();
 }
+/* -------------------------------- *
+ * ---------RENDER TARGETS--------- *
+ * -------------------------------- */
+
+void Context::set_render_target(const RenderTarget& render_target) const
+{
+    (void)render_target;
+}
+
+void Context::reset_render_target() const
+{
+    // _render_target.;
+}
 
 /* ----------------------- *
  * ---------INPUT--------- *
  * ----------------------- */
 
-glm::vec2 Context::mouse() const
+glm::vec2
+    Context::mouse() const
 {
     return _mouse_position;
 }
