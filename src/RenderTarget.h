@@ -4,6 +4,7 @@
 
 namespace p6 {
 
+using ImageSize    = glpp::ImageSize;
 using RenderTarget = glpp::RenderTarget;
 // class RenderTarget {
 // public:

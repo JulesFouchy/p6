@@ -104,6 +104,8 @@ public:
 
     /// Returns the aspect ratio of the window (a.k.a. width / height)
     float aspect_ratio() const;
+    /// Returns the size of the window
+    ImageSize window_size() const;
     /// Returns true iff the window is currently focused
     bool window_is_focused() const;
     /// Maximizes the window

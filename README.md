@@ -43,6 +43,4 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 
 ### width, height and aspect_ratio
 
-There is intentionnally no way of querying the width or height of the window. This is because I am strongly convinced that you should always be working in relative coordinates and that any call to `width` or `height` would be a code smell. If you believe that you have a good use case for `width` and `height` please raise an issue! I would love to hear about it and it might change my mind.
-
-Currently you can only query the `aspect_ratio()` a.k.a. `width / height`.
+I am strongly convinced that you should always be working in relative coordinates and that any call to `window_size()` is a code smell. The only use case that I can think of for `window_size()` is if you want to create a `RenderTarget` that has a size proportional to that of the window.

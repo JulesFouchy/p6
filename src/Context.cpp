@@ -170,6 +170,11 @@ float Context::aspect_ratio() const
     return static_cast<float>(_width) / static_cast<float>(_height);
 }
 
+ImageSize Context::window_size() const
+{
+    return {_width, _height};
+}
+
 bool Context::window_is_focused() const
 {
     return static_cast<bool>(glfwGetWindowAttrib(*_window, GLFW_FOCUSED));
