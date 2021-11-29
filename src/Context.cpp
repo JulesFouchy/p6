@@ -57,12 +57,10 @@ void Context::run()
         if (is_looping()) {
             update();
         }
-        glpp::bind_framebuffer_as_draw(0);
-        glpp::bind_framebuffer_as_read(*_render_target.framebuffer());
-        glpp::blit_framebuffer(0, 0, _width, _height,
-                               0, 0, _width, _height,
-                               GL_COLOR_BUFFER_BIT, glpp::Interpolation::NearestNeighbour);
-        glpp::bind_framebuffer(0);
+        _render_target.blit_to(RenderTarget::screen_framebuffer_id(),
+                               _window_size,
+                               glpp::Interpolation::NearestNeighbour);
+        _render_target.bind();
         glfwSwapBuffers(*_window);
         glfwPollEvents();
         _clock->update();
