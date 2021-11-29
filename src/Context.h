@@ -106,6 +106,10 @@ public:
     float aspect_ratio() const;
     /// Returns the size of the window
     ImageSize window_size() const;
+    /// Returns the width of the window
+    int window_width() const;
+    /// Returns the height of the window
+    int window_height() const;
     /// Returns true iff the window is currently focused
     bool window_is_focused() const;
     /// Maximizes the window
@@ -164,8 +168,7 @@ private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
-    int                               _width;
-    int                               _height;
+    ImageSize                         _window_size;
     glm::vec2                         _mouse_position;
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};

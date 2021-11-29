@@ -29,8 +29,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
-    , _width{window_creation_params.width}
-    , _height{window_creation_params.height}
+    , _window_size{window_creation_params.width,
+                   window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
     , _render_target{{window_creation_params.width, window_creation_params.height}}
 {
@@ -167,12 +167,22 @@ bool Context::alt() const
 
 float Context::aspect_ratio() const
 {
-    return static_cast<float>(_width) / static_cast<float>(_height);
+    return static_cast<float>(_window_size.width()) / static_cast<float>(_window_size.height());
 }
 
 ImageSize Context::window_size() const
 {
-    return {_width, _height};
+    return _window_size;
+}
+
+int Context::window_width() const
+{
+    return _window_size.width();
+}
+
+int Context::window_height() const
+{
+    return _window_size.height();
 }
 
 bool Context::window_is_focused() const
@@ -246,8 +256,8 @@ bool Context::is_looping() const
 
 glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 {
-    const auto w = static_cast<float>(_width);
-    const auto h = static_cast<float>(_height);
+    const auto w = static_cast<float>(_window_size.width());
+    const auto h = static_cast<float>(_window_size.height());
 
     pos.y = h - pos.y;    // Make y-axis point up
     pos.x -= w / 2.f;     // Center around 0
@@ -257,9 +267,8 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 
 void Context::on_window_resize(int width, int height)
 {
-    _width  = width;
-    _height = height;
-    _render_target.resize({width, height});
+    _window_size = {width, height};
+    _render_target.resize(_window_size);
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
