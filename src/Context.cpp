@@ -32,6 +32,7 @@ Context::Context(WindowCreationParams window_creation_params)
     , _width{window_creation_params.width}
     , _height{window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
+    , _render_target{{window_creation_params.width, window_creation_params.height}}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -44,6 +45,8 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
     glfwSetScrollCallback(*_window, &scroll_callback);
     glfwSetKeyCallback(*_window, &key_callback);
+
+    _render_target.bind();
 }
 
 void Context::run()
@@ -251,7 +254,7 @@ void Context::on_window_resize(int width, int height)
 {
     _width  = width;
     _height = height;
-    glViewport(0, 0, width, height);
+    _render_target.resize({width, height});
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
