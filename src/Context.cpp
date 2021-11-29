@@ -110,12 +110,12 @@ void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse) c
 
 void Context::set_render_target(const RenderTarget& render_target) const
 {
-    (void)render_target;
+    render_target.bind();
 }
 
 void Context::reset_render_target() const
 {
-    // _render_target.;
+    _render_target.bind();
 }
 
 /* ----------------------- *
