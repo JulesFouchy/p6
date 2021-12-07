@@ -14,6 +14,9 @@ endif()
 add_subdirectory(third-party/glpp-extended)
 target_compile_definitions(glpp PRIVATE $<$<CONFIG:Debug>:GLPP_CHECK_ERRORS>)
 target_link_libraries(p6 PUBLIC glpp::extended)
+# ---Add img---
+add_subdirectory(third-party/img)
+target_link_libraries(p6 PUBLIC img::img)
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
