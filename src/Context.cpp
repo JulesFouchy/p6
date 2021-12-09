@@ -89,8 +89,7 @@ void Context::ellipse(RectangleParams params) const
 
 void Context::image(const Image& img, RectangleParams params) const
 {
-    glActiveTexture(GL_TEXTURE0);
-    img.texture().bind();
+    img.texture().bind_to_texture_unit(0);
     _rect_shader.bind();
     _rect_shader.set("_image", 0);
     render_with_rect_shader(params, false, true);
