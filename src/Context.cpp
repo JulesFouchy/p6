@@ -79,17 +79,27 @@ void Context::background(Color color) const
 
 void Context::rectangle(RectangleParams params) const
 {
-    render_with_rect_shader(params, false);
+    render_with_rect_shader(params, false, false);
 }
 
 void Context::ellipse(RectangleParams params) const
 {
-    render_with_rect_shader(params, true);
+    render_with_rect_shader(params, true, false);
 }
 
-void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse) const
+void Context::image(const Image& img, RectangleParams params) const
+{
+    glActiveTexture(GL_TEXTURE0);
+    img.texture().bind();
+    _rect_shader.bind();
+    _rect_shader.set("_image", 0);
+    render_with_rect_shader(params, false, true);
+}
+
+void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse, bool is_image) const
 {
     _rect_shader.bind();
+    _rect_shader.set("_is_image", is_image);
     _rect_shader.set("_is_ellipse", is_ellipse);
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
     _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},

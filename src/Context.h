@@ -70,6 +70,8 @@ public:
     void rectangle(RectangleParams params) const;
     /// Draws an ellipse
     void ellipse(RectangleParams params) const;
+    /// Draws an image
+    void image(const Image& img, RectangleParams params) const;
 
     /* --------------------------------------- *
      * ---------RENDERING DESTINATION--------- *
@@ -162,7 +164,7 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
-    void render_with_rect_shader(RectangleParams params, bool is_ellipse) const;
+    void render_with_rect_shader(RectangleParams params, bool is_ellipse, bool is_image) const;
 
 private:
     mutable details::UniqueGlfwWindow _window;
@@ -181,6 +183,8 @@ in vec2 _uv;
 in vec2 _uv_canvas_scale;
 out vec4 _frag_color;
 
+uniform bool _is_image;
+uniform sampler2D _image;
 uniform bool _is_ellipse;
 uniform vec4 _fill_color;
 uniform vec4 _stroke_color;
@@ -213,10 +217,15 @@ void main() {
         dist = min(dd.x, dd.y);
     }
 
-    // Fill vs Stroke
     const float m = 0.0005;
-    float t = smoothstep(-m, m, _stroke_weight - dist);
-    _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+    if (_is_image) {
+        _frag_color = texture(_image, _uv);
+    }
+    else {
+        // Fill vs Stroke
+        float t = smoothstep(-m, m, _stroke_weight - dist);
+        _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+    }
     
     // Shape
     float shape_factor = _is_ellipse ? smoothstep(-m, m, dist)
