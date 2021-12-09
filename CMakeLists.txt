@@ -26,7 +26,7 @@ target_include_directories(p6 PUBLIC include)
 target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
-    src/RenderTarget.cpp
+    src/Image.cpp
     src/details/UniqueGlfwWindow.cpp
     src/details/Time/Clock.cpp
     src/details/Time/Clock_FixedTimestep.cpp

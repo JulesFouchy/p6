@@ -1,8 +1,12 @@
 #pragma once
 
-// namespace p6 {
+#include <glpp/extended.hpp>
 
-#include <img/img.hpp>
-// using Image = img::Image;
+namespace p6 {
 
-// } // namespace p6
+using Image     = glpp::RenderTarget;
+using ImageSize = glpp::ImageSize;
+
+Image load_image(const char* file_path);
+
+} // namespace p6

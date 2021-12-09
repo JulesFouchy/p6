@@ -32,7 +32,7 @@ Context::Context(WindowCreationParams window_creation_params)
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
-    , _render_target{{window_creation_params.width, window_creation_params.height}}
+    , _default_render_target{{window_creation_params.width, window_creation_params.height}}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -46,21 +46,21 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetScrollCallback(*_window, &scroll_callback);
     glfwSetKeyCallback(*_window, &key_callback);
 
-    _render_target.bind();
+    _default_render_target.bind();
 }
 
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
-        _render_target.bind();
+        _default_render_target.bind();
         check_for_mouse_movements();
         if (is_looping()) {
             update();
         }
-        _render_target.blit_to(RenderTarget::screen_framebuffer_id(),
-                               _window_size,
-                               glpp::Interpolation::NearestNeighbour);
-        _render_target.bind();
+        _default_render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                       _window_size,
+                                       glpp::Interpolation::NearestNeighbour);
+        _default_render_target.bind();
         glfwSwapBuffers(*_window);
         glfwPollEvents();
         _clock->update();
@@ -106,14 +106,14 @@ void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse) c
  * ---------RENDER TARGETS--------- *
  * -------------------------------- */
 
-void Context::set_render_target(const RenderTarget& render_target) const
+void Context::render_to_image(const Image& image) const
 {
-    render_target.bind();
+    image.bind();
 }
 
-void Context::reset_render_target() const
+void Context::render_to_screen() const
 {
-    _render_target.bind();
+    _default_render_target.bind();
 }
 
 /* ----------------------- *
@@ -266,7 +266,7 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 void Context::on_window_resize(int width, int height)
 {
     _window_size = {width, height};
-    _render_target.conservative_resize(_window_size);
+    _default_render_target.conservative_resize(_window_size);
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
