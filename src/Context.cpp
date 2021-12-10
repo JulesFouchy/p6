@@ -46,21 +46,21 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetScrollCallback(*_window, &scroll_callback);
     glfwSetKeyCallback(*_window, &key_callback);
 
-    _default_render_target.bind();
+    render_to_screen();
 }
 
 void Context::run()
 {
     while (!glfwWindowShouldClose(*_window)) {
-        _default_render_target.bind();
+        render_to_screen();
         check_for_mouse_movements();
         if (is_looping()) {
             update();
         }
-        _default_render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                       _window_size,
-                                       glpp::Interpolation::NearestNeighbour);
-        _default_render_target.bind();
+        _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                      _window_size,
+                                                      glpp::Interpolation::NearestNeighbour);
+        render_to_screen();
         glfwSwapBuffers(*_window);
         glfwPollEvents();
         _clock->update();
@@ -117,12 +117,12 @@ void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse, b
 
 void Context::render_to_image(const Image& image) const
 {
-    image.bind();
+    image._render_target.bind();
 }
 
 void Context::render_to_screen() const
 {
-    _default_render_target.bind();
+    render_to_image(_default_render_target);
 }
 
 /* ----------------------- *
@@ -275,7 +275,7 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 void Context::on_window_resize(int width, int height)
 {
     _window_size = {width, height};
-    _default_render_target.conservative_resize(_window_size);
+    _default_render_target.resize(_window_size);
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)

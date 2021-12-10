@@ -3,6 +3,11 @@
 
 namespace p6 {
 
+Image::Image(ImageSize size, const void* data)
+    : _render_target{size, data}
+{
+}
+
 Image load_image(const char* file_path)
 {
     const auto image_data = img::load(file_path, 4);
