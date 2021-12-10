@@ -3,7 +3,7 @@
 
 namespace p6 {
 
-Image::Image(ImageSize size, const void* data)
+Image::Image(ImageSize size, const uint8_t* data)
     : _render_target{size, data}
 {
 }
