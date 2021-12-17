@@ -10,6 +10,10 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
+# Set the directory where the executable is created
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
+
 # ---Add glpp-extended---
 add_subdirectory(third-party/glpp-extended)
 target_compile_definitions(glpp PRIVATE $<$<CONFIG:Debug>:GLPP_CHECK_ERRORS>)
