@@ -7,3 +7,6 @@
 [submodule "third-party/img"]
 	path = third-party/img
 	url = https://github.com/CoolLibs/img
+[submodule "third-party/CMakeUtils"]
+	path = third-party/CMakeUtils
+	url = https://github.com/CoolLibs/CMakeUtils
