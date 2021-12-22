@@ -38,7 +38,7 @@ target_sources(p6 PRIVATE
     src/details/RectRenderer.cpp
 )
 
-# ---Copy files and folders---
+# ---Functions to copy files and folders---
 include("third-party/CMakeUtils/files_and_folders.cmake")
 
 function(p6_copy_file FILENAME)
