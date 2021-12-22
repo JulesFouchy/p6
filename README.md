@@ -1,6 +1,7 @@
 # p6
 
 A take on improving the (already amazing) [p5](https://p5js.org/) API.
+
 You can find examples of how to use the library [here](https://github.com/JulesFouchy/p6-examples).
 
 ## Core design principles
