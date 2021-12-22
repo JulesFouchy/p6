@@ -65,6 +65,7 @@ void Context::run()
         glfwPollEvents();
         _clock->update();
     }
+    glfwSetWindowShouldClose(*_window, GLFW_FALSE); // Make sure that if run() is called a second time the window won't close instantly the second time
 }
 
 /* ------------------------- *
@@ -242,14 +243,19 @@ void Context::set_time_mode_fixedstep()
  * ---------MISCELLANEOUS--------- *
  * ------------------------------- */
 
-void Context::loop()
+void Context::exit() const
 {
-    _clock->play();
+    glfwSetWindowShouldClose(*_window, GLFW_TRUE);
 }
 
 void Context::no_loop()
 {
     _clock->pause();
+}
+
+void Context::loop()
+{
+    _clock->play();
 }
 
 bool Context::is_looping() const

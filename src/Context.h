@@ -25,7 +25,6 @@ namespace p6 {
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
-    void run();
 
     /* ---------------------------------------- *
      * ---------CUSTOMIZABLE FUNCTIONS--------- *
@@ -141,10 +140,14 @@ public:
      * ---------MISCELLANEOUS--------- *
      * ------------------------------- */
 
-    /// Starts the loop again if it was paused with no_loop()
-    void loop();
-    /// Pauses the loop. No update() will be called, until you call loop(). User inputs are still processed.
+    /// Starts the update loop: update() will be called repeatedly, until you close the window or call exit()
+    void run();
+    /// Stops the run() loop.
+    void exit() const;
+    /// Pauses the run() loop. No update() will be called, until you call loop(). User inputs are still processed.
     void no_loop();
+    /// Starts the run() loop again if it was paused with no_loop()
+    void loop();
     /// Returns true iff we are currently looping. See loop() and no_loop()
     bool is_looping() const;
 
