@@ -2,7 +2,7 @@
 
 A take on improving the (already amazing) [p5](https://p5js.org/) API.
 
-You can find examples of how to use the library [here](https://github.com/JulesFouchy/p6-examples).
+You can find examples of how to use the library [here](https://github.com/JulesFouchy/p6-docs).
 
 ## Core design principles
   - **Simplicity first** : optimization considerations should not complexify the API, but should still be a goal if they can be transparent to the user.
