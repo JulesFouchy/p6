@@ -46,7 +46,13 @@ public:
     std::function<void(KeyEvent)> key_pressed = [](KeyEvent) {};
     /// This function is called whenever a keyboard key is released
     std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
-    /// This function is called whenever a keyboard key is held for a little while.
+    /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
+    /// /!\ This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
+    /// ```cpp
+    /// if (p6.is_held(PhysicalKey::W)) { // TODO implement is_held and PhysicalKey and LogicalKey
+    ///     character.move_forward(p6.delta_time());
+    /// }
+    /// ```
     std::function<void(KeyEvent)> key_repeated = [](KeyEvent) {};
     /// This function is called whenever an error occurs.
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
