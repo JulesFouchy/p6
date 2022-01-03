@@ -30,7 +30,7 @@ public:
      * ---------CUSTOMIZABLE FUNCTIONS--------- *
      * ---------------------------------------- */
 
-    /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update() code is too slow then the next updates will necessarily be delayed).
+    /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update code is too slow then the next updates will necessarily be delayed).
     std::function<void()> update = []() {};
     /// This function is called whenever the mouse is moved
     std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
@@ -140,11 +140,11 @@ public:
      * ---------MISCELLANEOUS--------- *
      * ------------------------------- */
 
-    /// Starts the update loop: update() will be called repeatedly, until you close the window or call exit()
+    /// Starts the update loop: update() will be called repeatedly, until you close the window or call exit
     void run();
     /// Stops the run() loop.
     void exit() const;
-    /// Pauses the run() loop. No update() will be called, until you call loop(). User inputs are still processed.
+    /// Pauses the run() loop. No update() will be called, until you call loop. User inputs are still processed.
     void no_loop();
     /// Starts the run() loop again if it was paused with no_loop()
     void loop();
