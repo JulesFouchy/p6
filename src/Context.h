@@ -144,12 +144,12 @@ public:
     void run();
     /// Stops the run() loop.
     void exit() const;
-    /// Pauses the run() loop. No update() will be called, until you call loop. User inputs are still processed.
-    void no_loop();
-    /// Starts the run() loop again if it was paused with no_loop()
-    void loop();
-    /// Returns true iff we are currently looping. See loop() and no_loop()
-    bool is_looping() const;
+    /// Pauses the run() loop. No update() will be called, until you call resume. User inputs are still processed.
+    void pause();
+    /// Starts the run() loop again if it was paused with pause()
+    void resume();
+    /// Returns true iff we are currently paused. See pause() and resume()
+    bool is_paused() const;
 
 private:
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;

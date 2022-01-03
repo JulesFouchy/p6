@@ -54,7 +54,7 @@ void Context::run()
     while (!glfwWindowShouldClose(*_window)) {
         render_to_screen();
         check_for_mouse_movements();
-        if (is_looping()) {
+        if (!is_paused()) {
             update();
         }
         _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
@@ -248,19 +248,19 @@ void Context::exit() const
     glfwSetWindowShouldClose(*_window, GLFW_TRUE);
 }
 
-void Context::no_loop()
+void Context::pause()
 {
     _clock->pause();
 }
 
-void Context::loop()
+void Context::resume()
 {
     _clock->play();
 }
 
-bool Context::is_looping() const
+bool Context::is_paused() const
 {
-    return _clock->is_playing();
+    return !_clock->is_playing();
 }
 
 /* ------------------------- *
