@@ -142,20 +142,35 @@ public:
     /// This is ideal when you are exporting a video and don't want the long export time to influence your animation.
     void set_time_mode_fixedstep();
 
-    /* ------------------------------- *
-     * ---------MISCELLANEOUS--------- *
-     * ------------------------------- */
+    /* ------------------------------- */
+    /** \defgroup update-flow Update Flow
+     * @{*/
+    /* ------------------------------- */
 
-    /// Starts the update loop: update() will be called repeatedly, until you close the window or call exit
-    void run();
-    /// Stops the run() loop.
-    void exit() const;
-    /// Pauses the run() loop. No update() will be called, until you call resume. User inputs are still processed.
+    /** Starts the update() loop.
+     * update() will be called repeatedly, until you close the window or call stop() */
+    void start();
+
+    /**
+     * @brief Stops the update() loop. This is the programatic equivalent of a user closing the window.
+     * 
+     */
+    void stop();
+
+    /**
+     * @brief Pauses the update() loop. No update() will be called, until you call resume(). User inputs are still processed.
+     * 
+     */
     void pause();
-    /// Starts the run() loop again if it was paused with pause()
+    /**
+     * Resumes the update() loop if it was paused with pause().
+     * It has no effect if the loop was already playing.
+     */
     void resume();
-    /// Returns true iff we are currently paused. See pause() and resume()
+    /// Returns true iff we are currently paused. See pause() and resume().
     bool is_paused() const;
+
+    /**@}*/
 
 private:
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;

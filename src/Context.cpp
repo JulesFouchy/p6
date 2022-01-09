@@ -49,7 +49,7 @@ Context::Context(WindowCreationParams window_creation_params)
     render_to_screen();
 }
 
-void Context::run()
+void Context::start()
 {
     while (!glfwWindowShouldClose(*_window)) {
         render_to_screen();
@@ -65,7 +65,7 @@ void Context::run()
         glfwPollEvents();
         _clock->update();
     }
-    glfwSetWindowShouldClose(*_window, GLFW_FALSE); // Make sure that if run() is called a second time the window won't close instantly the second time
+    glfwSetWindowShouldClose(*_window, GLFW_FALSE); // Make sure that if start() is called a second time the window won't close instantly the second time
 }
 
 /* ------------------------- *
@@ -243,7 +243,7 @@ void Context::set_time_mode_fixedstep()
  * ---------MISCELLANEOUS--------- *
  * ------------------------------- */
 
-void Context::exit() const
+void Context::stop()
 {
     glfwSetWindowShouldClose(*_window, GLFW_TRUE);
 }
