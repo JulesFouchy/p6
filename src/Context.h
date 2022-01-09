@@ -59,9 +59,10 @@ public:
         throw std::runtime_error{error_message};
     };
 
-    /* ------------------------- *
-     * ---------DRAWING--------- *
-     * ------------------------- */
+    /* ------------------------------- */
+    /** \defgroup drawing Drawing
+     * @{*/
+    /* ------------------------------- */
 
     Color fill{1.f, 1.f, 1.f, 0.5f};
     Color stroke{0.f, 0.f, 0.f};
@@ -71,13 +72,23 @@ public:
     /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
     void background(Color color) const;
 
-    /// Draws a rectangle
+    /**
+     * Draws a rectangle.
+     * \param params Shape of the rect
+     * 
+     * ```
+     * p6.fill = {0.f, 0.8f, 0.3f};
+     * p6.rectangle({});
+     * ```
+     * 
+     */
     void rectangle(RectangleParams params) const;
     /// Draws an ellipse
     void ellipse(RectangleParams params) const;
     /// Draws an image
     void image(const Image& img, RectangleParams params) const;
 
+    /**@}*/
     /* --------------------------------------- *
      * ---------RENDERING DESTINATION--------- *
      * --------------------------------------- */

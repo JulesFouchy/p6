@@ -4,7 +4,7 @@
 
 namespace p6 {
 
-struct KeyEvent {
+struct KeyEvent { // TODO rename to Key?
     /// The character that was pressed. This depends on the keyboard layout (qwerty vs azerty).
     /// If the key pressed was not a character (for example ENTER, SHIFT etc.) then this is an empty string.
     std::string logical_key;
