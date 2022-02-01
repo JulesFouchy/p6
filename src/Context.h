@@ -221,34 +221,30 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup update-flow Update Flow
+     * Allows you to control the update() loop and query information about it.
      * @{*/
     /* ------------------------------- */
 
-    /** Starts the update() loop.
-     * update() will be called repeatedly, until you close the window or call stop() */
+    /// Starts the update() loop.
+    /// update() will be called repeatedly, until you close the window or call stop().
     void start();
 
-    /**
-     * @brief Stops the update() loop. This is the programatic equivalent of a user closing the window.
-     * 
-     */
+    /// Stops the update() loop.
+    /// This is the programatic equivalent of a user closing the window.
     void stop();
 
-    /**
-     * @brief Pauses the update() loop. No update() will be called, until you call resume(). User inputs are still processed.
-     * 
-     */
+    /// Pauses the update() loop.
+    /// No update() will be called, until you call resume(). User inputs are still processed.
     void pause();
-    /**
-     * Resumes the update() loop if it was paused with pause().
-     * It has no effect if the loop was already playing.
-     */
+
+    /// Resumes the update() loop if it was paused with pause().
+    /// It has no effect if the loop was already playing.
     void resume();
-    /// Returns true iff we are currently paused. See pause() and resume().
+
+    /// Returns true iff the update() loop is currently paused.
     bool is_paused() const;
 
     /**@}*/
-
 private:
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
 
