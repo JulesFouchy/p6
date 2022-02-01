@@ -94,7 +94,7 @@ public:
     float stroke_weight = 0.01f;
 
     /// Sets the color and alpha of each pixel of the canvas.
-    /// NB: No blending is applied ; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you try to blend the canvas on top of another image.
+    /// NB: No blending is applied; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you later try to blend the canvas on top of another image.
     void background(Color color) const;
 
     /**
