@@ -241,11 +241,11 @@ void Context::set_time_mode_realtime()
     }
 }
 
-void Context::set_time_mode_fixedstep()
+void Context::set_time_mode_fixedstep(float framerate)
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
-    _clock                = std::make_unique<details::Clock_FixedTimestep>(60.f);
+    _clock                = std::make_unique<details::Clock_FixedTimestep>(framerate);
     _clock->set_time(t);
     if (was_paused) {
         _clock->pause();

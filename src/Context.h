@@ -65,7 +65,7 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update code is too slow then the next updates will necessarily be delayed).
+    /// This function is called repeatedly. The framerate will be capped at your monitors refresh rate (60 frames per second on a typical monitor).
     std::function<void()> update = []() {};
     /// This function is called whenever the mouse is moved
     std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
@@ -193,26 +193,31 @@ public:
     /// Maximizes the window.
     void maximize_window();
 
-    /* ---------------------- *
-     * ---------TIME--------- *
-     * ---------------------- */
+    /**@}*/
+    /* ------------------------------- */
+    /** \defgroup time Time
+     * Allows you to query time information and control how the time evolves.
+     * @{*/
+    /* ------------------------------- */
 
-    /// Returns the time in seconds since the creation of the Context
+    /// Returns the time in seconds since the creation of the Context.
     float time() const;
 
-    /// Returns the time in seconds since the last update() call (or 0 if this is the first update)
+    /// Returns the time in seconds since the last update() call (or 0 if this is the first update).
     float delta_time() const;
 
-    /// Sets the time_mode as realtime.
+    /// Sets the time mode as *realtime*.
     /// This means that what is returned by time() and delta_time() corresponds to the actual time that elapsed in the real world.
     /// This is ideal when you want to do realtime animation and interactive sketches.
     void set_time_mode_realtime();
 
-    /// Sets the time_mode as fixedstep.
-    /// This means that what is returned by time() and delta_time() corresponds to an ideal world where there is exactly 1/framerate seconds between each updates.
+    /// Sets the time mode as *fixedstep*.
+    /// This means that what is returned by time() and delta_time() corresponds to an ideal world where there is exactly `1/framerate` seconds between each updates.
     /// This is ideal when you are exporting a video and don't want the long export time to influence your animation.
-    void set_time_mode_fixedstep();
+    /// `framerate` is expressed in frames per second
+    void set_time_mode_fixedstep(float framerate);
 
+    /**@}*/
     /* ------------------------------- */
     /** \defgroup update-flow Update Flow
      * @{*/
