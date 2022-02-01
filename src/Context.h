@@ -98,7 +98,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup drawing Drawing
-     * All the functions to draw shapes and control the look of them.
+     * Draw shapes and control the look of them.
      * @{*/
     /* ------------------------------- */
 
@@ -156,7 +156,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup input Input
-     * Allows you to query the state of the mouse and the keyboard.
+     * Query the state of the mouse and keyboard.
      * @{*/
     /* ------------------------------- */
 
@@ -177,7 +177,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup window Window
-     * Allows you to query the state of the window.
+     * Query the state of the window and control it.
      * @{*/
     /* ------------------------------- */
 
@@ -197,7 +197,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup time Time
-     * Allows you to query time information and control how the time evolves.
+     * Query time information and control how the time evolves.
      * @{*/
     /* ------------------------------- */
 
@@ -221,7 +221,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup update-flow Update Flow
-     * Allows you to control the update() loop and query information about it.
+     * Control the update() loop and query information about it.
      * @{*/
     /* ------------------------------- */
 
