@@ -51,9 +51,19 @@ class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
 
-    /* ---------------------------------------- *
-     * ---------CUSTOMIZABLE FUNCTIONS--------- *
-     * ---------------------------------------- */
+    /* ------------------------------- */
+    /** \defgroup events Events
+     * You can set those functions as you wish to react to various events.
+     * The simplest way is to use a lambda:
+     * 
+     * ```cpp
+     * auto ctx = p6::Context{};
+     * ctx.mouse_pressed = [](p6::MouseButton) {
+     *     std::cout << "Hello World\n";
+     * };
+     * ```
+     * @{*/
+    /* ------------------------------- */
 
     /// This function is called repeatedly, once every 1/framerate() seconds (or at least it will try, if your update code is too slow then the next updates will necessarily be delayed).
     std::function<void()> update = []() {};
@@ -73,6 +83,7 @@ public:
     std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
     /// /!\ This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
+    ///
     /// ```cpp
     /// if (p6.is_held(PhysicalKey::W)) { // TODO implement is_held and PhysicalKey and LogicalKey
     ///     character.move_forward(p6.delta_time());
@@ -84,6 +95,7 @@ public:
         throw std::runtime_error{error_message};
     };
 
+    /**@}*/
     /* ------------------------------- */
     /** \defgroup drawing Drawing
      * @{*/
