@@ -83,10 +83,17 @@ void Context::rectangle(Transform2D transform) const
     render_with_rect_shader(transform, false, false);
 }
 
-void Context::ellipse(RectangleParams params) const
-void Context::ellipse(Transform2D params) const
+void Context::circle(Center center, Radius radius) const
 {
-    render_with_rect_shader(params, true, false);
+    ellipse(center, radius);
+}
+void Context::ellipse(Center center, Radius radius) const
+{
+    ellipse({center.value, glm::vec2{radius.value}});
+}
+void Context::ellipse(Center center, Radii radii, Rotation rotation) const
+{
+    ellipse({center.value, radii.value, rotation.value});
 }
 
 void Context::ellipse(Transform2D transform) const

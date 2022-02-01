@@ -22,6 +22,31 @@
 
 namespace p6 {
 
+struct Center {
+    glm::vec2 value;
+
+    Center(glm::vec2 value)
+        : value{value} {}
+};
+
+struct Radii {
+    glm::vec2 value;
+
+    Radii(float x, float y)
+        : value{x, y} {}
+
+    Radii(glm::vec2 v)
+        : value{v} {}
+};
+
+struct Radius {
+    float value;
+};
+
+struct Rotation {
+    Angle value;
+};
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -83,9 +108,11 @@ public:
      * 
      */
     void rectangle(Transform2D transform) const;
+    /// Draws a circle
+    void circle(Center center, Radius radius) const;
     /// Draws an ellipse
-    void ellipse(RectangleParams params) const;
-    void ellipse(Transform2D params) const;
+    void ellipse(Center center, Radii radii, Rotation rotation) const;
+    void ellipse(Center center, Radius radius) const;
     void ellipse(Transform2D transform) const;
     /// Draws an image
     void image(const Image& img, Transform2D transform) const;
