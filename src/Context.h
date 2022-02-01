@@ -130,15 +130,29 @@ public:
     void image(const Image& img, Transform2D transform) const;
 
     /**@}*/
-    /* --------------------------------------- *
-     * ---------RENDERING DESTINATION--------- *
-     * --------------------------------------- */
+    /* ------------------------------- */
+    /** \defgroup rendering_destination Rendering Destination
+     * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
+     * 
+     * ```cpp
+     * auto ctx = p6::Context{};
+     * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
+     * ctx.render_to_image(my_image);
+     * ctx.rectangle({}); // Draws on my_image
+     * ctx.ellipse({});   // Draws on my_image again
+     * ctx.render_to_screen();
+     * ctx.rectangle({});       // Draws on the screen
+     * ctx.image(my_image, {}); // Draws my_image onto the screen
+     * ```
+     * @{*/
+    /* ------------------------------- */
 
     /// Sets the image where all the drawing commands will happen on
-    void render_to_image(const Image& image) const;
-    /// Reset p6 to render to the screen
-    void render_to_screen() const;
+    void render_to_image(Image& image);
+    /// Reset the Context to render to the screen
+    void render_to_screen();
 
+    /**@}*/
     /* ----------------------- *
      * ---------INPUT--------- *
      * ----------------------- */

@@ -129,12 +129,12 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
  * ---------RENDER TARGETS--------- *
  * -------------------------------- */
 
-void Context::render_to_image(const Image& image) const
+void Context::render_to_image(Image& image)
 {
     image._render_target.bind();
 }
 
-void Context::render_to_screen() const
+void Context::render_to_screen()
 {
     render_to_image(_default_render_target);
 }
