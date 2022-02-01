@@ -10,3 +10,6 @@
 [submodule "third-party/CMakeUtils"]
 	path = third-party/CMakeUtils
 	url = https://github.com/CoolLibs/CMakeUtils
+[submodule "third-party/op"]
+	path = third-party/op
+	url = https://github.com/CoolLibs/op
