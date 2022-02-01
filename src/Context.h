@@ -153,15 +153,17 @@ public:
     void render_to_screen();
 
     /**@}*/
-    /* ----------------------- *
-     * ---------INPUT--------- *
-     * ----------------------- */
+    /* ------------------------------- */
+    /** \defgroup input Input
+     * Allows you to query the state of the mouse and the keyboard.
+     * @{*/
+    /* ------------------------------- */
 
     /// Returns the current mouse position
     glm::vec2 mouse() const;
-    /// Returns the movement of the mouse since last update()
+    /// Returns the movement of the mouse since last update().
     glm::vec2 mouse_delta() const;
-    /// Returns true iff the coordinates returned by mouse() correspond to a position inside the window, and the window is focused
+    /// Returns true iff the window is focused and the coordinates returned by mouse() correspond to a position inside the window.
     bool mouse_is_in_window() const;
 
     /// Returns true iff the CTRL key is pressed (or CMD on Mac)
@@ -171,6 +173,7 @@ public:
     /// Returns true iff the ALT key is pressed
     bool alt() const;
 
+    /**@}*/
     /* ------------------------ *
      * ---------WINDOW--------- *
      * ------------------------ */
