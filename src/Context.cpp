@@ -78,35 +78,41 @@ void Context::background(Color color) const
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Context::rectangle(RectangleParams params) const
+void Context::rectangle(Transform2D transform) const
 {
-    render_with_rect_shader(params, false, false);
+    render_with_rect_shader(transform, false, false);
 }
 
 void Context::ellipse(RectangleParams params) const
+void Context::ellipse(Transform2D params) const
 {
     render_with_rect_shader(params, true, false);
 }
 
-void Context::image(const Image& img, RectangleParams params) const
+void Context::ellipse(Transform2D transform) const
+{
+    render_with_rect_shader(transform, true, false);
+}
+
+void Context::image(const Image& img, Transform2D transform) const
 {
     img.texture().bind_to_texture_unit(0);
     _rect_shader.bind();
     _rect_shader.set("_image", 0);
-    render_with_rect_shader(params, false, true);
+    render_with_rect_shader(transform, false, true);
 }
 
-void Context::render_with_rect_shader(RectangleParams params, bool is_ellipse, bool is_image) const
+void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const
 {
     _rect_shader.bind();
     _rect_shader.set("_is_image", is_image);
     _rect_shader.set("_is_ellipse", is_ellipse);
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
     _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
-                                                                         params.position),
-                                                          params.rotation),
-                                              params.size));
-    _rect_shader.set("_rect_size", params.size);
+                                                                         transform.position),
+                                                          transform.rotation.as_radians()),
+                                              transform.scale));
+    _rect_shader.set("_rect_size", transform.scale);
     _rect_shader.set("_fill_color", fill.as_vec4());
     _rect_shader.set("_stroke_color", stroke.as_vec4());
     _rect_shader.set("_stroke_weight", stroke_weight);

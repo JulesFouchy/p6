@@ -12,8 +12,8 @@
 #include "MouseDrag.h"
 #include "MouseMove.h"
 #include "MouseScroll.h"
-#include "RectangleParams.h"
 #include "Shader.h"
+#include "Transform2D.h"
 #include "details/RectRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
@@ -82,11 +82,13 @@ public:
      * ```
      * 
      */
-    void rectangle(RectangleParams params) const;
+    void rectangle(Transform2D transform) const;
     /// Draws an ellipse
     void ellipse(RectangleParams params) const;
+    void ellipse(Transform2D params) const;
+    void ellipse(Transform2D transform) const;
     /// Draws an image
-    void image(const Image& img, RectangleParams params) const;
+    void image(const Image& img, Transform2D transform) const;
 
     /**@}*/
     /* --------------------------------------- *
@@ -199,7 +201,7 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
-    void render_with_rect_shader(RectangleParams params, bool is_ellipse, bool is_image) const;
+    void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
 
 private:
     mutable details::UniqueGlfwWindow _window;
