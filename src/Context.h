@@ -98,6 +98,7 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup drawing Drawing
+     * All the functions to draw shapes and control the look of them.
      * @{*/
     /* ------------------------------- */
 
