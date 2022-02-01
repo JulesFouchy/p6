@@ -132,7 +132,7 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup rendering_destination Rendering Destination
+    /** \defgroup rendering-destination Rendering Destination
      * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
      * 
      * ```cpp
