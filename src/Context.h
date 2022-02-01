@@ -174,21 +174,23 @@ public:
     bool alt() const;
 
     /**@}*/
-    /* ------------------------ *
-     * ---------WINDOW--------- *
-     * ------------------------ */
+    /* ------------------------------- */
+    /** \defgroup window Window
+     * Allows you to query the state of the window.
+     * @{*/
+    /* ------------------------------- */
 
-    /// Returns the aspect ratio of the window (a.k.a. width / height)
+    /// Returns the aspect ratio of the window (a.k.a. width / height).
     float aspect_ratio() const;
-    /// Returns the size of the window
+    /// Returns the size of the window (width and height).
     ImageSize window_size() const;
-    /// Returns the width of the window
+    /// Returns the width of the window.
     int window_width() const;
-    /// Returns the height of the window
+    /// Returns the height of the window.
     int window_height() const;
-    /// Returns true iff the window is currently focused
+    /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
-    /// Maximizes the window
+    /// Maximizes the window.
     void maximize_window();
 
     /* ---------------------- *
