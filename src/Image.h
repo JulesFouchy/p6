@@ -7,6 +7,12 @@ namespace p6 {
 using ImageSize = glpp::ImageSize;
 using Texture   = glpp::Texture;
 
+/* ------------------------------- */
+/** \defgroup image Image
+ * Create, modify and query information about images.
+ * @{*/
+/* ------------------------------- */
+
 /// An image can be drawn onto, and can be displayed.
 /// If you plan on drawing on the image, you can create it without data (it will create a black and transparent image).
 /// If you want to load an image, you can use load_image() instead of the constructor
@@ -32,6 +38,10 @@ private:
     glpp::RenderTarget _render_target;
 };
 
+/// Loads an image from a file.
+/// Throws a `std::runtime_error` if the file doesn't exist or isn't a valid image file.
 Image load_image(const char* file_path);
+
+/**@}*/
 
 } // namespace p6
