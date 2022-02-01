@@ -15,8 +15,9 @@ T map(T x, T from_min, T from_max, T to_min, T to_max)
 {
     return (x - from_min) * (to_max - to_min) / (from_max - from_min) + to_min;
 }
-/**@}*/
 
 static constexpr float TAU = 6.2831853f;
 static constexpr float PI  = TAU / 2.f;
+
+/**@}*/
 } // namespace p6
