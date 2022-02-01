@@ -28,7 +28,7 @@ public:
     const Texture& texture() const { return _render_target.texture(); }
 
     /// Resizes the image.
-    /// /!\ All of its content is lost. If you don't want that you can use resize() instead.
+    /// :warning: All of its content is lost. If you don't want that you can use resize() instead.
     void destructive_resize(ImageSize size) { _render_target.resize(size); }
     /// Resizes the image.
     void resize(ImageSize size) { _render_target.conservative_resize(size); }

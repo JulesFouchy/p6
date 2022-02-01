@@ -82,7 +82,8 @@ public:
     /// This function is called whenever a keyboard key is released
     std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
-    /// /!\ This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
+    ///
+    /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
     ///
     /// ```cpp
     /// if (p6.is_held(PhysicalKey::W)) { // TODO implement is_held and PhysicalKey and LogicalKey
