@@ -3,6 +3,7 @@
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <stdexcept>
 #include <string>
+#include "math.h"
 
 namespace p6 {
 
@@ -108,24 +109,30 @@ void Context::rectangle(Center center, Radii radii, Rotation rotation)
     rectangle(Transform2D{center.value, radii.value, rotation});
 }
 
+static void rectangle_impl(glm::vec2 offset_to_center, Context& ctx, glm::vec2 corner_position, Radii radii, Rotation rotation)
+{
+    ctx.rectangle(Center{corner_position + rotated_by(rotation, radii.value * offset_to_center)},
+                  radii, rotation);
+}
+
 void Context::rectangle(TopLeftCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle(Center{corner.value + radii.value * glm::vec2{1, -1}}, radii, rotation);
+    rectangle_impl({1, -1}, *this, corner.value, radii, rotation);
 }
 
 void Context::rectangle(TopRightCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle(Center{corner.value + radii.value * glm::vec2{-1, -1}}, radii, rotation);
+    rectangle_impl({-1, -1}, *this, corner.value, radii, rotation);
 }
 
 void Context::rectangle(BottomLeftCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle(Center{corner.value + radii.value * glm::vec2{1, 1}}, radii, rotation);
+    rectangle_impl({1, 1}, *this, corner.value, radii, rotation);
 }
 
 void Context::rectangle(BottomRightCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle(Center{corner.value + radii.value * glm::vec2{-1, 1}}, radii, rotation);
+    rectangle_impl({-1, 1}, *this, corner.value, radii, rotation);
 }
 
 void Context::rectangle(Transform2D transform)
