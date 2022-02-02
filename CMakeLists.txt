@@ -10,10 +10,6 @@ else()
     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
 endif()
 
-# Set the directory where the executable is created
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
-
 # ---Add glpp-extended---
 add_subdirectory(third-party/glpp-extended)
 target_compile_definitions(glpp PRIVATE $<$<CONFIG:Debug>:GLPP_CHECK_ERRORS>)
@@ -45,10 +41,10 @@ target_sources(p6 PRIVATE
 # ---Functions to copy files and folders---
 include("third-party/CMakeUtils/files_and_folders.cmake")
 
-function(p6_copy_file FILENAME)
-    Cool__target_copy_file(${PROJECT_NAME} ${FILENAME})
+function(p6_copy_file TARGET_NAME FILENAME)
+    Cool__target_copy_file(${TARGET_NAME} ${FILENAME})
 endfunction()
 
-function(p6_copy_folder FOLDERNAME)
-    Cool__target_copy_folder(${PROJECT_NAME} ${FOLDERNAME})
+function(p6_copy_folder TARGET_NAME FOLDERNAME)
+    Cool__target_copy_folder(${TARGET_NAME} ${FOLDERNAME})
 endfunction()
