@@ -140,7 +140,7 @@ void Context::circle(Center center, Radius radius)
 
 void Context::ellipse(Center center, Radii radii, Rotation rotation)
 {
-    ellipse({center.value, radii.value, rotation.value});
+    ellipse({center.value, radii.value, rotation});
 }
 
 void Context::ellipse(Transform2D transform)
@@ -164,7 +164,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
     _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
                                                                          transform.position),
-                                                          transform.rotation.value.as_radians()),
+                                                          transform.rotation.as_radians()),
                                               transform.scale));
     _rect_shader.set("_rect_size", transform.scale);
     _rect_shader.set("_fill_color", fill.as_vec4());

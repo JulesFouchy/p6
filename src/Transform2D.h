@@ -4,9 +4,7 @@
 
 namespace p6 {
 
-struct Rotation {
-    Angle value{};
-};
+using Rotation = Angle;
 
 struct Transform2D {
     glm::vec2 position{0.f};
