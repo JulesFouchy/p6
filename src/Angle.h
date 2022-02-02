@@ -60,7 +60,7 @@ private:
 
 } // namespace p6
 
-inline p6::Angle operator"" _turns(long double turns)
+inline p6::Angle operator"" _turn(long double turns)
 {
     return p6::Angle{p6::turns_to_radians(static_cast<float>(turns))};
 }
