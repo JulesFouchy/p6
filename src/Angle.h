@@ -10,7 +10,9 @@ struct Radians
     , public op::Subtractable<Radians>
     , public op::Negatable<Radians>
     , public op::Scalable<Radians> {
-    float value;
+    float value{0.f};
+
+    Radians() = default;
 
     explicit Radians(float value)
         : value{value} {}
@@ -42,6 +44,7 @@ class Angle
     , public op::Negatable<Angle>
     , public op::Scalable<Angle> {
 public:
+    Angle() = default;
     explicit Angle(Radians value)
         : value{value} {}
 
@@ -49,7 +52,7 @@ public:
     float as_radians() const { return value.value; }
     float as_degrees() const { return radians_to_degrees(value); }
 
-    Radians value;
+    Radians value{};
 
 private:
     // Radians value;

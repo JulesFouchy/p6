@@ -23,14 +23,21 @@
 namespace p6 {
 
 struct Center {
-    glm::vec2 value;
+    glm::vec2 value{0.f};
+
+    Center() = default;
+
+    Center(float x, float y)
+        : value{x, y} {}
 
     Center(glm::vec2 value)
         : value{value} {}
 };
 
 struct Radii {
-    glm::vec2 value;
+    glm::vec2 value{1.f};
+
+    Radii() = default;
 
     Radii(float x, float y)
         : value{x, y} {}
@@ -40,11 +47,9 @@ struct Radii {
 };
 
 struct Radius {
-    float value;
-};
+    float value{1.f};
 
-struct Rotation {
-    Angle value;
+    Radius() = default;
 };
 
 class Context {
@@ -123,13 +128,12 @@ public:
      */
     void rectangle(Transform2D transform) const;
     /// Draws a circle
-    void circle(Center center, Radius radius) const;
+    void circle(Center = {}, Radius = {}) const;
     /// Draws an ellipse
-    void ellipse(Center center, Radii radii, Rotation rotation) const;
-    void ellipse(Center center, Radius radius) const;
-    void ellipse(Transform2D transform) const;
+    void ellipse(Center = {}, Radii = {}, Rotation = {}) const;
+    void ellipse(Transform2D = {}) const;
     /// Draws an image
-    void image(const Image& img, Transform2D transform) const;
+    void image(const Image&, Transform2D = {}) const;
 
     /**@}*/
     /* ------------------------------- */
