@@ -100,6 +100,18 @@ struct Radius {
     Radius() = default;
 };
 
+struct RadiusX {
+    float value{1.f};
+
+    RadiusX() = default;
+};
+
+struct RadiusY {
+    float value{1.f};
+
+    RadiusY() = default;
+};
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -183,7 +195,12 @@ public:
     /// Draws an ellipse
     void ellipse(Center = {}, Radii = {}, Rotation = {});
     void ellipse(Transform2D = {});
-    /// Draws an image
+    /// Draws an image. This will respect the aspect ratio of the image.
+    void image(const Image&, Center = {}, RadiusX = {}, Rotation = {});
+    /// Draws an image. This will respect the aspect ratio of the image.
+    void image(const Image&, Center = {}, RadiusY = {}, Rotation = {});
+    /// Draws an image. :warning: This might distort the image if Radii doesn't have the same aspect ratio as the image.
+    void image(const Image&, Center = {}, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D = {});
 
     /**@}*/

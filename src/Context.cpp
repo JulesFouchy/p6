@@ -155,6 +155,27 @@ void Context::ellipse(Transform2D transform)
     render_with_rect_shader(transform, true, false);
 }
 
+void Context::image(const Image& img, Center center, RadiusX radiusX, Rotation rotation)
+{
+    image(img, {center.value,
+                {radiusX.value, radiusX.value / img.aspect_ratio()},
+                rotation});
+}
+
+void Context::image(const Image& img, Center center, RadiusY radiusY, Rotation rotation)
+{
+    image(img, {center.value,
+                {radiusY.value * img.aspect_ratio(), radiusY.value},
+                rotation});
+}
+
+void Context::image(const Image& img, Center center, Radii radii, Rotation rotation)
+{
+    image(img, {center.value,
+                radii.value,
+                rotation});
+}
+
 void Context::image(const Image& img, Transform2D transform)
 {
     img.texture().bind_to_texture_unit(0);
