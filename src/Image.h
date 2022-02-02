@@ -23,6 +23,8 @@ public:
 
     /// Returns the size in pixels of the image.
     ImageSize size() const { return _render_target.size(); }
+    /// Returns the aspect ratio of the image (`width / height`)
+    float aspect_ratio() const { return size().aspect_ratio(); }
 
     /// Returns the internal texture, that you can use to do advanced stuff with custom shaders.
     const Texture& texture() const { return _render_target.texture(); }
