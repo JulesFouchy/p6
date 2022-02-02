@@ -56,7 +56,7 @@ public:
      * You can set those functions as you wish to react to various events.
      * The simplest way is to use a lambda:
      * 
-     * ```cpp
+     * ```
      * auto ctx = p6::Context{};
      * ctx.mouse_pressed = [](p6::MouseButton) {
      *     std::cout << "Hello World\n";
@@ -85,7 +85,7 @@ public:
     ///
     /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
     ///
-    /// ```cpp
+    /// ```
     /// if (p6.is_held(PhysicalKey::W)) { // TODO implement is_held and PhysicalKey and LogicalKey
     ///     character.move_forward(p6.delta_time());
     /// }
@@ -136,7 +136,7 @@ public:
     /** \defgroup rendering-destination Rendering Destination
      * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
      * 
-     * ```cpp
+     * ```
      * auto ctx = p6::Context{};
      * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
      * ctx.render_to_image(my_image);
