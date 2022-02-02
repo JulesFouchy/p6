@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include "Color.h"
 #include "Image.h"
-#include "KeyEvent.h"
+#include "Key.h"
 #include "MouseButton.h"
 #include "MouseDrag.h"
 #include "MouseMove.h"
@@ -78,9 +78,9 @@ public:
     /// This function is called whenever the mouse wheel is scrolled
     std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {};
     /// This function is called whenever a keyboard key is pressed
-    std::function<void(KeyEvent)> key_pressed = [](KeyEvent) {};
+    std::function<void(Key)> key_pressed = [](Key) {};
     /// This function is called whenever a keyboard key is released
-    std::function<void(KeyEvent)> key_released = [](KeyEvent) {};
+    std::function<void(Key)> key_released = [](Key) {};
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
     ///
     /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
@@ -90,7 +90,7 @@ public:
     ///     character.move_forward(p6.delta_time());
     /// }
     /// ```
-    std::function<void(KeyEvent)> key_repeated = [](KeyEvent) {};
+    std::function<void(Key)> key_repeated = [](Key) {};
     /// This function is called whenever an error occurs.
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};

@@ -332,20 +332,20 @@ void Context::on_mouse_scroll(double x, double y)
                     static_cast<float>(y)});
 }
 
-void Context::on_key(int key, int scancode, int action, int /*mods*/)
+void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
 {
-    const char* key_name  = glfwGetKeyName(key, scancode);
-    const auto  key_event = KeyEvent{key == GLFW_KEY_SPACE ? " " : key_name ? key_name
-                                                                            : "",
-                                    key};
+    const char* key_name = glfwGetKeyName(key_code, scancode);
+    const auto  key      = Key{key_code == GLFW_KEY_SPACE ? " " : key_name ? key_name
+                                                                           : "",
+                         key_code};
     if (action == GLFW_PRESS) {
-        key_pressed(key_event);
+        key_pressed(key);
     }
     else if (action == GLFW_REPEAT) {
-        key_repeated(key_event);
+        key_repeated(key);
     }
     else if (action == GLFW_RELEASE) {
-        key_released(key_event);
+        key_released(key);
     }
     else {
         throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
