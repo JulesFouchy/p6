@@ -1,7 +1,7 @@
 #pragma once
 
 #include <op/op.hpp>
-#include "math.h"
+#include "math_constants.h"
 
 namespace p6 {
 

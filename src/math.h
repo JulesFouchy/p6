@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glm/glm.hpp>
+#include "Angle.h"
+
 namespace p6 {
 /* ------------------------------- */
 /** \defgroup math Math
@@ -19,8 +22,8 @@ T map(T x, T from_min, T from_max, T to_min, T to_max)
     return (x - from_min) * (to_max - to_min) / (from_max - from_min) + to_min;
 }
 
-static constexpr float TAU = 6.2831853f;
-static constexpr float PI  = TAU / 2.f;
+/// Returns a new vector equal to `vector` rotated by `angle`
+glm::vec2 rotated_by(Angle angle, glm::vec2 vector);
 
 /**@}*/
 } // namespace p6

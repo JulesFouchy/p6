@@ -34,6 +34,7 @@ target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
     src/Image.cpp
+    src/math.cpp
     src/details/UniqueGlfwWindow.cpp
     src/details/Time/Clock.cpp
     src/details/Time/Clock_FixedTimestep.cpp
