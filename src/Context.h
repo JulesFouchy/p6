@@ -199,7 +199,7 @@ public:
     void image(const Image&, Center = {}, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const Image&, Center = {}, RadiusY = {}, Rotation = {});
-    /// Draws an image. :warning: This might distort the image if Radii doesn't have the same aspect ratio as the image.
+    /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
     void image(const Image&, Center = {}, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D = {});
 
