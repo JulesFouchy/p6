@@ -72,83 +72,83 @@ void Context::start()
  * ---------DRAWING--------- *
  * ------------------------- */
 
-void Context::background(Color color) const
+void Context::background(Color color)
 {
     glClearColor(color.r(), color.g(), color.b(), color.a());
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Context::square(Center center, Radius radius, Rotation rotation) const
+void Context::square(Center center, Radius radius, Rotation rotation)
 {
     rectangle(center, Radii{radius.value, radius.value}, rotation);
 }
 
-void Context::square(TopLeftCorner corner, Radius radius, Rotation rotation) const
+void Context::square(TopLeftCorner corner, Radius radius, Rotation rotation)
 {
     rectangle(corner, Radii{radius.value, radius.value}, rotation);
 }
 
-void Context::square(TopRightCorner corner, Radius radius, Rotation rotation) const
+void Context::square(TopRightCorner corner, Radius radius, Rotation rotation)
 {
     rectangle(corner, Radii{radius.value, radius.value}, rotation);
 }
 
-void Context::square(BottomLeftCorner corner, Radius radius, Rotation rotation) const
+void Context::square(BottomLeftCorner corner, Radius radius, Rotation rotation)
 {
     rectangle(corner, Radii{radius.value, radius.value}, rotation);
 }
 
-void Context::square(BottomRightCorner corner, Radius radius, Rotation rotation) const
+void Context::square(BottomRightCorner corner, Radius radius, Rotation rotation)
 {
     rectangle(corner, Radii{radius.value, radius.value}, rotation);
 }
 
-void Context::rectangle(Center center, Radii radii, Rotation rotation) const
+void Context::rectangle(Center center, Radii radii, Rotation rotation)
 {
     rectangle(Transform2D{center.value, radii.value, rotation});
 }
 
-void Context::rectangle(TopLeftCorner corner, Radii radii, Rotation rotation) const
+void Context::rectangle(TopLeftCorner corner, Radii radii, Rotation rotation)
 {
     rectangle(Center{corner.value + radii.value * glm::vec2{1, -1}}, radii, rotation);
 }
 
-void Context::rectangle(TopRightCorner corner, Radii radii, Rotation rotation) const
+void Context::rectangle(TopRightCorner corner, Radii radii, Rotation rotation)
 {
     rectangle(Center{corner.value + radii.value * glm::vec2{-1, -1}}, radii, rotation);
 }
 
-void Context::rectangle(BottomLeftCorner corner, Radii radii, Rotation rotation) const
+void Context::rectangle(BottomLeftCorner corner, Radii radii, Rotation rotation)
 {
     rectangle(Center{corner.value + radii.value * glm::vec2{1, 1}}, radii, rotation);
 }
 
-void Context::rectangle(BottomRightCorner corner, Radii radii, Rotation rotation) const
+void Context::rectangle(BottomRightCorner corner, Radii radii, Rotation rotation)
 {
     rectangle(Center{corner.value + radii.value * glm::vec2{-1, 1}}, radii, rotation);
 }
 
-void Context::rectangle(Transform2D transform) const
+void Context::rectangle(Transform2D transform)
 {
     render_with_rect_shader(transform, false, false);
 }
 
-void Context::circle(Center center, Radius radius) const
+void Context::circle(Center center, Radius radius)
 {
     ellipse(center, Radii{radius.value, radius.value});
 }
 
-void Context::ellipse(Center center, Radii radii, Rotation rotation) const
+void Context::ellipse(Center center, Radii radii, Rotation rotation)
 {
     ellipse({center.value, radii.value, rotation.value});
 }
 
-void Context::ellipse(Transform2D transform) const
+void Context::ellipse(Transform2D transform)
 {
     render_with_rect_shader(transform, true, false);
 }
 
-void Context::image(const Image& img, Transform2D transform) const
+void Context::image(const Image& img, Transform2D transform)
 {
     img.texture().bind_to_texture_unit(0);
     _rect_shader.bind();

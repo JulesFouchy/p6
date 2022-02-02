@@ -162,29 +162,29 @@ public:
 
     /// Sets the color and alpha of each pixel of the canvas.
     /// NB: No blending is applied; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you later try to blend the canvas on top of another image.
-    void background(Color color) const;
+    void background(Color color);
 
     /// Draws a square
-    void square(Center = {}, Radius = {}, Rotation = {}) const;
-    void square(TopLeftCorner = {}, Radius = {}, Rotation = {}) const;
-    void square(TopRightCorner = {}, Radius = {}, Rotation = {}) const;
-    void square(BottomLeftCorner = {}, Radius = {}, Rotation = {}) const;
-    void square(BottomRightCorner = {}, Radius = {}, Rotation = {}) const;
+    void square(Center = {}, Radius = {}, Rotation = {});
+    void square(TopLeftCorner = {}, Radius = {}, Rotation = {});
+    void square(TopRightCorner = {}, Radius = {}, Rotation = {});
+    void square(BottomLeftCorner = {}, Radius = {}, Rotation = {});
+    void square(BottomRightCorner = {}, Radius = {}, Rotation = {});
 
     /// Draws a rectangle
-    void rectangle(Center = {}, Radii = {}, Rotation = {}) const;
-    void rectangle(TopLeftCorner = {}, Radii = {}, Rotation = {}) const;
-    void rectangle(TopRightCorner = {}, Radii = {}, Rotation = {}) const;
-    void rectangle(BottomLeftCorner = {}, Radii = {}, Rotation = {}) const;
-    void rectangle(BottomRightCorner = {}, Radii = {}, Rotation = {}) const;
-    void rectangle(Transform2D = {}) const;
+    void rectangle(Center = {}, Radii = {}, Rotation = {});
+    void rectangle(TopLeftCorner = {}, Radii = {}, Rotation = {});
+    void rectangle(TopRightCorner = {}, Radii = {}, Rotation = {});
+    void rectangle(BottomLeftCorner = {}, Radii = {}, Rotation = {});
+    void rectangle(BottomRightCorner = {}, Radii = {}, Rotation = {});
+    void rectangle(Transform2D = {});
     /// Draws a circle
-    void circle(Center = {}, Radius = {}) const;
+    void circle(Center = {}, Radius = {});
     /// Draws an ellipse
-    void ellipse(Center = {}, Radii = {}, Rotation = {}) const;
-    void ellipse(Transform2D = {}) const;
+    void ellipse(Center = {}, Radii = {}, Rotation = {});
+    void ellipse(Transform2D = {});
     /// Draws an image
-    void image(const Image&, Transform2D = {}) const;
+    void image(const Image&, Transform2D = {});
 
     /**@}*/
     /* ------------------------------- */
