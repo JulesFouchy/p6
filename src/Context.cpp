@@ -78,6 +78,56 @@ void Context::background(Color color) const
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void Context::square(Center center, Radius radius, Rotation rotation) const
+{
+    rectangle(center, Radii{radius.value, radius.value}, rotation);
+}
+
+void Context::square(TopLeftCorner corner, Radius radius, Rotation rotation) const
+{
+    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+void Context::square(TopRightCorner corner, Radius radius, Rotation rotation) const
+{
+    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+void Context::square(BottomLeftCorner corner, Radius radius, Rotation rotation) const
+{
+    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+void Context::square(BottomRightCorner corner, Radius radius, Rotation rotation) const
+{
+    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+void Context::rectangle(Center center, Radii radii, Rotation rotation) const
+{
+    rectangle(Transform2D{center.value, radii.value, rotation});
+}
+
+void Context::rectangle(TopLeftCorner corner, Radii radii, Rotation rotation) const
+{
+    rectangle(Center{corner.value + radii.value * glm::vec2{1, -1}}, radii, rotation);
+}
+
+void Context::rectangle(TopRightCorner corner, Radii radii, Rotation rotation) const
+{
+    rectangle(Center{corner.value + radii.value * glm::vec2{-1, -1}}, radii, rotation);
+}
+
+void Context::rectangle(BottomLeftCorner corner, Radii radii, Rotation rotation) const
+{
+    rectangle(Center{corner.value + radii.value * glm::vec2{1, 1}}, radii, rotation);
+}
+
+void Context::rectangle(BottomRightCorner corner, Radii radii, Rotation rotation) const
+{
+    rectangle(Center{corner.value + radii.value * glm::vec2{-1, 1}}, radii, rotation);
+}
+
 void Context::rectangle(Transform2D transform) const
 {
     render_with_rect_shader(transform, false, false);
@@ -85,12 +135,9 @@ void Context::rectangle(Transform2D transform) const
 
 void Context::circle(Center center, Radius radius) const
 {
-    ellipse(center, radius);
+    ellipse(center, Radii{radius.value, radius.value});
 }
-void Context::ellipse(Center center, Radius radius) const
-{
-    ellipse({center.value, glm::vec2{radius.value}});
-}
+
 void Context::ellipse(Center center, Radii radii, Rotation rotation) const
 {
     ellipse({center.value, radii.value, rotation.value});
@@ -117,7 +164,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
     _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
                                                                          transform.position),
-                                                          transform.rotation.as_radians()),
+                                                          transform.rotation.value.as_radians()),
                                               transform.scale));
     _rect_shader.set("_rect_size", transform.scale);
     _rect_shader.set("_fill_color", fill.as_vec4());

@@ -34,6 +34,54 @@ struct Center {
         : value{value} {}
 };
 
+struct TopLeftCorner {
+    glm::vec2 value{0.f};
+
+    TopLeftCorner() = default;
+
+    TopLeftCorner(float x, float y)
+        : value{x, y} {}
+
+    TopLeftCorner(glm::vec2 value)
+        : value{value} {}
+};
+
+struct TopRightCorner {
+    glm::vec2 value{0.f};
+
+    TopRightCorner() = default;
+
+    TopRightCorner(float x, float y)
+        : value{x, y} {}
+
+    TopRightCorner(glm::vec2 value)
+        : value{value} {}
+};
+
+struct BottomLeftCorner {
+    glm::vec2 value{0.f};
+
+    BottomLeftCorner() = default;
+
+    BottomLeftCorner(float x, float y)
+        : value{x, y} {}
+
+    BottomLeftCorner(glm::vec2 value)
+        : value{value} {}
+};
+
+struct BottomRightCorner {
+    glm::vec2 value{0.f};
+
+    BottomRightCorner() = default;
+
+    BottomRightCorner(float x, float y)
+        : value{x, y} {}
+
+    BottomRightCorner(glm::vec2 value)
+        : value{value} {}
+};
+
 struct Radii {
     glm::vec2 value{1.f};
 
@@ -116,17 +164,20 @@ public:
     /// NB: No blending is applied; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you later try to blend the canvas on top of another image.
     void background(Color color) const;
 
-    /**
-     * Draws a rectangle.
-     * \param params Shape of the rect
-     * 
-     * ```
-     * p6.fill = {0.f, 0.8f, 0.3f};
-     * p6.rectangle({});
-     * ```
-     * 
-     */
-    void rectangle(Transform2D transform) const;
+    /// Draws a square
+    void square(Center = {}, Radius = {}, Rotation = {}) const;
+    void square(TopLeftCorner = {}, Radius = {}, Rotation = {}) const;
+    void square(TopRightCorner = {}, Radius = {}, Rotation = {}) const;
+    void square(BottomLeftCorner = {}, Radius = {}, Rotation = {}) const;
+    void square(BottomRightCorner = {}, Radius = {}, Rotation = {}) const;
+
+    /// Draws a rectangle
+    void rectangle(Center = {}, Radii = {}, Rotation = {}) const;
+    void rectangle(TopLeftCorner = {}, Radii = {}, Rotation = {}) const;
+    void rectangle(TopRightCorner = {}, Radii = {}, Rotation = {}) const;
+    void rectangle(BottomLeftCorner = {}, Radii = {}, Rotation = {}) const;
+    void rectangle(BottomRightCorner = {}, Radii = {}, Rotation = {}) const;
+    void rectangle(Transform2D = {}) const;
     /// Draws a circle
     void circle(Center = {}, Radius = {}) const;
     /// Draws an ellipse
