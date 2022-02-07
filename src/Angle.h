@@ -74,3 +74,18 @@ inline constexpr p6::Angle operator""_radians(long double radians)
 {
     return p6::Angle{p6::Radians{static_cast<float>(radians)}};
 }
+
+inline constexpr p6::Angle operator""_turn(unsigned long long int turns)
+{
+    return operator""_turn(static_cast<long double>(turns));
+}
+
+inline constexpr p6::Angle operator""_degrees(unsigned long long int degrees)
+{
+    return operator""_degrees(static_cast<long double>(degrees));
+}
+
+inline constexpr p6::Angle operator""_radians(unsigned long long int radians)
+{
+    return operator""_radians(static_cast<long double>(radians));
+}
