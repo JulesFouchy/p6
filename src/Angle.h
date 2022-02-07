@@ -12,9 +12,9 @@ struct Radians
     , public op::Scalable<Radians> {
     float value{0.f};
 
-    Radians() = default;
+    constexpr Radians() = default;
 
-    explicit Radians(float value)
+    constexpr explicit Radians(float value)
         : value{value} {}
 };
 
@@ -44,8 +44,8 @@ class Angle
     , public op::Negatable<Angle>
     , public op::Scalable<Angle> {
 public:
-    Angle() = default;
-    explicit Angle(Radians value)
+    constexpr Angle() = default;
+    constexpr explicit Angle(Radians value)
         : value{value} {}
 
     float as_turns() const { return radians_to_turns(value); }
@@ -60,17 +60,17 @@ private:
 
 } // namespace p6
 
-inline p6::Angle operator"" _turn(long double turns)
+inline constexpr p6::Angle operator""_turn(long double turns)
 {
     return p6::Angle{p6::turns_to_radians(static_cast<float>(turns))};
 }
 
-inline p6::Angle operator"" _degrees(long double degrees)
+inline constexpr p6::Angle operator""_degrees(long double degrees)
 {
     return p6::Angle{p6::degrees_to_radians(static_cast<float>(degrees))};
 }
 
-inline p6::Angle operator"" _radians(long double radians)
+inline constexpr p6::Angle operator""_radians(long double radians)
 {
     return p6::Angle{p6::Radians{static_cast<float>(radians)}};
 }
