@@ -98,18 +98,24 @@ struct Radius {
     float value{1.f};
 
     Radius() = default;
+    Radius(float value)
+        : value{value} {};
 };
 
 struct RadiusX {
     float value{1.f};
 
     RadiusX() = default;
+    RadiusX(float value)
+        : value{value} {};
 };
 
 struct RadiusY {
     float value{1.f};
 
     RadiusY() = default;
+    RadiusY(float value)
+        : value{value} {};
 };
 
 class Context {
