@@ -182,7 +182,7 @@ public:
     Color stroke{0.f, 0.f, 0.f};
     /// The size of the boundary of the shapes.
     float stroke_weight = 0.01f;
-    /// Whether there will be a boundary of a different color on the shape.
+    /// Whether there will be a boundary on the shape.
     bool use_stroke = true;
 
     /// Sets the color and alpha of each pixel of the canvas.
