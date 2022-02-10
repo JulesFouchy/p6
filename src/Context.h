@@ -176,6 +176,8 @@ public:
 
     /// The color that is used for the interior of the shapes.
     Color fill{1.f, 1.f, 1.f, 0.5f};
+    /// Whether the shapes will have an interior
+    bool use_fill = true;
     /// The color that is used for the boundary of the shapes.
     Color stroke{0.f, 0.f, 0.f};
     /// The size of the boundary of the shapes.
