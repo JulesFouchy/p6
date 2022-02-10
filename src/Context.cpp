@@ -389,6 +389,7 @@ void Context::on_window_resize(int width, int height)
     if (width > 0 && height > 0) {
         _window_size = {width, height};
         _default_render_target.resize(_window_size);
+        window_resized();
     }
 }
 

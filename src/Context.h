@@ -166,6 +166,9 @@ public:
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};
     };
+    /// This function is called whenever the window is resized.
+    /// If you call window_size(), window_width(), window_height() or aspect_ratio() inside window_resized() they will already be referring to the new size.
+    std::function<void()> window_resized = []() {};
 
     /**@}*/
     /* ------------------------------- */
