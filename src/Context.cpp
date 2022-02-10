@@ -291,6 +291,20 @@ void Context::maximize_window()
     glfwMaximizeWindow(*_window);
 }
 
+void Context::minimize_window()
+{
+    glfwIconifyWindow(*_window);
+}
+
+void Context::restore_window()
+{
+    glfwRestoreWindow(*_window);
+}
+
+bool Context::window_is_maximized() const
+{
+    return glfwGetWindowAttrib(*_window, GLFW_MAXIMIZED);
+}
 /* ---------------------- *
  * ---------TIME--------- *
  * ---------------------- */

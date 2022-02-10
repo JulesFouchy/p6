@@ -266,6 +266,12 @@ public:
     bool window_is_focused() const;
     /// Maximizes the window.
     void maximize_window();
+    /// Minimizes the window. Note that while your window is minimized everything will be frozen and no update, event or anything will happen.
+    void minimize_window();
+    /// Restores the window if it is currently maximized. Does nothing otherwise.
+    void restore_window();
+    /// Returns true iff the window is currently maximized.
+    bool window_is_maximized() const;
 
     /**@}*/
     /* ------------------------------- */
