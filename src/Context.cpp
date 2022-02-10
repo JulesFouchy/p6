@@ -81,6 +81,11 @@ void Context::background(Color color)
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void Context::square(FullScreen)
+{
+    square();
+}
+
 void Context::square(Center center, Radius radius, Rotation rotation)
 {
     rectangle(center, Radii{radius.value, radius.value}, rotation);
@@ -109,6 +114,11 @@ void Context::square(BottomRightCorner corner, Radius radius, Rotation rotation)
 void Context::rectangle(Center center, Radii radii, Rotation rotation)
 {
     rectangle(Transform2D{center.value, radii.value, rotation});
+}
+
+void Context::rectangle(FullScreen)
+{
+    rectangle(Center{}, Radii{aspect_ratio(), 1.f});
 }
 
 static void rectangle_impl(glm::vec2 offset_to_center, Context& ctx, glm::vec2 corner_position, Radii radii, Rotation rotation)
@@ -142,9 +152,19 @@ void Context::rectangle(Transform2D transform)
     render_with_rect_shader(transform, false, false);
 }
 
+void Context::circle(FullScreen)
+{
+    circle();
+}
+
 void Context::circle(Center center, Radius radius)
 {
     ellipse(center, Radii{radius.value, radius.value});
+}
+
+void Context::ellipse(FullScreen)
+{
+    ellipse(Center{}, Radii{aspect_ratio(), 1.f});
 }
 
 void Context::ellipse(Center center, Radii radii, Rotation rotation)

@@ -118,6 +118,9 @@ struct RadiusY {
         : value{value} {};
 };
 
+struct FullScreen {
+};
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -193,24 +196,28 @@ public:
     void background(Color color);
 
     /// Draws a square
+    void square(FullScreen);
     void square(Center = {}, Radius = {}, Rotation = {});
-    void square(TopLeftCorner = {}, Radius = {}, Rotation = {});
-    void square(TopRightCorner = {}, Radius = {}, Rotation = {});
-    void square(BottomLeftCorner = {}, Radius = {}, Rotation = {});
-    void square(BottomRightCorner = {}, Radius = {}, Rotation = {});
+    void square(TopLeftCorner, Radius = {}, Rotation = {});
+    void square(TopRightCorner, Radius = {}, Rotation = {});
+    void square(BottomLeftCorner, Radius = {}, Rotation = {});
+    void square(BottomRightCorner, Radius = {}, Rotation = {});
 
     /// Draws a rectangle
-    void rectangle(Center = {}, Radii = {}, Rotation = {});
-    void rectangle(TopLeftCorner = {}, Radii = {}, Rotation = {});
-    void rectangle(TopRightCorner = {}, Radii = {}, Rotation = {});
-    void rectangle(BottomLeftCorner = {}, Radii = {}, Rotation = {});
-    void rectangle(BottomRightCorner = {}, Radii = {}, Rotation = {});
-    void rectangle(Transform2D = {});
+    void rectangle(FullScreen = {});
+    void rectangle(Center, Radii = {}, Rotation = {});
+    void rectangle(TopLeftCorner, Radii = {}, Rotation = {});
+    void rectangle(TopRightCorner, Radii = {}, Rotation = {});
+    void rectangle(BottomLeftCorner, Radii = {}, Rotation = {});
+    void rectangle(BottomRightCorner, Radii = {}, Rotation = {});
+    void rectangle(Transform2D);
     /// Draws a circle
+    void circle(FullScreen);
     void circle(Center = {}, Radius = {});
     /// Draws an ellipse
-    void ellipse(Center = {}, Radii = {}, Rotation = {});
-    void ellipse(Transform2D = {});
+    void ellipse(FullScreen = {});
+    void ellipse(Center, Radii = {}, Rotation = {});
+    void ellipse(Transform2D);
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const Image&, Center = {}, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
