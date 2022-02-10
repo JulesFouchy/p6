@@ -53,18 +53,20 @@ Context::Context(WindowCreationParams window_creation_params)
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window)) {
-        render_to_screen();
-        check_for_mouse_movements();
-        if (!is_paused()) {
-            update();
+        if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
+            render_to_screen();
+            check_for_mouse_movements();
+            if (!is_paused()) {
+                update();
+            }
+            _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                          _window_size,
+                                                          glpp::Interpolation::NearestNeighbour);
+            render_to_screen();
+            glfwSwapBuffers(*_window);
+            _clock->update();
         }
-        _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                      _window_size,
-                                                      glpp::Interpolation::NearestNeighbour);
-        render_to_screen();
-        glfwSwapBuffers(*_window);
         glfwPollEvents();
-        _clock->update();
     }
     glfwSetWindowShouldClose(*_window, GLFW_FALSE); // Make sure that if start() is called a second time the window won't close instantly the second time
 }
@@ -305,6 +307,7 @@ bool Context::window_is_maximized() const
 {
     return glfwGetWindowAttrib(*_window, GLFW_MAXIMIZED);
 }
+
 /* ---------------------- *
  * ---------TIME--------- *
  * ---------------------- */
@@ -382,8 +385,10 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 
 void Context::on_window_resize(int width, int height)
 {
-    _window_size = {width, height};
-    _default_render_target.resize(_window_size);
+    if (width > 0 && height > 0) {
+        _window_size = {width, height};
+        _default_render_target.resize(_window_size);
+    }
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
