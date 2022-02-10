@@ -174,10 +174,14 @@ public:
      * @{*/
     /* ------------------------------- */
 
+    /// The color that is used for the interior of the shapes.
     Color fill{1.f, 1.f, 1.f, 0.5f};
+    /// The color that is used for the boundary of the shapes.
     Color stroke{0.f, 0.f, 0.f};
+    /// The size of the boundary of the shapes.
     float stroke_weight = 0.01f;
-    bool  use_stroke    = true;
+    /// Whether there will be a boundary of a different color on the shape.
+    bool use_stroke = true;
 
     /// Sets the color and alpha of each pixel of the canvas.
     /// NB: No blending is applied; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you later try to blend the canvas on top of another image.
