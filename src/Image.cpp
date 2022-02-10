@@ -3,8 +3,8 @@
 
 namespace p6 {
 
-Image::Image(ImageSize size, const uint8_t* data)
-    : _render_target{size, data}
+Image::Image(ImageSize size, const uint8_t* data, glpp::TextureLayout texture_layout)
+    : _render_target{size, data, texture_layout}
 {
 }
 

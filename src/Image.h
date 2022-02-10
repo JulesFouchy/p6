@@ -19,7 +19,9 @@ using Texture   = glpp::Texture;
 class Image {
 public:
     /// data must be nullptr, or an array of size `size.width() * size.height() * 4`, with R, G, B and A channels, starting with the bottom left pixel, and going row by row.
-    explicit Image(ImageSize size, const uint8_t* data = nullptr);
+    /// texture_layout is an advanced setting; it controls how the pixels are gonna be stored on the GPU.
+    explicit Image(ImageSize size, const uint8_t* data = nullptr,
+                   glpp::TextureLayout texture_layout = {glpp::InternalFormat::RGBA16, glpp::Channels::RGBA, glpp::TexelDataType::UnsignedByte});
 
     /// Returns the size in pixels of the image.
     ImageSize size() const { return _render_target.size(); }
