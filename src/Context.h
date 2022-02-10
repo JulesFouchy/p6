@@ -98,18 +98,24 @@ struct Radius {
     float value{1.f};
 
     Radius() = default;
+    Radius(float value)
+        : value{value} {};
 };
 
 struct RadiusX {
     float value{1.f};
 
     RadiusX() = default;
+    RadiusX(float value)
+        : value{value} {};
 };
 
 struct RadiusY {
     float value{1.f};
 
     RadiusY() = default;
+    RadiusY(float value)
+        : value{value} {};
 };
 
 class Context {
@@ -199,7 +205,7 @@ public:
     void image(const Image&, Center = {}, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const Image&, Center = {}, RadiusY = {}, Rotation = {});
-    /// Draws an image. :warning: This might distort the image if Radii doesn't have the same aspect ratio as the image.
+    /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
     void image(const Image&, Center = {}, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D = {});
 
