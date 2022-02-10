@@ -177,6 +177,7 @@ public:
     Color fill{1.f, 1.f, 1.f, 0.5f};
     Color stroke{0.f, 0.f, 0.f};
     float stroke_weight = 0.01f;
+    bool  use_stroke    = true;
 
     /// Sets the color and alpha of each pixel of the canvas.
     /// NB: No blending is applied; even if you specify an alpha of 0.5 the old canvas is completely erased. This means that setting an alpha here doesn't matter much. It is only meaningful if you export the canvas as a png, or if you later try to blend the canvas on top of another image.
@@ -371,6 +372,7 @@ uniform bool _is_ellipse;
 uniform vec4 _fill_color;
 uniform vec4 _stroke_color;
 uniform float _stroke_weight;
+uniform bool _use_stroke;
 uniform vec2 _rect_size;
 
 // Thanks to https://iquilezles.org/www/articles/ellipsedist/ellipsedist.htm
@@ -405,8 +407,13 @@ void main() {
     }
     else {
         // Fill vs Stroke
-        float t = smoothstep(-m, m, _stroke_weight - dist);
-        _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+        if (_use_stroke) {
+            float t = smoothstep(-m, m, _stroke_weight - dist);
+            _frag_color = vec4(mix(_fill_color, _stroke_color, t));
+        }
+        else {
+            _frag_color = _fill_color;
+        }
     }
     
     // Shape
