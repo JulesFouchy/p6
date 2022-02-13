@@ -18,7 +18,7 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
 #endif
 }
 
-Shader::Shader(const std::string& fragment_source_code)
+Shader::Shader(std::string_view fragment_source_code)
 {
     const auto vert = glpp::VertexShader{R"(
 #version 330
@@ -46,7 +46,7 @@ void main()
     _canvas_uv = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )"};
-    const auto frag = glpp::FragmentShader{fragment_source_code.c_str()};
+    const auto frag = glpp::FragmentShader{fragment_source_code.data()};
 #if !defined(NDEBUG)
     {
         const auto err = vert.check_compilation_errors();
@@ -70,48 +70,48 @@ void Shader::bind() const
 }
 
 template<typename T>
-void set_uniform(const glpp::ext::Program& program, const std::string& uniform_name, T&& value)
+void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value)
 {
     program.use();
-    program.set(uniform_name, value);
+    program.set(std::string{uniform_name}, value);
 }
-void Shader::set(const std::string& uniform_name, int value) const
+void Shader::set(std::string_view uniform_name, int value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, unsigned int value) const
+void Shader::set(std::string_view uniform_name, unsigned int value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, bool value) const
+void Shader::set(std::string_view uniform_name, bool value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, float value) const
+void Shader::set(std::string_view uniform_name, float value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::vec2& value) const
+void Shader::set(std::string_view uniform_name, const glm::vec2& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::vec3& value) const
+void Shader::set(std::string_view uniform_name, const glm::vec3& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::vec4& value) const
+void Shader::set(std::string_view uniform_name, const glm::vec4& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::mat2& value) const
+void Shader::set(std::string_view uniform_name, const glm::mat2& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::mat3& value) const
+void Shader::set(std::string_view uniform_name, const glm::mat3& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
-void Shader::set(const std::string& uniform_name, const glm::mat4& value) const
+void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
 {
     set_uniform(_program, uniform_name, value);
 }
