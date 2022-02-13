@@ -20,6 +20,9 @@ public:
     void set(const std::string& uniform_name, const glm::mat2& value) const;
     void set(const std::string& uniform_name, const glm::mat3& value) const;
     void set(const std::string& uniform_name, const glm::mat4& value) const;
+
+private:
+    friend class Context;
     void bind() const;
 
 private:
