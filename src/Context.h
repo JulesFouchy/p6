@@ -121,6 +121,12 @@ struct RadiusY {
 struct FullScreen {
 };
 
+struct FitX {
+};
+
+struct FitY {
+};
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -220,10 +226,27 @@ public:
     void ellipse(Transform2D);
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const Image&, Center, RadiusX = {}, Rotation = {});
+    void image(const Image&, TopLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const Image&, TopRightCorner, RadiusX = {}, Rotation = {});
+    void image(const Image&, BottomLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const Image&, BottomRightCorner, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center = {}, RadiusY = {}, Rotation = {});
+    void image(const Image&, Center, RadiusY = {}, Rotation = {});
+    void image(const Image&, TopLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const Image&, TopRightCorner, RadiusY = {}, Rotation = {});
+    void image(const Image&, BottomLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const Image&, BottomRightCorner, RadiusY = {}, Rotation = {});
+    /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
+    void image(const Image&, FitX);
+    void image(const Image&, FitY = {});
+    /// Draws an image that takes the entire window. :warning: This might distort the image if the window doesn't have the same aspect ratio as the image.
+    void image(const Image&, FullScreen);
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
     void image(const Image&, Center, Radii = {}, Rotation = {});
+    void image(const Image&, TopLeftCorner, Radii = {}, Rotation = {});
+    void image(const Image&, TopRightCorner, Radii = {}, Rotation = {});
+    void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
+    void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D);
     /// Draws a rectangle using a custom shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});

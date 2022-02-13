@@ -172,23 +172,136 @@ void Context::ellipse(Transform2D transform)
     render_with_rect_shader(transform, true, false);
 }
 
+static Radii make_radii(RadiusX radiusX, float aspect_ratio)
+{
+    return {radiusX.value, radiusX.value / aspect_ratio};
+}
+
+static Radii make_radii(RadiusY radiusY, float aspect_ratio)
+{
+    return {radiusY.value * aspect_ratio, radiusY.value};
+}
+
 void Context::image(const Image& img, Center center, RadiusX radiusX, Rotation rotation)
 {
     image(img, make_transform_2D(center,
-                                 Radii{radiusX.value, radiusX.value / img.aspect_ratio()},
+                                 make_radii(radiusX, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, TopLeftCorner corner, RadiusX radiusX, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusX, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, TopRightCorner corner, RadiusX radiusX, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusX, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomLeftCorner corner, RadiusX radiusX, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusX, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomRightCorner corner, RadiusX radiusX, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusX, img.aspect_ratio()),
                                  rotation));
 }
 
 void Context::image(const Image& img, Center center, RadiusY radiusY, Rotation rotation)
 {
     image(img, make_transform_2D(center,
-                                 Radii{radiusY.value * img.aspect_ratio(), radiusY.value},
+                                 make_radii(radiusY, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, TopLeftCorner corner, RadiusY radiusY, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusY, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, TopRightCorner corner, RadiusY radiusY, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusY, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomLeftCorner corner, RadiusY radiusY, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusY, img.aspect_ratio()),
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomRightCorner corner, RadiusY radiusY, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 make_radii(radiusY, img.aspect_ratio()),
                                  rotation));
 }
 
 void Context::image(const Image& img, Center center, Radii radii, Rotation rotation)
 {
     image(img, make_transform_2D(center,
+                                 radii,
+                                 rotation));
+}
+
+void Context::image(const Image& img, FitX)
+{
+    image(img, Center{},
+          RadiusX{aspect_ratio()},
+          Rotation{});
+}
+
+void Context::image(const Image& img, FitY)
+{
+    image(img, Center{},
+          RadiusY{},
+          Rotation{});
+}
+
+void Context::image(const Image& img, FullScreen)
+{
+    image(img, make_transform_2D(FullScreen{}));
+}
+
+void Context::image(const Image& img, TopLeftCorner corner, Radii radii, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 radii,
+                                 rotation));
+}
+
+void Context::image(const Image& img, TopRightCorner corner, Radii radii, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 radii,
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomLeftCorner corner, Radii radii, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
+                                 radii,
+                                 rotation));
+}
+
+void Context::image(const Image& img, BottomRightCorner corner, Radii radii, Rotation rotation)
+{
+    image(img, make_transform_2D(corner,
                                  radii,
                                  rotation));
 }
