@@ -1,4 +1,6 @@
 #include "Shader.h"
+#include <fstream>
+#include <iterator>
 #include <stdexcept>
 
 namespace p6 {
@@ -18,7 +20,7 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
 
 Shader::Shader(const std::string& fragment_source_code)
 {
-    static const auto vert = glpp::VertexShader{R"(
+    const auto vert = glpp::VertexShader{R"(
 #version 330
 
 layout(location = 0) in vec2 _vertex_position;
@@ -41,7 +43,7 @@ void main()
     _uniform_uv = (_texture_coordinates - 0.5) * _rect_size * 2.;
 }
     )"};
-    const auto        frag = glpp::FragmentShader{fragment_source_code.c_str()};
+    const auto frag = glpp::FragmentShader{fragment_source_code.c_str()};
 #if !defined(NDEBUG)
     {
         const auto err = vert.check_compilation_errors();
@@ -109,6 +111,12 @@ void Shader::set(const std::string& uniform_name, const glm::mat3& mat) const
 void Shader::set(const std::string& uniform_name, const glm::mat4& mat) const
 {
     set_uniform(_program, uniform_name, mat);
+}
+
+Shader load_shader(std::filesystem::path fragment_shader_path)
+{
+    auto ifs = std::ifstream{fragment_shader_path};
+    return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 
 } // namespace p6
