@@ -39,7 +39,8 @@ Context::Context(WindowCreationParams window_creation_params)
         on_error(std::move(error_message));
     });
     glEnable(GL_BLEND);
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
 
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
@@ -217,8 +218,8 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
                                                           transform.rotation.as_radians()),
                                               transform.scale));
     _rect_shader.set("_rect_size", transform.scale);
-    _rect_shader.set("_fill_color", use_fill ? fill.as_vec4() : glm::vec4{0.f});
-    _rect_shader.set("_stroke_color", stroke.as_vec4());
+    _rect_shader.set("_fill_color", use_fill ? fill.as_premultiplied_vec4() : glm::vec4{0.f});
+    _rect_shader.set("_stroke_color", stroke.as_premultiplied_vec4());
     _rect_shader.set("_use_stroke", use_stroke);
     _rect_shader.set("_stroke_weight", stroke_weight);
     _rect_renderer.render();

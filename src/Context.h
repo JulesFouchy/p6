@@ -435,7 +435,7 @@ void main() {
     // Shape
     float shape_factor = _is_ellipse ? smoothstep(-m, m, dist)
                         /*is_rect*/  : 1.;
-    _frag_color.a *= shape_factor;
+    _frag_color *= shape_factor;
 }
     )"};
 };
