@@ -322,6 +322,7 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
                                                     transform.rotation.as_radians()),
                                         transform.scale));
     shader.set("_rect_size", transform.scale);
+    shader.set("_rect_aspect_ratio", transform.scale.x / transform.scale.y);
 }
 
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)

@@ -429,7 +429,7 @@ private:
 #version 330
 
 in vec2 _raw_uv;
-in vec2 _uniform_uv;
+in vec2 _canvas_uv;
 out vec4 _frag_color;
 
 uniform bool _is_image;
@@ -460,10 +460,10 @@ float sdEllipse(  vec2 p,  vec2 ab ) {
 void main() {
     float dist;
     if (_is_ellipse) {
-        dist = -sdEllipse(_uniform_uv, _rect_size);
+        dist = -sdEllipse(_canvas_uv, _rect_size);
     }
     else /*is_rect*/ { 
-        vec2 dd = _rect_size - abs(_uniform_uv);
+        vec2 dd = _rect_size - abs(_canvas_uv);
         dist = min(dd.x, dd.y);
     }
 
