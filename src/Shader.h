@@ -10,17 +10,17 @@ public:
     /// Throws std::runtime_error if there is an error while compiling the shader source code
     explicit Shader(const std::string& fragment_source_code);
 
+    void set(const std::string& uniform_name, int value) const;
+    void set(const std::string& uniform_name, unsigned int value) const;
+    void set(const std::string& uniform_name, bool value) const;
+    void set(const std::string& uniform_name, float value) const;
+    void set(const std::string& uniform_name, const glm::vec2& value) const;
+    void set(const std::string& uniform_name, const glm::vec3& value) const;
+    void set(const std::string& uniform_name, const glm::vec4& value) const;
+    void set(const std::string& uniform_name, const glm::mat2& value) const;
+    void set(const std::string& uniform_name, const glm::mat3& value) const;
+    void set(const std::string& uniform_name, const glm::mat4& value) const;
     void bind() const;
-    void set(const std::string& uniform_name, int v) const;
-    void set(const std::string& uniform_name, unsigned int v) const;
-    void set(const std::string& uniform_name, bool v) const;
-    void set(const std::string& uniform_name, float v) const;
-    void set(const std::string& uniform_name, const glm::vec2& v) const;
-    void set(const std::string& uniform_name, const glm::vec3& v) const;
-    void set(const std::string& uniform_name, const glm::vec4& v) const;
-    void set(const std::string& uniform_name, const glm::mat2& mat) const;
-    void set(const std::string& uniform_name, const glm::mat3& mat) const;
-    void set(const std::string& uniform_name, const glm::mat4& mat) const;
 
 private:
     glpp::ext::Program _program;
