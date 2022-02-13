@@ -378,8 +378,8 @@ private:
     Shader                            _rect_shader{R"(
 #version 330
 
-in vec2 _uv;
-in vec2 _uv_canvas_scale;
+in vec2 _raw_uv;
+in vec2 _uniform_uv;
 out vec4 _frag_color;
 
 uniform bool _is_image;
@@ -410,16 +410,16 @@ float sdEllipse(  vec2 p,  vec2 ab ) {
 void main() {
     float dist;
     if (_is_ellipse) {
-        dist = -sdEllipse(_uv_canvas_scale, _rect_size);
+        dist = -sdEllipse(_uniform_uv, _rect_size);
     }
     else /*is_rect*/ { 
-        vec2 dd = _rect_size - abs(_uv_canvas_scale);
+        vec2 dd = _rect_size - abs(_uniform_uv);
         dist = min(dd.x, dd.y);
     }
 
     const float m = 0.0005;
     if (_is_image) {
-        _frag_color = texture(_image, _uv);
+        _frag_color = texture(_image, _raw_uv);
     }
     else {
         // Fill vs Stroke
