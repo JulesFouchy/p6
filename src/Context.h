@@ -374,6 +374,19 @@ private:
     void set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const;
     void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
 
+    Transform2D make_transform_2D_impl(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) const;
+    Transform2D make_transform_2D(FullScreen) const;
+    Transform2D make_transform_2D(Center, Radius, Rotation) const;
+    Transform2D make_transform_2D(Center, Radii, Rotation) const;
+    Transform2D make_transform_2D(TopLeftCorner, Radius, Rotation) const;
+    Transform2D make_transform_2D(TopLeftCorner, Radii, Rotation) const;
+    Transform2D make_transform_2D(TopRightCorner, Radius, Rotation) const;
+    Transform2D make_transform_2D(TopRightCorner, Radii, Rotation) const;
+    Transform2D make_transform_2D(BottomLeftCorner, Radius, Rotation) const;
+    Transform2D make_transform_2D(BottomLeftCorner, Radii, Rotation) const;
+    Transform2D make_transform_2D(BottomRightCorner, Radius, Rotation) const;
+    Transform2D make_transform_2D(BottomRightCorner, Radii, Rotation) const;
+
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();

@@ -89,32 +89,32 @@ void Context::square(FullScreen)
 
 void Context::square(Center center, Radius radius, Rotation rotation)
 {
-    rectangle(center, Radii{radius.value, radius.value}, rotation);
+    rectangle(make_transform_2D(center, radius, rotation));
 }
 
 void Context::square(TopLeftCorner corner, Radius radius, Rotation rotation)
 {
-    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+    rectangle(make_transform_2D(corner, radius, rotation));
 }
 
 void Context::square(TopRightCorner corner, Radius radius, Rotation rotation)
 {
-    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+    rectangle(make_transform_2D(corner, radius, rotation));
 }
 
 void Context::square(BottomLeftCorner corner, Radius radius, Rotation rotation)
 {
-    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+    rectangle(make_transform_2D(corner, radius, rotation));
 }
 
 void Context::square(BottomRightCorner corner, Radius radius, Rotation rotation)
 {
-    rectangle(corner, Radii{radius.value, radius.value}, rotation);
+    rectangle(make_transform_2D(corner, radius, rotation));
 }
 
 void Context::rectangle(Center center, Radii radii, Rotation rotation)
 {
-    rectangle(Transform2D{center.value, radii.value, rotation});
+    rectangle(make_transform_2D(center, radii, rotation));
 }
 
 void Context::rectangle(FullScreen)
@@ -122,30 +122,24 @@ void Context::rectangle(FullScreen)
     rectangle(Center{}, Radii{aspect_ratio(), 1.f});
 }
 
-static void rectangle_impl(glm::vec2 offset_to_center, Context& ctx, glm::vec2 corner_position, Radii radii, Rotation rotation)
-{
-    ctx.rectangle(Center{corner_position + rotated_by(rotation, radii.value * offset_to_center)},
-                  radii, rotation);
-}
-
 void Context::rectangle(TopLeftCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle_impl({1, -1}, *this, corner.value, radii, rotation);
+    rectangle(make_transform_2D(corner, radii, rotation));
 }
 
 void Context::rectangle(TopRightCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle_impl({-1, -1}, *this, corner.value, radii, rotation);
+    rectangle(make_transform_2D(corner, radii, rotation));
 }
 
 void Context::rectangle(BottomLeftCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle_impl({1, 1}, *this, corner.value, radii, rotation);
+    rectangle(make_transform_2D(corner, radii, rotation));
 }
 
 void Context::rectangle(BottomRightCorner corner, Radii radii, Rotation rotation)
 {
-    rectangle_impl({-1, 1}, *this, corner.value, radii, rotation);
+    rectangle(make_transform_2D(corner, radii, rotation));
 }
 
 void Context::rectangle(Transform2D transform)
@@ -170,7 +164,7 @@ void Context::ellipse(FullScreen)
 
 void Context::ellipse(Center center, Radii radii, Rotation rotation)
 {
-    ellipse({center.value, radii.value, rotation});
+    ellipse(make_transform_2D(center, radii, rotation));
 }
 
 void Context::ellipse(Transform2D transform)
@@ -180,23 +174,23 @@ void Context::ellipse(Transform2D transform)
 
 void Context::image(const Image& img, Center center, RadiusX radiusX, Rotation rotation)
 {
-    image(img, {center.value,
-                {radiusX.value, radiusX.value / img.aspect_ratio()},
-                rotation});
+    image(img, make_transform_2D(center,
+                                 Radii{radiusX.value, radiusX.value / img.aspect_ratio()},
+                                 rotation));
 }
 
 void Context::image(const Image& img, Center center, RadiusY radiusY, Rotation rotation)
 {
-    image(img, {center.value,
-                {radiusY.value * img.aspect_ratio(), radiusY.value},
-                rotation});
+    image(img, make_transform_2D(center,
+                                 Radii{radiusY.value * img.aspect_ratio(), radiusY.value},
+                                 rotation));
 }
 
 void Context::image(const Image& img, Center center, Radii radii, Rotation rotation)
 {
-    image(img, {center.value,
-                radii.value,
-                rotation});
+    image(img, make_transform_2D(center,
+                                 radii,
+                                 rotation));
 }
 
 void Context::image(const Image& img, Transform2D transform)
@@ -511,6 +505,74 @@ glm::vec2 Context::compute_mouse_position() const
     double x, y; // NOLINT
     glfwGetCursorPos(*_window, &x, &y);
     return window_to_relative_coords({x, y});
+}
+
+Transform2D Context::make_transform_2D(FullScreen) const
+{
+    return make_transform_2D(Center{},
+                             Radii{aspect_ratio(), 1.f},
+                             Rotation{});
+}
+
+Transform2D Context::make_transform_2D(Center center, Radius radius, Rotation rotation) const
+{
+    return make_transform_2D(center,
+                             Radii{radius.value, radius.value},
+                             rotation);
+}
+
+Transform2D Context::make_transform_2D(Center center, Radii radii, Rotation rotation) const
+{
+    return {center.value,
+            radii.value,
+            rotation};
+}
+
+Transform2D Context::make_transform_2D_impl(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) const
+{
+    return make_transform_2D(Center{corner_position + rotated_by(rotation, radii.value * offset_to_center)},
+                             radii,
+                             rotation);
+}
+
+Transform2D Context::make_transform_2D(TopLeftCorner corner, Radius radius, Rotation rotation) const
+{
+    return make_transform_2D(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+Transform2D Context::make_transform_2D(TopLeftCorner corner, Radii radii, Rotation rotation) const
+{
+    return make_transform_2D_impl({1, -1}, corner.value, radii, rotation);
+}
+
+Transform2D Context::make_transform_2D(TopRightCorner corner, Radius radius, Rotation rotation) const
+{
+    return make_transform_2D(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+Transform2D Context::make_transform_2D(TopRightCorner corner, Radii radii, Rotation rotation) const
+{
+    return make_transform_2D_impl({-1, -1}, corner.value, radii, rotation);
+}
+
+Transform2D Context::make_transform_2D(BottomLeftCorner corner, Radius radius, Rotation rotation) const
+{
+    return make_transform_2D(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+Transform2D Context::make_transform_2D(BottomLeftCorner corner, Radii radii, Rotation rotation) const
+{
+    return make_transform_2D_impl({1, 1}, corner.value, radii, rotation);
+}
+
+Transform2D Context::make_transform_2D(BottomRightCorner corner, Radius radius, Rotation rotation) const
+{
+    return make_transform_2D(corner, Radii{radius.value, radius.value}, rotation);
+}
+
+Transform2D Context::make_transform_2D(BottomRightCorner corner, Radii radii, Rotation rotation) const
+{
+    return make_transform_2D_impl({-1, 1}, corner.value, radii, rotation);
 }
 
 } // namespace p6
