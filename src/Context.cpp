@@ -326,8 +326,63 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
 
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)
 {
+    rectangle_with_shader(shader, make_transform_2D(FullScreen{}));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, Center center, Radii radii, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(center, radii, rotation));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, TopLeftCorner corner, Radii radii, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radii, rotation));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, TopRightCorner corner, Radii radii, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radii, rotation));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, BottomLeftCorner corner, Radii radii, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radii, rotation));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, BottomRightCorner corner, Radii radii, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radii, rotation));
+}
+
+void Context::square_with_shader(const Shader& shader, Center center, Radius radius, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(center, radius, rotation));
+}
+
+void Context::square_with_shader(const Shader& shader, TopLeftCorner corner, Radius radius, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radius, rotation));
+}
+
+void Context::square_with_shader(const Shader& shader, TopRightCorner corner, Radius radius, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radius, rotation));
+}
+
+void Context::square_with_shader(const Shader& shader, BottomLeftCorner corner, Radius radius, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radius, rotation));
+}
+
+void Context::square_with_shader(const Shader& shader, BottomRightCorner corner, Radius radius, Rotation rotation)
+{
+    rectangle_with_shader(shader, make_transform_2D(corner, radius, rotation));
+}
+
+void Context::rectangle_with_shader(const Shader& shader, Transform2D transform)
+{
     shader.bind();
-    set_vertex_shader_uniforms(shader, Transform2D{glm::vec2{0.f}, glm::vec2{aspect_ratio(), 1.f}});
+    set_vertex_shader_uniforms(shader, transform);
     _rect_renderer.render();
 }
 

@@ -248,14 +248,19 @@ public:
     void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
     void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D);
-    /// Draws a rectangle using a custom shader
+    /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
-    // void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
-    // void rectangle_with_shader(const Shader& shader, TopLeftCorner, Radii = {}, Rotation = {});
-    // void rectangle_with_shader(const Shader& shader, TopRightCorner, Radii = {}, Rotation = {});
-    // void rectangle_with_shader(const Shader& shader, BottomLeftCorner, Radii = {}, Rotation = {});
-    // void rectangle_with_shader(const Shader& shader, BottomRightCorner, Radii = {}, Rotation = {});
-    // void rectangle_with_shader(const Shader& shader, Transform2D);
+    void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
+    void rectangle_with_shader(const Shader& shader, TopLeftCorner, Radii = {}, Rotation = {});
+    void rectangle_with_shader(const Shader& shader, TopRightCorner, Radii = {}, Rotation = {});
+    void rectangle_with_shader(const Shader& shader, BottomLeftCorner, Radii = {}, Rotation = {});
+    void rectangle_with_shader(const Shader& shader, BottomRightCorner, Radii = {}, Rotation = {});
+    void square_with_shader(const Shader& shader, Center = {}, Radius = {}, Rotation = {});
+    void square_with_shader(const Shader& shader, TopLeftCorner, Radius = {}, Rotation = {});
+    void square_with_shader(const Shader& shader, TopRightCorner, Radius = {}, Rotation = {});
+    void square_with_shader(const Shader& shader, BottomLeftCorner, Radius = {}, Rotation = {});
+    void square_with_shader(const Shader& shader, BottomRightCorner, Radius = {}, Rotation = {});
+    void rectangle_with_shader(const Shader& shader, Transform2D);
 
     /**@}*/
     /* ------------------------------- */
