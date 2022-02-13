@@ -25,6 +25,7 @@ private:
     }
     ~WindowFactory()
     {
+        glpp::shut_down();
         glfwTerminate();
     }
 };
@@ -43,7 +44,6 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
                                window_creation_params.title,
                                nullptr, nullptr);
     if (!_window) {
-        glfwTerminate();
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to create a window");
     }
     glfwMakeContextCurrent(_window);
@@ -54,7 +54,6 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
 
 UniqueGlfwWindow::~UniqueGlfwWindow()
 {
-    glpp::shut_down();
     glfwDestroyWindow(_window);
 }
 
