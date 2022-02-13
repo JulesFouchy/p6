@@ -207,17 +207,29 @@ void Context::image(const Image& img, Transform2D transform)
     render_with_rect_shader(transform, false, true);
 }
 
+void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const
+{
+    shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
+    shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
+                                                                   transform.position),
+                                                    transform.rotation.as_radians()),
+                                        transform.scale));
+    shader.set("_rect_size", transform.scale);
+}
+
+void Context::rectangle_with_shader(const Shader& shader, FullScreen)
+{
+    shader.bind();
+    set_vertex_shader_uniforms(shader, Transform2D{glm::vec2{0.f}, glm::vec2{aspect_ratio(), 1.f}});
+    _rect_renderer.render();
+}
+
 void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const
 {
     _rect_shader.bind();
+    set_vertex_shader_uniforms(_rect_shader, transform);
     _rect_shader.set("_is_image", is_image);
     _rect_shader.set("_is_ellipse", is_ellipse);
-    _rect_shader.set("_inverse_aspect_ratio", 1.f / aspect_ratio());
-    _rect_shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
-                                                                         transform.position),
-                                                          transform.rotation.as_radians()),
-                                              transform.scale));
-    _rect_shader.set("_rect_size", transform.scale);
     _rect_shader.set("_fill_color", use_fill ? fill.as_premultiplied_vec4() : glm::vec4{0.f});
     _rect_shader.set("_stroke_color", stroke.as_premultiplied_vec4());
     _rect_shader.set("_use_stroke", use_stroke);

@@ -225,6 +225,14 @@ public:
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
     void image(const Image&, Center, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D);
+    /// Draws a rectangle using a custom shader
+    void rectangle_with_shader(const Shader& shader, FullScreen = {});
+    // void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
+    // void rectangle_with_shader(const Shader& shader, TopLeftCorner, Radii = {}, Rotation = {});
+    // void rectangle_with_shader(const Shader& shader, TopRightCorner, Radii = {}, Rotation = {});
+    // void rectangle_with_shader(const Shader& shader, BottomLeftCorner, Radii = {}, Rotation = {});
+    // void rectangle_with_shader(const Shader& shader, BottomRightCorner, Radii = {}, Rotation = {});
+    // void rectangle_with_shader(const Shader& shader, Transform2D);
 
     /**@}*/
     /* ------------------------------- */
@@ -363,6 +371,7 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
+    void set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const;
     void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
 
 private:
