@@ -1,6 +1,7 @@
 #include "Context.h"
 #include <glad/glad.h>
 #include <glm/gtx/matrix_transform_2d.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
 #include "math.h"
@@ -385,6 +386,15 @@ void Context::rectangle_with_shader(const Shader& shader, Transform2D transform)
     shader.bind();
     set_vertex_shader_uniforms(shader, transform);
     _rect_renderer.render();
+}
+
+void Context::line(glm::vec2 start, glm::vec2 end)
+{
+    _line_shader.set("_material", stroke.as_premultiplied_vec4());
+    rectangle_with_shader(_line_shader,
+                          Center{(start + end) / 2.f},
+                          Radii{glm::distance(start, end) / 2.f, stroke_weight},
+                          Rotation{Radians{glm::orientedAngle(glm::vec2{1.f, 0.f}, glm::normalize(end - start))}});
 }
 
 void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const

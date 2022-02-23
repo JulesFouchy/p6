@@ -262,6 +262,10 @@ public:
     void square_with_shader(const Shader& shader, BottomRightCorner, Radius = {}, Rotation = {});
     void rectangle_with_shader(const Shader& shader, Transform2D);
 
+    /// Draws a line between two points.
+    /// It uses the `stroke` color, and `stroke_weight` as its thickness.
+    void line(glm::vec2 start, glm::vec2 end);
+
     /**@}*/
     /* ------------------------------- */
     /** \defgroup rendering-destination Rendering Destination
@@ -486,6 +490,21 @@ void main() {
     float shape_factor = _is_ellipse ? smoothstep(-m, m, dist)
                         /*is_rect*/  : 1.;
     _frag_color *= shape_factor;
+}
+    )"};
+    Shader                            _line_shader{R"(
+#version 330
+out vec4 _frag_color;
+
+in vec2 _uniform_uv;
+in vec2 _raw_uv;
+in vec2 _canvas_uv;
+
+uniform vec4 _material;
+
+void main()
+{
+    _frag_color = vec4(_material);
 }
     )"};
 };
