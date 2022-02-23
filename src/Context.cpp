@@ -385,7 +385,6 @@ void Context::square_with_shader(const Shader& shader, BottomRightCorner corner,
 
 void Context::rectangle_with_shader(const Shader& shader, Transform2D transform)
 {
-    shader.bind();
     set_vertex_shader_uniforms(shader, transform);
     _rect_renderer.render();
 }
