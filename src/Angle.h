@@ -18,12 +18,12 @@ struct Radians
         : value{value} {}
 };
 
-inline Radians turns_to_radians(float turns)
+constexpr Radians turns_to_radians(float turns)
 {
     return Radians{turns * TAU};
 }
 
-inline Radians degrees_to_radians(float degrees)
+constexpr Radians degrees_to_radians(float degrees)
 {
     return Radians{degrees / 360.f * TAU};
 }
@@ -60,32 +60,32 @@ private:
 
 } // namespace p6
 
-inline constexpr p6::Angle operator""_turn(long double turns)
+constexpr p6::Angle operator""_turn(long double turns)
 {
     return p6::Angle{p6::turns_to_radians(static_cast<float>(turns))};
 }
 
-inline constexpr p6::Angle operator""_degrees(long double degrees)
+constexpr p6::Angle operator""_degrees(long double degrees)
 {
     return p6::Angle{p6::degrees_to_radians(static_cast<float>(degrees))};
 }
 
-inline constexpr p6::Angle operator""_radians(long double radians)
+constexpr p6::Angle operator""_radians(long double radians)
 {
     return p6::Angle{p6::Radians{static_cast<float>(radians)}};
 }
 
-inline constexpr p6::Angle operator""_turn(unsigned long long int turns)
+constexpr p6::Angle operator""_turn(unsigned long long int turns)
 {
     return operator""_turn(static_cast<long double>(turns));
 }
 
-inline constexpr p6::Angle operator""_degrees(unsigned long long int degrees)
+constexpr p6::Angle operator""_degrees(unsigned long long int degrees)
 {
     return operator""_degrees(static_cast<long double>(degrees));
 }
 
-inline constexpr p6::Angle operator""_radians(unsigned long long int radians)
+constexpr p6::Angle operator""_radians(unsigned long long int radians)
 {
     return operator""_radians(static_cast<long double>(radians));
 }

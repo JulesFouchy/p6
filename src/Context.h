@@ -327,6 +327,8 @@ public:
     int window_height() const;
     /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
+    /// Focuses the window, making it pop to the foreground.
+    void focus_window() const;
     /// Maximizes the window.
     void maximize_window();
     /// Minimizes the window. Note that while your window is minimized everything will be frozen and no update, event or anything will happen.

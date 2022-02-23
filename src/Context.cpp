@@ -495,6 +495,11 @@ bool Context::window_is_focused() const
     return static_cast<bool>(glfwGetWindowAttrib(*_window, GLFW_FOCUSED));
 }
 
+void Context::focus_window() const
+{
+    glfwFocusWindow(*_window);
+}
+
 void Context::maximize_window()
 {
     glfwMaximizeWindow(*_window);
