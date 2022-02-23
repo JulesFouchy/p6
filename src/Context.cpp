@@ -475,6 +475,11 @@ float Context::aspect_ratio() const
     return static_cast<float>(_window_size.width()) / static_cast<float>(_window_size.height());
 }
 
+float Context::inverse_aspect_ratio() const
+{
+    return static_cast<float>(_window_size.height()) / static_cast<float>(_window_size.width());
+}
+
 ImageSize Context::window_size() const
 {
     return _window_size;

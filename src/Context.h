@@ -319,6 +319,8 @@ public:
 
     /// Returns the aspect ratio of the window (a.k.a. width / height).
     float aspect_ratio() const;
+    /// Returns the inverse aspect ratio of the window (a.k.a. height / width).
+    float inverse_aspect_ratio() const;
     /// Returns the size of the window (width and height).
     ImageSize window_size() const;
     /// Returns the width of the window.
