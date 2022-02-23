@@ -175,9 +175,9 @@ public:
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};
     };
-    /// This function is called whenever the window is resized.
-    /// If you call window_size(), window_width(), window_height() or aspect_ratio() inside window_resized() they will already be referring to the new size.
-    std::function<void()> window_resized = []() {};
+    /// This function is called whenever the framebuffer is resized.
+    /// If you call framebuffer_size(), framebuffer_width(), framebuffer_height() or aspect_ratio() inside framebuffer_resized() they will already be referring to the new size.
+    std::function<void()> framebuffer_resized = []() {};
 
     /**@}*/
     /* ------------------------------- */
@@ -321,12 +321,12 @@ public:
     float aspect_ratio() const;
     /// Returns the inverse aspect ratio of the window (a.k.a. height / width).
     float inverse_aspect_ratio() const;
-    /// Returns the size of the window (width and height).
-    ImageSize window_size() const;
-    /// Returns the width of the window.
-    int window_width() const;
-    /// Returns the height of the window.
-    int window_height() const;
+    /// Returns the size of the framebuffer (width and height).
+    ImageSize framebuffer_size() const;
+    /// Returns the width of the framebuffer.
+    int framebuffer_width() const;
+    /// Returns the height of the framebuffer.
+    int framebuffer_height() const;
     /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
     /// Focuses the window, making it pop to the foreground.
@@ -392,8 +392,11 @@ public:
 
     /**@}*/
 private:
+    ImageSize window_size() const { return _window_size; }
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
 
+    void        on_framebuffer_resize(int width, int height);
+    friend void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     void        on_window_resize(int width, int height);
     friend void window_size_callback(GLFWwindow* window, int width, int height);
     void        on_mouse_scroll(double x, double y);
@@ -427,6 +430,7 @@ private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
+    ImageSize                         _framebuffer_size;
     ImageSize                         _window_size;
     glm::vec2                         _mouse_position;
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
