@@ -504,11 +504,19 @@ in vec2 _uniform_uv;
 in vec2 _raw_uv;
 in vec2 _canvas_uv;
 
+uniform float _aspect_ratio;
 uniform vec4 _material;
 
 void main()
 {
-    _frag_color = vec4(_material);
+    _frag_color = _material;
+
+    vec2 uv = abs(_uniform_uv);
+    float cap_center_x = _aspect_ratio - 1.;
+    _frag_color *= uv.x > cap_center_x 
+                    ? smoothstep(-0.0005, 0.0005,
+                                 1. - length(uv - vec2(cap_center_x, 0.)))
+                    : 1.;
 }
     )"};
 };
