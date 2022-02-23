@@ -268,29 +268,6 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup rendering-destination Rendering Destination
-     * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
-     * 
-     * ```
-     * auto ctx = p6::Context{};
-     * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
-     * ctx.render_to_image(my_image);
-     * ctx.rectangle({}); // Draws on my_image
-     * ctx.ellipse({});   // Draws on my_image again
-     * ctx.render_to_screen();
-     * ctx.rectangle({});       // Draws on the screen
-     * ctx.image(my_image, {}); // Draws my_image onto the screen
-     * ```
-     * @{*/
-    /* ------------------------------- */
-
-    /// Sets the image where all the drawing commands will happen on
-    void render_to_image(Image& image);
-    /// Reset the Context to render to the screen
-    void render_to_screen();
-
-    /**@}*/
-    /* ------------------------------- */
     /** \defgroup input Input
      * Query the state of the mouse and keyboard.
      * @{*/
@@ -432,7 +409,6 @@ private:
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
-    Image                             _default_render_target;
     Shader                            _rect_shader{R"(
 #version 330
 

@@ -34,7 +34,6 @@ Context::Context(WindowCreationParams window_creation_params)
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
-    , _default_render_target{{window_creation_params.width, window_creation_params.height}}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -48,23 +47,16 @@ Context::Context(WindowCreationParams window_creation_params)
     glfwSetMouseButtonCallback(*_window, &mouse_button_callback);
     glfwSetScrollCallback(*_window, &scroll_callback);
     glfwSetKeyCallback(*_window, &key_callback);
-
-    render_to_screen();
 }
 
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window)) {
         if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
-            render_to_screen();
             check_for_mouse_movements();
             if (!is_paused()) {
                 update();
             }
-            _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                          _window_size,
-                                                          glpp::Interpolation::NearestNeighbour);
-            render_to_screen();
             glfwSwapBuffers(*_window);
             _clock->update();
         }
@@ -410,19 +402,6 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_stroke_weight", stroke_weight);
     _rect_renderer.render();
 }
-/* -------------------------------- *
- * ---------RENDER TARGETS--------- *
- * -------------------------------- */
-
-void Context::render_to_image(Image& image)
-{
-    image._render_target.bind();
-}
-
-void Context::render_to_screen()
-{
-    render_to_image(_default_render_target);
-}
 
 /* ----------------------- *
  * ---------INPUT--------- *
@@ -605,7 +584,6 @@ void Context::on_window_resize(int width, int height)
 {
     if (width > 0 && height > 0) {
         _window_size = {width, height};
-        _default_render_target.resize(_window_size);
         window_resized();
     }
 }
