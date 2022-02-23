@@ -30,20 +30,20 @@ out vec2 _uniform_uv;
 out vec2 _canvas_uv;
 
 uniform mat3 _transform;
-uniform float _inverse_aspect_ratio;
-uniform vec2 _rect_size;
-uniform float _rect_aspect_ratio;
+uniform float _window_inverse_aspect_ratio;
+uniform vec2 _size;
+uniform float _aspect_ratio;
 
 void main()
 {
     vec2 pos = _vertex_position;
     vec3 pos3 = _transform * vec3(pos, 1.);
     pos = pos3.xy / pos3.z;
-    pos.x *= _inverse_aspect_ratio;
+    pos.x *= _window_inverse_aspect_ratio;
     gl_Position = vec4(pos, 0., 1.);
     _raw_uv = _texture_coordinates;
-    _uniform_uv = (_texture_coordinates - 0.5) * vec2(_rect_aspect_ratio, 1.) * 2.;
-    _canvas_uv = (_texture_coordinates - 0.5) * _rect_size * 2.;
+    _uniform_uv = (_texture_coordinates - 0.5) * vec2(_aspect_ratio, 1.) * 2.;
+    _canvas_uv = (_texture_coordinates - 0.5) * _size * 2.;
 }
     )"};
     const auto frag = glpp::FragmentShader{fragment_source_code.data()};

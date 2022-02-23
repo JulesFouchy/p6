@@ -447,7 +447,7 @@ uniform vec4 _fill_color;
 uniform vec4 _stroke_color;
 uniform float _stroke_weight;
 uniform bool _use_stroke;
-uniform vec2 _rect_size;
+uniform vec2 _size;
 
 // Thanks to https://iquilezles.org/www/articles/ellipsedist/ellipsedist.htm
 float sdEllipse(  vec2 p,  vec2 ab ) {
@@ -468,10 +468,10 @@ float sdEllipse(  vec2 p,  vec2 ab ) {
 void main() {
     float dist;
     if (_is_ellipse) {
-        dist = -sdEllipse(_canvas_uv, _rect_size);
+        dist = -sdEllipse(_canvas_uv, _size);
     }
     else /*is_rect*/ { 
-        vec2 dd = _rect_size - abs(_canvas_uv);
+        vec2 dd = _size - abs(_canvas_uv);
         dist = min(dd.x, dd.y);
     }
 
