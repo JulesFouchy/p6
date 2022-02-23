@@ -4,7 +4,11 @@ import json
 import unicodedata
 
 def format_hex(str: string):
-    return str.replace("#", "").upper()
+    str = str.replace("#", "").upper()
+    if len(str) == 3:
+        str = str[0] + str[0] + str[1] + str[1] + str[2] + str[2]
+    assert(len(str) == 6)
+    return str
 
 def format_name(str: string):
     return unicodedata.normalize('NFKD',
