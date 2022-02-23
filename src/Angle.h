@@ -85,7 +85,7 @@ constexpr p6::Angle operator""_degrees(unsigned long long int degrees)
     return operator""_degrees(static_cast<long double>(degrees));
 }
 
-inline constexpr p6::Angle operator""_radians(unsigned long long int radians)
+constexpr p6::Angle operator""_radians(unsigned long long int radians)
 {
     return operator""_radians(static_cast<long double>(radians));
 }
