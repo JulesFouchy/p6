@@ -1,12 +1,14 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <string_view>
+#include <variant>
 
 namespace p6 {
 
 class Color {
 public:
-    Color(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.f)
+    constexpr Color(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.f)
         : _r{r}, _g{g}, _b{b}, _a{a}
     {
     }
@@ -25,6 +27,47 @@ private:
     float _g;
     float _b;
     float _a;
+};
+
+constexpr Color rgb(glm::vec3 rgb_values)
+{
+    return Color(rgb_values.r, rgb_values.g, rgb_values.b);
+}
+
+constexpr Color rgb(float r, float g, float b)
+{
+    return rgb(glm::vec3{r, g, b});
+}
+
+constexpr Color hex(std::string_view)
+{
+    return rgb(1.f, 1.f, 0.f);
+}
+
+constexpr Color hex(unsigned int hex_code)
+{
+    assert(hex_code <= 0xFFFFFF);
+    return Color(static_cast<float>((hex_code & 0xFF0000u) >> 16) / 255.f,
+                 static_cast<float>((hex_code & 0x00FF00u) >> 8) / 255.f,
+                 static_cast<float>((hex_code & 0x0000FFu) >> 0) / 255.f);
+}
+
+class BlendMode_Overwrite {
+};
+class BlendMode_Blend {
+    float opacity; // Kind of a wrong name conceptually, but people are used to it
+};
+class BlendMode_Add {
+    float opacity; // Here opacity makes sense. This is the amout of light coming from the underneath layer that is absorbed.
+};
+
+using BlendMode = std::variant<BlendMode_Overwrite,
+                               BlendMode_Blend,
+                               BlendMode_Add>;
+
+struct Material {
+    Color     color;
+    BlendMode blend_mode;
 };
 
 } // namespace p6
