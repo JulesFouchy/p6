@@ -8,6 +8,11 @@ Image::Image(ImageSize size, const uint8_t* data, glpp::TextureLayout texture_la
 {
 }
 
+Image::Image(ImageSize size, glpp::TextureLayout texture_layout)
+    : _render_target{size, nullptr, texture_layout}
+{
+}
+
 Image load_image(const char* file_path)
 {
     const auto image_data = img::load(file_path, 4);
