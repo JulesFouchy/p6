@@ -13,3 +13,6 @@
 [submodule "third-party/op"]
 	path = third-party/op
 	url = https://github.com/CoolLibs/op
+[submodule "third-party/imgui"]
+	path = third-party/imgui
+	url = https://github.com/CoolLibs/imgui
