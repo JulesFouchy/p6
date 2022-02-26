@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.8)
+cmake_policy(SET CMP0079 NEW) # To allow us to add libraries to the ImGui target
+cmake_policy(SET CMP0076 NEW) # To allow us to use target_sources() on ImGui
 
 add_library(p6)
 add_library(p6::p6 ALIAS p6)
 target_compile_features(p6 PRIVATE cxx_std_17)
 
-if(MSVC)
-    target_compile_options(p6 PRIVATE /WX /W4)
-else()
-    target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
-endif()
+# if(MSVC)
+#     target_compile_options(p6 PRIVATE /WX /W4)
+# else()
+#     target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
+# endif()
 
 # ---Add glpp-extended---
 add_subdirectory(third-party/glpp-extended)
@@ -23,9 +25,19 @@ target_link_libraries(p6 PUBLIC op::op)
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
+# ---Add Dear ImGui---
+add_subdirectory(third-party/imgui)
+# Build ImGui with glfw
+target_link_libraries(ImGui PRIVATE glfw)
+target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_glfw.cpp)
+# Build ImGui with OpenGL
+target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_opengl3.cpp)
+#
+target_link_libraries(p6 PUBLIC ImGui::ImGui)
 
 # ---Add p6 files---
-target_include_directories(p6 PUBLIC include)
+target_include_directories(p6 PUBLIC include
+                                     third-party)
 target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
