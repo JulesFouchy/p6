@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include <glm/gtx/matrix_transform_2d.hpp>
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
@@ -121,5 +122,21 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
     auto ifs = std::ifstream{fragment_shader_path};
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
+
+namespace internal {
+
+void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio) {
+    shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
+    shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
+    shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
+                                                                   transform.position),
+                                                    transform.rotation.as_radians()),
+                                        transform.scale));
+    shader.set("_size", transform.scale);
+    shader.set("_aspect_ratio", transform.scale.x / transform.scale.y);
+    shader.set("_inverse_aspect_ratio", transform.scale.y / transform.scale.x);
+}
+
+} // namespace internal
 
 } // namespace p6
