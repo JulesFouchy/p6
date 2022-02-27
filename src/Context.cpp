@@ -327,15 +327,7 @@ void Context::image(const Image& img, Transform2D transform)
 
 void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const
 {
-    shader.set("_window_aspect_ratio", aspect_ratio());
-    shader.set("_window_inverse_aspect_ratio", inverse_aspect_ratio());
-    shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
-                                                                   transform.position),
-                                                    transform.rotation.as_radians()),
-                                        transform.scale));
-    shader.set("_size", transform.scale);
-    shader.set("_aspect_ratio", transform.scale.x / transform.scale.y);
-    shader.set("_inverse_aspect_ratio", transform.scale.y / transform.scale.x);
+    p6::internal::set_vertex_shader_uniforms(shader, transform, aspect_ratio());
 }
 
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)
