@@ -49,7 +49,7 @@ uniform sampler2D _fontImage;
 uniform usampler1D _textBuffer;
 uniform int _sentence_size;
 
-uniform vec3 _color;
+uniform vec4 _color;
 uniform float _inflating;
 
 void main() {
@@ -70,7 +70,7 @@ void main() {
 
     float letterDistField = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
 
-    _frag_color = vec4(_color, 1.) * smoothstep(smoothing, -smoothing, letterDistField);
+    _frag_color = _color * smoothstep(smoothing, -smoothing, letterDistField);
 }
     )"};
 };

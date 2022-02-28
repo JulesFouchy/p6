@@ -81,7 +81,7 @@ void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string
     p6::internal::set_vertex_shader_uniforms(_shader, transform, aspect_ratio);
     _shader.set("_sentence_size", static_cast<int>(Compute_sentence_size(str)));
     _shader.set("_inflating", inflating);
-    _shader.set("_color", color.as_premultiplied_vec3());
+    _shader.set("_color", color.as_premultiplied_vec4());
 
     rectRenderer.render();
 }
