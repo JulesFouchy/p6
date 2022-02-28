@@ -1,7 +1,6 @@
 #include "TextRenderer.h"
-#include <glpp/Functions/Texture.h>
-#include <glpp/check_errors.h>
 #include <algorithm>
+#include <glpp/glpp.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <string>
