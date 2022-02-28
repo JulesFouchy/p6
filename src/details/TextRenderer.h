@@ -4,9 +4,9 @@
 #include <glpp/glpp.hpp>
 #include <map>
 #include <string>
-#include "..\Color.h"
-#include "..\Image.h"
-#include "..\Shader.h"
+#include "../Color.h"
+#include "../Image.h"
+#include "../Shader.h"
 #include "RectRenderer.h"
 
 namespace p6 {
