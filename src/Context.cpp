@@ -330,6 +330,38 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
     p6::internal::set_vertex_shader_uniforms(shader, transform, aspect_ratio());
 }
 
+void text(const std::u16string& str, Transform2D);
+
+void Context::text(const std::u16string& str, Transform2D transform)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_inflating, transform, fill);
+}
+
+void Context::text(const std::u16string& str, Center center, Rotation rotation)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, center, rotation, fill);
+}
+
+void Context::text(const std::u16string& str, TopLeftCorner corner, Rotation rotation)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+}
+
+void Context::text(const std::u16string& str, TopRightCorner corner, Rotation rotation)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+}
+
+void Context::text(const std::u16string& str, BottomLeftCorner corner, Rotation rotation)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+}
+
+void Context::text(const std::u16string& str, BottomRightCorner corner, Rotation rotation)
+{
+    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+}
+
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)
 {
     rectangle_with_shader(shader, make_transform_2D(FullScreen{}));

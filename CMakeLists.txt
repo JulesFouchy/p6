@@ -37,6 +37,7 @@ target_sources(p6 PRIVATE
     src/details/Time/Clock_FixedTimestep.cpp
     src/details/Time/Clock_Realtime.cpp
     src/details/RectRenderer.cpp
+    src/details/TextRenderer.cpp
 )
 
 # ---Functions to copy files and folders---

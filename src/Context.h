@@ -15,6 +15,7 @@
 #include "Shader.h"
 #include "Transform2D.h"
 #include "details/RectRenderer.h"
+#include "details/TextRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
 #include "details/Time/Clock_Realtime.h"
@@ -92,6 +93,9 @@ public:
 
     /// The color that is used for the interior of the shapes.
     Color fill{1.f, 1.f, 1.f, 0.5f};
+    /// Sets/gets the current text size. This size will be used in all subsequent calls to the text() method.
+    float text_size = 0.02f;
+    float text_inflating = 0.01f;
     /// Whether the shapes will have an interior
     bool use_fill = true;
     /// The color that is used for the boundary of the shapes.
@@ -152,6 +156,14 @@ public:
     void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
     void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D);
+    // Draws text
+    void text(const std::u16string& str, Transform2D);
+    void text(const std::u16string& str, Center, Rotation = {});
+    void text(const std::u16string& str, TopLeftCorner, Rotation = {});
+    void text(const std::u16string& str, TopRightCorner, Rotation = {});
+    void text(const std::u16string& str, BottomLeftCorner, Rotation = {});
+    void text(const std::u16string& str, BottomRightCorner, Rotation = {});
+
     /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
     void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
@@ -325,6 +337,7 @@ private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
+    details::TextRenderer             _text_renderer;
     ImageSize                         _framebuffer_size;
     ImageSize                         _window_size;
     glm::vec2                         _mouse_position;
@@ -418,6 +431,7 @@ void main()
                     : 1.;
 }
     )"};
+
 };
 
 } // namespace p6
