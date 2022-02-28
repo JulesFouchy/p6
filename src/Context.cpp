@@ -196,78 +196,78 @@ static Radii make_radii(RadiusY radiusY, float aspect_ratio)
 void Context::image(const Image& img, Center center, RadiusX radiusX, Rotation rotation)
 {
     image(img, p6::make_transform_2D(center,
-                                 make_radii(radiusX, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusX, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, TopLeftCorner corner, RadiusX radiusX, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusX, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusX, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, TopRightCorner corner, RadiusX radiusX, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusX, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusX, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomLeftCorner corner, RadiusX radiusX, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusX, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusX, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomRightCorner corner, RadiusX radiusX, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusX, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusX, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, Center center, RadiusY radiusY, Rotation rotation)
 {
     image(img, p6::make_transform_2D(center,
-                                 make_radii(radiusY, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusY, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, TopLeftCorner corner, RadiusY radiusY, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusY, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusY, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, TopRightCorner corner, RadiusY radiusY, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusY, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusY, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomLeftCorner corner, RadiusY radiusY, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusY, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusY, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomRightCorner corner, RadiusY radiusY, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 make_radii(radiusY, img.aspect_ratio()),
-                                 rotation));
+                                     make_radii(radiusY, img.aspect_ratio()),
+                                     rotation));
 }
 
 void Context::image(const Image& img, Center center, Radii radii, Rotation rotation)
 {
     image(img, p6::make_transform_2D(center,
-                                 radii,
-                                 rotation));
+                                     radii,
+                                     rotation));
 }
 
 void Context::image(const Image& img, FitX)
@@ -292,29 +292,29 @@ void Context::image(const Image& img, FullScreen)
 void Context::image(const Image& img, TopLeftCorner corner, Radii radii, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 radii,
-                                 rotation));
+                                     radii,
+                                     rotation));
 }
 
 void Context::image(const Image& img, TopRightCorner corner, Radii radii, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 radii,
-                                 rotation));
+                                     radii,
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomLeftCorner corner, Radii radii, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 radii,
-                                 rotation));
+                                     radii,
+                                     rotation));
 }
 
 void Context::image(const Image& img, BottomRightCorner corner, Radii radii, Rotation rotation)
 {
     image(img, p6::make_transform_2D(corner,
-                                 radii,
-                                 rotation));
+                                     radii,
+                                     rotation));
 }
 
 void Context::image(const Image& img, Transform2D transform)
@@ -741,8 +741,8 @@ glm::vec2 Context::compute_mouse_position() const
 Transform2D Context::make_transform_2D(FullScreen) const
 {
     return p6::make_transform_2D(Center{},
-                             Radii{aspect_ratio(), 1.f},
-                             Rotation{});
+                                 Radii{aspect_ratio(), 1.f},
+                                 Rotation{});
 }
 
 } // namespace p6

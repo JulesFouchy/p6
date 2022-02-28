@@ -1,23 +1,22 @@
 #include "TextRenderer.h"
-#include "../Transform2D.h"
-#include "../Shader.h"
-#include "../NamedColor.h"
-#include "../math.h"
-
 #include <glpp/Functions/Texture.h>
 #include <glpp/check_errors.h>
-
 #include <algorithm>
 #include <iostream>
-#include <string>
 #include <stdexcept>
+#include <string>
+#include "../NamedColor.h"
+#include "../Shader.h"
+#include "../Transform2D.h"
+#include "../math.h"
 
 namespace p6 {
 namespace details {
 
 // "⏮⏪⏴⏺⏹⏵⏸⏩⏭♩♪♫♬♭♮♯←↑→↓↔↕↖↗↘↙↺↻★☻🕨🕪!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ αβγδεθλμξπρστφψωΓΔΘΛΠΣΦΨΩ∞ƒ∘∫∂∇√¡¢£¤¥¦§¨©ª«¬ ®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
-#pragma warning( disable : 4244 )
+#pragma warning(disable : 4244)
+// clang-format off
 const std::map<char16_t, unsigned char> TextRenderer::char_correspondance = {
     {'⏮',0},{'⏪',1},{'⏴',2},{'⏺',3},{'⏹',4},{'⏵',5},{'⏸',6},{'⏩',7},{'⏭',8},{'♩',9},{'♪',10},{'♫',11},{'♬',12},{'♭',13},{'♮',14},{'♯',15},
     {'←',16},{'↑',17},{'→',18},{'↓',19},{'↔',20},{'↕',21},{'↖',22},{'↗',23},{'↘',24},{'↙',25},{'↺',26},{'↻',27},{'★',28},{'☻',29},{'🕨',30},{'🕪',31},
@@ -35,38 +34,43 @@ const std::map<char16_t, unsigned char> TextRenderer::char_correspondance = {
     {'Ñ',208},{'Ò',209},{'Ó',210},{'Ô',211},{'Õ',212},{'Ö',213},{'×',214},{'Ø',215},{'Ù',216},{'Ú',217},{'Û',218},{'Ü',219},{'Ý',220},{'Þ',221},{'ß',222},{'à',223},
     {'á',224},{'â',225},{'ã',226},{'ä',227},{'å',228},{'æ',229},{'ç',230},{'è',231},{'é',232},{'ê',233},{'ë',234},{'ì',235},{'í',236},{'î',237},{'ï',238},{'ð',239},
     {'ñ',240},{'ò',241},{'ó',242},{'ô',243},{'õ',244},{'ö',245},{'÷',246},{'ø',247},{'ù',248},{'ú',249},{'û',250},{'ü',251},{'ý',252},{'þ',253},{'ÿ',254}};
+// clang-format on
 
-TextRenderer::TextRenderer(): 
-    _fontImage(load_image("ressources/otaviogoodFontMap.png")), 
-    _textBuffer(glpp::Interpolation::NearestNeighbour, glpp::Interpolation::NearestNeighbour)
+TextRenderer::TextRenderer()
+    : _fontImage(load_image("ressources/otaviogoodFontMap.png"))
+    , _textBuffer(glpp::Interpolation::NearestNeighbour,
+                  glpp::Interpolation::NearestNeighbour)
 {
 }
 
-void TextRenderer::Update_buffer_from_str(const std::u16string& str) {
-    std::transform(str.begin(), str.end(), _buffer.begin(), 
-    [this](char16_t c) -> unsigned char {
-        auto search = char_correspondance.find(c);
-        return search != char_correspondance.end() ? search->second : static_cast<unsigned char>(63); // for '?';
-    });
+void TextRenderer::Update_buffer_from_str(const std::u16string& str)
+{
+    std::transform(str.begin(), str.end(), _buffer.begin(),
+                   [this](char16_t c) -> unsigned char {
+                       auto search = char_correspondance.find(c);
+                       return search != char_correspondance.end() ? search->second : static_cast<unsigned char>(63); // for '?';
+                   });
 }
 
-void TextRenderer::Update_data(const std::u16string& str) {
+void TextRenderer::Update_data(const std::u16string& str)
+{
     Update_buffer_from_str(str);
 
     _textBuffer.upload_data(
-        static_cast<GLsizei>(Compute_sentence_size(str)), 
-        &_buffer[0], 
-        {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte}
-    );
+        static_cast<GLsizei>(Compute_sentence_size(str)),
+        &_buffer[0],
+        {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
 };
 
-size_t TextRenderer::Compute_sentence_size(const std::u16string& str) {
-    if (str.length() > 1024) throw new std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+size_t TextRenderer::Compute_sentence_size(const std::u16string& str)
+{
+    if (str.length() > 1024)
+        throw new std::runtime_error("[p6::TextRenderer] string to long to be printed.");
     return str.length();
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color color) {
-    
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color color)
+{
     Update_data(str);
 
     _fontImage.texture().bind_to_texture_unit(0);
@@ -82,35 +86,41 @@ void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string
     rectRenderer.render();
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center center, Rotation rotation, Color color) {
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center center, Rotation rotation, Color color)
+{
     Radii radii{font_size * Compute_sentence_size(str), font_size};
     render(rectRenderer, str, aspect_ratio, inflating, p6::make_transform_2D(center, radii, rotation), color);
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopLeftCorner corner, Rotation rotation, Color color) {
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopLeftCorner corner, Rotation rotation, Color color)
+{
     Radii radii{font_size * Compute_sentence_size(str), font_size};
     render(rectRenderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({1, -1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopRightCorner corner, Rotation rotation, Color color) {
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopRightCorner corner, Rotation rotation, Color color)
+{
     Radii radii{font_size * Compute_sentence_size(str), font_size};
     render(rectRenderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, -1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomLeftCorner corner, Rotation rotation, Color color) {
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomLeftCorner corner, Rotation rotation, Color color)
+{
     Radii radii{font_size * Compute_sentence_size(str), font_size};
     render(rectRenderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({1, 1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomRightCorner corner, Rotation rotation, Color color) {
+void TextRenderer::render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomRightCorner corner, Rotation rotation, Color color)
+{
     Radii radii{font_size * Compute_sentence_size(str), font_size};
     render(rectRenderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, 1}, corner.value, radii, rotation), rotation, color);
 }
 
 namespace internal {
-    Center compute_new_center(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) {
-        return{corner_position + p6::rotated_by(rotation, radii.value * offset_to_center)};
-    }
+Center compute_new_center(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation)
+{
+    return {corner_position + p6::rotated_by(rotation, radii.value * offset_to_center)};
+}
 } // namespace internal
 
 } // namespace details
