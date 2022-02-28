@@ -70,7 +70,7 @@ void main() {
 
     float letterDistField = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
 
-    _frag_color.rgba = vec4(_color, smoothstep(smoothing, -smoothing, letterDistField));
+    _frag_color = vec4(_color, 1.) * smoothstep(smoothing, -smoothing, letterDistField);
 }
     )"};
 };
