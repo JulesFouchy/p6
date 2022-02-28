@@ -1,14 +1,13 @@
 #pragma once
 
-#include "RectRenderer.h"
-#include "..\Shader.h"
-#include "..\Image.h"
-#include "..\Color.h"
-
-#include <glpp/glpp.hpp>
 #include <array>
-#include <string>
+#include <glpp/glpp.hpp>
 #include <map>
+#include <string>
+#include "..\Color.h"
+#include "..\Image.h"
+#include "..\Shader.h"
+#include "RectRenderer.h"
 
 namespace p6 {
 namespace details {
@@ -18,7 +17,7 @@ public:
     TextRenderer();
 
     void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
-    
+
     void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
     void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
     void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
@@ -26,18 +25,18 @@ public:
     void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
 
 private:
-    void Update_buffer_from_str(const std::u16string& str);
-    void Update_data(const std::u16string& str);
+    void          Update_buffer_from_str(const std::u16string& str);
+    void          Update_data(const std::u16string& str);
     static size_t Compute_sentence_size(const std::u16string& str);
-    
+
     std::array<unsigned char, 1024> _buffer;
 
     glpp::Texture1D _textBuffer;
-    Image _fontImage;
+    Image           _fontImage;
 
     const static std::map<char16_t, unsigned char> char_correspondance;
 
-    Shader                            _shader{R"(
+    Shader _shader{R"(
 #version 330
 out vec4 _frag_color;
 
@@ -74,11 +73,10 @@ void main() {
     _frag_color.rgba = vec4(_color, smoothstep(smoothing, -smoothing, letterDistField));
 }
     )"};
-
 };
 
 namespace internal {
-    Center compute_new_center(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation);
+Center compute_new_center(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation);
 } // namespace internal
 
 } // namespace details
