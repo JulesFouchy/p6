@@ -16,18 +16,17 @@ class TextRenderer {
 public:
     TextRenderer();
 
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
-
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, BottomLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
 
 private:
-    void          update_buffer_from_str(const std::u16string& str);
-    void          update_data(const std::u16string& str);
-    static size_t compute_sentence_size(const std::u16string& str);
+    void          update_buffer_from_str(const std::u16string& text);
+    void          update_data(const std::u16string& text);
+    static size_t compute_sentence_size(const std::u16string& text);
 
     std::array<unsigned char, 1024> _buffer;
 

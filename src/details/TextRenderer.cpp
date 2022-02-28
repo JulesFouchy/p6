@@ -42,35 +42,35 @@ TextRenderer::TextRenderer()
 {
 }
 
-void TextRenderer::update_buffer_from_str(const std::u16string& str)
+void TextRenderer::update_buffer_from_str(const std::u16string& text)
 {
-    std::transform(str.begin(), str.end(), _buffer.begin(),
+    std::transform(text.begin(), text.end(), _buffer.begin(),
                    [this](char16_t c) -> unsigned char {
                        auto search = char_correspondance.find(c);
                        return search != char_correspondance.end() ? search->second : static_cast<unsigned char>(63); // for '?';
                    });
 }
 
-void TextRenderer::update_data(const std::u16string& str)
+void TextRenderer::update_data(const std::u16string& text)
 {
-    update_buffer_from_str(str);
+    update_buffer_from_str(text);
 
     _text_buffer.upload_data(
-        static_cast<GLsizei>(compute_sentence_size(str)),
+        static_cast<GLsizei>(compute_sentence_size(text)),
         &_buffer[0],
         {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
 };
 
-size_t TextRenderer::compute_sentence_size(const std::u16string& str)
+size_t TextRenderer::compute_sentence_size(const std::u16string& text)
 {
-    if (str.length() > 1024)
+    if (text.length() > 1024)
         throw new std::runtime_error("[p6::TextRenderer] string to long to be printed.");
-    return str.length();
+    return text.length();
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float inflating, Transform2D transform, Color color)
 {
-    update_data(str);
+    update_data(text);
 
     _font_image.texture().bind_to_texture_unit(0);
     _text_buffer.bind_to_texture_unit(1);
@@ -78,41 +78,41 @@ void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16strin
     _shader.set("_font_image", 0);
     _shader.set("_text_buffer", 1);
     p6::internal::set_vertex_shader_uniforms(_shader, transform, aspect_ratio);
-    _shader.set("_sentence_size", static_cast<int>(compute_sentence_size(str)));
+    _shader.set("_sentence_size", static_cast<int>(compute_sentence_size(text)));
     _shader.set("_inflating", inflating);
     _shader.set("_color", color.as_premultiplied_vec4());
 
     rect_renderer.render();
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center center, Rotation rotation, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, Center center, Rotation rotation, Color color)
 {
-    Radii radii{font_size * compute_sentence_size(str), font_size};
-    render(rect_renderer, str, aspect_ratio, inflating, p6::make_transform_2D(center, radii, rotation), color);
+    Radii radii{font_size * compute_sentence_size(text), font_size};
+    render(rect_renderer, text, aspect_ratio, inflating, p6::make_transform_2D(center, radii, rotation), color);
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopLeftCorner corner, Rotation rotation, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, const float font_size, const float inflating, TopLeftCorner corner, Rotation rotation, Color color)
 {
-    Radii radii{font_size * compute_sentence_size(str), font_size};
-    render(rect_renderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({1, -1}, corner.value, radii, rotation), rotation, color);
+    Radii radii{font_size * compute_sentence_size(text), font_size};
+    render(rect_renderer, text, aspect_ratio, font_size, inflating, internal::compute_new_center({1, -1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, TopRightCorner corner, Rotation rotation, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, const float font_size, const float inflating, TopRightCorner corner, Rotation rotation, Color color)
 {
-    Radii radii{font_size * compute_sentence_size(str), font_size};
-    render(rect_renderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, -1}, corner.value, radii, rotation), rotation, color);
+    Radii radii{font_size * compute_sentence_size(text), font_size};
+    render(rect_renderer, text, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, -1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomLeftCorner corner, Rotation rotation, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, const float font_size, const float inflating, BottomLeftCorner corner, Rotation rotation, Color color)
 {
-    Radii radii{font_size * compute_sentence_size(str), font_size};
-    render(rect_renderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({1, 1}, corner.value, radii, rotation), rotation, color);
+    Radii radii{font_size * compute_sentence_size(text), font_size};
+    render(rect_renderer, text, aspect_ratio, font_size, inflating, internal::compute_new_center({1, 1}, corner.value, radii, rotation), rotation, color);
 }
 
-void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, const float font_size, const float inflating, BottomRightCorner corner, Rotation rotation, Color color)
+void TextRenderer::render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, const float font_size, const float inflating, BottomRightCorner corner, Rotation rotation, Color color)
 {
-    Radii radii{font_size * compute_sentence_size(str), font_size};
-    render(rect_renderer, str, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, 1}, corner.value, radii, rotation), rotation, color);
+    Radii radii{font_size * compute_sentence_size(text), font_size};
+    render(rect_renderer, text, aspect_ratio, font_size, inflating, internal::compute_new_center({-1, 1}, corner.value, radii, rotation), rotation, color);
 }
 
 namespace internal {
