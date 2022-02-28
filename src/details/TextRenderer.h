@@ -16,23 +16,23 @@ class TextRenderer {
 public:
     TextRenderer();
 
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
 
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rectRenderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    void render(const RectRenderer& rect_renderer, const std::u16string& str, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
 
 private:
-    void          Update_buffer_from_str(const std::u16string& str);
-    void          Update_data(const std::u16string& str);
-    static size_t Compute_sentence_size(const std::u16string& str);
+    void          update_buffer_from_str(const std::u16string& str);
+    void          update_data(const std::u16string& str);
+    static size_t compute_sentence_size(const std::u16string& str);
 
     std::array<unsigned char, 1024> _buffer;
 
-    glpp::Texture1D _textBuffer;
-    Image           _fontImage;
+    glpp::Texture1D _text_buffer;
+    Image           _font_image;
 
     const static std::map<char16_t, unsigned char> char_correspondance;
 
@@ -44,9 +44,9 @@ in vec2 _uniform_uv;
 in vec2 _raw_uv;
 in vec2 _canvas_uv;
 
-uniform sampler2D _fontImage;
+uniform sampler2D _font_image;
 
-uniform usampler1D _textBuffer;
+uniform usampler1D _text_buffer;
 uniform int _sentence_size;
 
 uniform vec4 _color;
@@ -57,7 +57,7 @@ void main() {
     float smoothing = 0.01;
 
     int letter_index = int(_raw_uv.x * float(_sentence_size));
-    uint font_index = texelFetch(_textBuffer, letter_index, 0).r;
+    uint font_index = texelFetch(_text_buffer, letter_index, 0).r;
 
     uvec2 char_coordinates = uvec2(font_index % 16u, 15u - font_index / 16u);
 
@@ -65,12 +65,12 @@ void main() {
 
     vec2 char_uv = vec2(char_coordinates) / 16. + local_letter_uv;
 
-    vec4 font_texture_sample = textureGrad(_fontImage, char_uv, dFdx(local_letter_uv), dFdy(local_letter_uv));
-    // vec4 font_texture_sample = texture(_fontImage, char_uv);
+    vec4 font_texture_sample = textureGrad(_font_image, char_uv, dFdx(local_letter_uv), dFdy(local_letter_uv));
+    // vec4 font_texture_sample = texture(_font_image, char_uv);
 
-    float letterDistField = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
+    float letter_dist_field = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
 
-    _frag_color = _color * smoothstep(smoothing, -smoothing, letterDistField);
+    _frag_color = _color * smoothstep(smoothing, -smoothing, letter_dist_field);
 }
     )"};
 };
