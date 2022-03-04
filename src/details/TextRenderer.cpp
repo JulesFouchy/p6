@@ -64,7 +64,7 @@ void TextRenderer::update_data(const std::u16string& text)
 size_t TextRenderer::compute_sentence_size(const std::u16string& text)
 {
     if (text.length() > 1024)
-        throw new std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
     return text.length();
 }
 
