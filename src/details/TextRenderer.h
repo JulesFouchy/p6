@@ -19,19 +19,23 @@ struct TextParams {
     Color color     = NamedColor::Black;
 };
 
+namespace TextRendererU {
+
+Radii compute_text_radii(const std::u16string& text, float font_size);
+
+}
+
 class TextRenderer {
 public:
     TextRenderer();
 
     /// Prepares the shader to render the given text
     void          setup_rendering_for(const std::u16string& text, TextParams);
-    Radii         compute_text_radii(const std::u16string& text, float font_size) const;
     const Shader& shader() const { return _shader; }
 
 private:
-    void          update_buffer_from_str(const std::u16string& text);
-    void          update_data(const std::u16string& text);
-    static size_t compute_sentence_size(const std::u16string& text);
+    void update_buffer_from_str(const std::u16string& text);
+    void update_data(const std::u16string& text);
 
     std::array<unsigned char, 1024> _buffer;
 

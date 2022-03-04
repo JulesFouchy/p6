@@ -51,6 +51,13 @@ void TextRenderer::update_buffer_from_str(const std::u16string& text)
                    });
 }
 
+static size_t compute_sentence_size(const std::u16string& text)
+{
+    if (text.length() > 1024)
+        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+    return text.length();
+}
+
 void TextRenderer::update_data(const std::u16string& text)
 {
     update_buffer_from_str(text);
@@ -60,13 +67,6 @@ void TextRenderer::update_data(const std::u16string& text)
         &_buffer[0],
         {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
 };
-
-size_t TextRenderer::compute_sentence_size(const std::u16string& text)
-{
-    if (text.length() > 1024)
-        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
-    return text.length();
-}
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
 {
@@ -82,10 +82,14 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams pa
     _shader.set("_color", params.color.as_premultiplied_vec4());
 }
 
-Radii TextRenderer::compute_text_radii(const std::u16string& text, float font_size) const
+namespace TextRendererU {
+
+Radii compute_text_radii(const std::u16string& text, float font_size)
 {
     return {font_size * compute_sentence_size(text), font_size};
 }
+
+} // namespace TextRendererU
 
 } // namespace details
 } // namespace p6

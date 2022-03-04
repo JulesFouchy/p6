@@ -340,7 +340,7 @@ static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const 
                                        ctx.fill});
     ctx.rectangle_with_shader(text_renderer.shader(),
                               position_specifier,
-                              text_renderer.compute_text_radii(str, ctx.text_size),
+                              details::TextRendererU::compute_text_radii(str, ctx.text_size),
                               rotation);
 }
 
