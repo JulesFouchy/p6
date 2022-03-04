@@ -330,36 +330,43 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
     p6::internal::set_vertex_shader_uniforms(shader, transform, aspect_ratio());
 }
 
-void text(const std::u16string& str, Transform2D);
-
-void Context::text(const std::u16string& str, Transform2D transform)
+template<typename PositionSpecifier>
+static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const std::u16string& str,
+                      PositionSpecifier position_specifier, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_inflating, transform, fill);
+    text_renderer.setup_rendering_for(str,
+                                      {ctx.text_size,
+                                       ctx.text_inflating,
+                                       ctx.fill});
+    ctx.rectangle_with_shader(text_renderer.shader(),
+                              position_specifier,
+                              text_renderer.compute_text_radii(str, ctx.text_size),
+                              rotation);
 }
 
 void Context::text(const std::u16string& str, Center center, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, center, rotation, fill);
+    text_impl(*this, _text_renderer, str, center, rotation);
 }
 
 void Context::text(const std::u16string& str, TopLeftCorner corner, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+    text_impl(*this, _text_renderer, str, corner, rotation);
 }
 
 void Context::text(const std::u16string& str, TopRightCorner corner, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+    text_impl(*this, _text_renderer, str, corner, rotation);
 }
 
 void Context::text(const std::u16string& str, BottomLeftCorner corner, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+    text_impl(*this, _text_renderer, str, corner, rotation);
 }
 
 void Context::text(const std::u16string& str, BottomRightCorner corner, Rotation rotation)
 {
-    _text_renderer.render(_rect_renderer, str, aspect_ratio(), text_size, text_inflating, corner, rotation, fill);
+    text_impl(*this, _text_renderer, str, corner, rotation);
 }
 
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)

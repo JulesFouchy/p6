@@ -6,22 +6,27 @@
 #include <string>
 #include "../Color.h"
 #include "../Image.h"
+#include "../NamedColor.h"
 #include "../Shader.h"
 #include "RectRenderer.h"
 
 namespace p6 {
 namespace details {
 
+struct TextParams {
+    float font_size = 0.1f;
+    float inflating = 0.01f;
+    Color color     = NamedColor::Black;
+};
+
 class TextRenderer {
 public:
     TextRenderer();
 
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float inflating, Transform2D transform, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, Center, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, TopLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, TopRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, BottomLeftCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
-    void render(const RectRenderer& rect_renderer, const std::u16string& text, float aspect_ratio, float font_size, float inflating, BottomRightCorner, Rotation = {}, Color = {0.0f, 0.0f, 0.0f});
+    /// Prepares the shader to render the given text
+    void          setup_rendering_for(const std::u16string& text, TextParams);
+    Radii         compute_text_radii(const std::u16string& text, float font_size) const;
+    const Shader& shader() const { return _shader; }
 
 private:
     void          update_buffer_from_str(const std::u16string& text);
@@ -73,10 +78,6 @@ void main() {
 }
     )"};
 };
-
-namespace internal {
-Center compute_new_center(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation);
-} // namespace internal
 
 } // namespace details
 } // namespace p6

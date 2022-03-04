@@ -94,7 +94,7 @@ public:
     /// The color that is used for the interior of the shapes.
     Color fill{1.f, 1.f, 1.f, 0.5f};
     /// Sets/gets the current text size. This size will be used in all subsequent calls to the text() method.
-    float text_size = 0.02f;
+    float text_size      = 0.02f;
     float text_inflating = 0.01f;
     /// Whether the shapes will have an interior
     bool use_fill = true;
@@ -157,7 +157,6 @@ public:
     void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const Image&, Transform2D);
     // Draws text
-    void text(const std::u16string& str, Transform2D);
     void text(const std::u16string& str, Center, Rotation = {});
     void text(const std::u16string& str, TopLeftCorner, Rotation = {});
     void text(const std::u16string& str, TopRightCorner, Rotation = {});
@@ -332,7 +331,6 @@ private:
     Transform2D make_transform_2D_impl(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) const;
     Transform2D make_transform_2D(FullScreen) const;
 
-
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
@@ -431,7 +429,6 @@ void main()
                     : 1.;
 }
     )"};
-
 };
 
 } // namespace p6
