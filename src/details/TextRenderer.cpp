@@ -41,7 +41,7 @@ TextRenderer::TextRenderer()
 {
 }
 
-static void update_buffer_from_str(const std::u16string& text, TextRenderer::ArrayOfChar& cpu_buffer)
+static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRenderer::ArrayOfChar& cpu_buffer)
 {
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
                    [](char16_t c) -> unsigned char {
@@ -68,7 +68,7 @@ static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRende
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
 {
-    update_buffer_from_str(text, _cpu_text_buffer);
+    convert_and_copy_text_to_buffer(text, _cpu_text_buffer);
     send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, compute_sentence_size(text));
 
     _font_image.texture().bind_to_texture_unit(0);
