@@ -1,11 +1,9 @@
 #pragma once
 
 #include <glpp/extended.hpp>
+#include "ImageCommon.h"
 
 namespace p6 {
-
-using ImageSize = glpp::ImageSize;
-using Texture   = glpp::Texture2D;
 
 /* ------------------------------- */
 /** \defgroup image Image
@@ -13,39 +11,19 @@ using Texture   = glpp::Texture2D;
  * @{*/
 /* ------------------------------- */
 
-/// An image can be drawn onto, and can be displayed.
-/// If you plan on drawing on the image, you can create it without data (it will create a black and transparent image).
-/// If you want to load an image, you can use load_image() instead of the constructor.
 class Image {
 public:
-    /// Creates an Image filled with data.
+    /// Creates an Canvas filled with data.
     /// data must be an array of size `size.width() * size.height() * 4`, with R, G, B and A channels, starting with the bottom left pixel, and going row by row.
     /// texture_layout is an advanced setting; it controls how the pixels are gonna be stored on the GPU.
     explicit Image(ImageSize size, const uint8_t* data,
                    glpp::TextureLayout texture_layout = {glpp::InternalFormat::RGBA8, glpp::Channels::RGBA, glpp::TexelDataType::UnsignedByte});
 
-    /// Creates an empty image
-    /// texture_layout is an advanced setting; it controls how the pixels are gonna be stored on the GPU.
-    explicit Image(ImageSize           size,
-                   glpp::TextureLayout texture_layout = {glpp::InternalFormat::RGBA16, glpp::Channels::RGBA, glpp::TexelDataType::UnsignedByte});
-
-    /// Returns the size in pixels of the image.
-    ImageSize size() const { return _render_target.size(); }
-    /// Returns the aspect ratio of the image (`width / height`)
-    float aspect_ratio() const { return size().aspect_ratio(); }
-
-    /// Returns the internal texture, that you can use to do advanced stuff with custom shaders.
-    const Texture& texture() const { return _render_target.texture(); }
-
-    /// Resizes the image.
-    void resize(ImageSize size) { _render_target.conservative_resize(size); }
-    /// Resizes the image.
-    /// :warning: All of its content is lost. If you don't want that you can use resize() instead.
-    void destructive_resize(ImageSize size) { _render_target.resize(size); }
+    /// Returns the aspect ratio of the canvas (`width / height`)
+    float aspect_ratio() const { return _texture.size().aspect_ratio(); }
 
 private:
-    friend class Context;
-    glpp::RenderTarget _render_target;
+    glpp::Texture2D _texture;
 };
 
 /// Loads an image from a file.

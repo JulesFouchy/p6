@@ -5,6 +5,7 @@
 #include <glpp/extended.hpp>
 #include <memory>
 #include <stdexcept>
+#include "Canvas.h"
 #include "Color.h"
 #include "Image.h"
 #include "Key.h"
@@ -188,8 +189,8 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// Sets the image where all the drawing commands will happen on
-    void render_to_image(Image& image);
+    /// Sets the canvas where all the drawing commands will happen on
+    void render_to_canvas(Canvas& canvas);
     /// Reset the Context to render to the screen
     void render_to_screen();
 
@@ -320,7 +321,6 @@ private:
     Transform2D make_transform_2D_impl(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) const;
     Transform2D make_transform_2D(FullScreen) const;
 
-
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
@@ -331,7 +331,7 @@ private:
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
-    Image                             _default_render_target;
+    Canvas                            _default_canvas;
     Shader                            _rect_shader{R"(
 #version 330
 
