@@ -60,8 +60,8 @@ static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRende
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
 {
-    if (text.length() > 1024) { // TODO handle arbitrarily-sized text
-        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+    if (text.length() > 1024) { // TODO do we need to handle arbitrarily long text?
+        throw std::runtime_error("[p6::TextRenderer] This text is too long to be rendered");
     }
 
     convert_and_copy_text_to_buffer(text, _cpu_text_buffer);
