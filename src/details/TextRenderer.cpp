@@ -1,13 +1,10 @@
 #include "TextRenderer.h"
 #include <algorithm>
 #include <glpp/glpp.hpp>
-#include <iostream>
+#include <map>
 #include <stdexcept>
 #include <string>
-#include "../NamedColor.h"
 #include "../Shader.h"
-#include "../Transform2D.h"
-#include "../math.h"
 
 namespace p6::details {
 

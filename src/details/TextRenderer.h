@@ -2,13 +2,11 @@
 
 #include <array>
 #include <glpp/glpp.hpp>
-#include <map>
 #include <string>
 #include "../Color.h"
 #include "../Image.h"
 #include "../NamedColor.h"
 #include "../Shader.h"
-#include "RectRenderer.h"
 
 namespace p6::details {
 
