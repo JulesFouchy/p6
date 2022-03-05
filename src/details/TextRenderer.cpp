@@ -9,8 +9,7 @@
 #include "../Transform2D.h"
 #include "../math.h"
 
-namespace p6 {
-namespace details {
+namespace p6::details {
 
 // "⏮⏪⏴⏺⏹⏵⏸⏩⏭♩♪♫♬♭♮♯←↑→↓↔↕↖↗↘↙↺↻★☻🕨🕪!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ αβγδεθλμξπρστφψωΓΔΘΛΠΣΦΨΩ∞ƒ∘∫∂∇√¡¢£¤¥¦§¨©ª«¬ ®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
@@ -36,9 +35,9 @@ const std::map<char16_t, unsigned char> TextRenderer::char_correspondance = {
 // clang-format on
 
 TextRenderer::TextRenderer()
-    : _font_image(load_image("ressources/otaviogoodFontMap.png"))
-    , _text_buffer(glpp::Interpolation::NearestNeighbour,
-                   glpp::Interpolation::NearestNeighbour)
+    : _font_image{load_image("ressources/otaviogoodFontMap.png")}
+    , _text_buffer{glpp::Interpolation::NearestNeighbour,
+                   glpp::Interpolation::NearestNeighbour}
 {
 }
 
@@ -53,8 +52,9 @@ void TextRenderer::update_buffer_from_str(const std::u16string& text)
 
 static size_t compute_sentence_size(const std::u16string& text)
 {
-    if (text.length() > 1024)
+    if (text.length() > 1024) {
         throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+    }
     return text.length();
 }
 
@@ -91,5 +91,4 @@ Radii compute_text_radii(const std::u16string& text, float font_size)
 
 } // namespace TextRendererU
 
-} // namespace details
-} // namespace p6
+} // namespace p6::details

@@ -10,8 +10,7 @@
 #include "../Shader.h"
 #include "RectRenderer.h"
 
-namespace p6 {
-namespace details {
+namespace p6::details {
 
 struct TextParams {
     float font_size = 0.1f;
@@ -83,5 +82,4 @@ void main() {
     )"};
 };
 
-} // namespace details
-} // namespace p6
+} // namespace p6::details
