@@ -46,7 +46,9 @@ static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRend
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
                    [](char16_t c) -> unsigned char {
                        auto search = char_correspondance.find(c);
-                       return search != char_correspondance.end() ? search->second : static_cast<unsigned char>(63); // for '?';
+                       return search != char_correspondance.end()
+                                  ? search->second
+                                  : static_cast<unsigned char>(63); // for '?';
                    });
 }
 
