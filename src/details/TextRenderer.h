@@ -30,10 +30,10 @@ public:
     void          setup_rendering_for(const std::u16string& text, TextParams);
     const Shader& shader() const { return _shader; }
 
-    using ArrayOfChar = std::array<unsigned char, 1024>;
+    using ArrayOfUint8 = std::array<uint8_t, 1024>;
 
 private:
-    ArrayOfChar     _cpu_text_buffer;
+    ArrayOfUint8    _cpu_text_buffer;
     glpp::Texture1D _gpu_text_buffer;
 
     Image _font_image;

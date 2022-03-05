@@ -12,7 +12,7 @@ namespace p6::details {
 
 #pragma warning(disable : 4244)
 // clang-format off
-static const std::map<char16_t, unsigned char> char_correspondance = {
+static const std::map<char16_t, uint8_t> char_correspondance = {
     {'⏮',0},{'⏪',1},{'⏴',2},{'⏺',3},{'⏹',4},{'⏵',5},{'⏸',6},{'⏩',7},{'⏭',8},{'♩',9},{'♪',10},{'♫',11},{'♬',12},{'♭',13},{'♮',14},{'♯',15},
     {'←',16},{'↑',17},{'→',18},{'↓',19},{'↔',20},{'↕',21},{'↖',22},{'↗',23},{'↘',24},{'↙',25},{'↺',26},{'↻',27},{'★',28},{'☻',29},{'🕨',30},{'🕪',31},
     {'!',32},{'\\',33},{'"',34},{'#',35},{'$',36},{'%',37},{'&',38},{'\'',39},{'(',40},{')',41},{'*',42},{'+',43},{',',44},{'-',45},{'.',46},{'/',47},
@@ -38,18 +38,18 @@ TextRenderer::TextRenderer()
 {
 }
 
-static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRenderer::ArrayOfChar& cpu_buffer)
+static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRenderer::ArrayOfUint8& cpu_buffer)
 {
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
-                   [](char16_t c) -> unsigned char {
+                   [](char16_t c) {
                        auto search = char_correspondance.find(c);
                        return search != char_correspondance.end()
                                   ? search->second
-                                  : static_cast<unsigned char>(63); // for '?';
+                                  : static_cast<uint8_t>(63); // for '?';
                    });
 }
 
-static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfChar& cpu_buffer, size_t actual_buffer_size)
+static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfUint8& cpu_buffer, size_t actual_buffer_size)
 {
     gpu_buffer.upload_data(
         static_cast<GLsizei>(actual_buffer_size),
