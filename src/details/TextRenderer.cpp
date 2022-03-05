@@ -81,7 +81,7 @@ namespace TextRendererU {
 
 Radii compute_text_radii(const std::u16string& text, float font_size)
 {
-    return {font_size * text.length(), font_size};
+    return font_size * glm::vec2{text.length(), 1.f};
 }
 
 } // namespace TextRendererU
