@@ -50,14 +50,6 @@ static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRend
                    });
 }
 
-static size_t compute_sentence_size(const std::u16string& text)
-{
-    if (text.length() > 1024) {
-        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
-    }
-    return text.length();
-}
-
 static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfChar& cpu_buffer, size_t actual_buffer_size)
 {
     gpu_buffer.upload_data(
@@ -68,15 +60,19 @@ static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRende
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
 {
+    if (text.length() > 1024) { // TODO handle arbitrarily-sized text
+        throw std::runtime_error("[p6::TextRenderer] string to long to be printed.");
+    }
+
     convert_and_copy_text_to_buffer(text, _cpu_text_buffer);
-    send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, compute_sentence_size(text));
+    send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, text.length());
 
     _font_image.texture().bind_to_texture_unit(0);
     _gpu_text_buffer.bind_to_texture_unit(1);
 
     _shader.set("_font_image", 0);
     _shader.set("_text_buffer", 1);
-    _shader.set("_sentence_size", static_cast<int>(compute_sentence_size(text)));
+    _shader.set("_sentence_size", static_cast<int>(text.length()));
     _shader.set("_inflating", params.inflating);
     _shader.set("_color", params.color.as_premultiplied_vec4());
 }
@@ -85,7 +81,7 @@ namespace TextRendererU {
 
 Radii compute_text_radii(const std::u16string& text, float font_size)
 {
-    return {font_size * compute_sentence_size(text), font_size};
+    return {font_size * text.length(), font_size};
 }
 
 } // namespace TextRendererU
