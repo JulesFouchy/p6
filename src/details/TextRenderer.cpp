@@ -15,7 +15,7 @@ namespace p6::details {
 
 #pragma warning(disable : 4244)
 // clang-format off
-const std::map<char16_t, unsigned char> TextRenderer::char_correspondance = {
+static const std::map<char16_t, unsigned char> char_correspondance = {
     {'⏮',0},{'⏪',1},{'⏴',2},{'⏺',3},{'⏹',4},{'⏵',5},{'⏸',6},{'⏩',7},{'⏭',8},{'♩',9},{'♪',10},{'♫',11},{'♬',12},{'♭',13},{'♮',14},{'♯',15},
     {'←',16},{'↑',17},{'→',18},{'↓',19},{'↔',20},{'↕',21},{'↖',22},{'↗',23},{'↘',24},{'↙',25},{'↺',26},{'↻',27},{'★',28},{'☻',29},{'🕨',30},{'🕪',31},
     {'!',32},{'\\',33},{'"',34},{'#',35},{'$',36},{'%',37},{'&',38},{'\'',39},{'(',40},{')',41},{'*',42},{'+',43},{',',44},{'-',45},{'.',46},{'/',47},
@@ -36,15 +36,15 @@ const std::map<char16_t, unsigned char> TextRenderer::char_correspondance = {
 
 TextRenderer::TextRenderer()
     : _font_image{load_image("ressources/otaviogoodFontMap.png")}
-    , _text_buffer{glpp::Interpolation::NearestNeighbour,
-                   glpp::Interpolation::NearestNeighbour}
+    , _gpu_text_buffer{glpp::Interpolation::NearestNeighbour,
+                       glpp::Interpolation::NearestNeighbour}
 {
 }
 
-void TextRenderer::update_buffer_from_str(const std::u16string& text)
+static void update_buffer_from_str(const std::u16string& text, TextRenderer::ArrayOfChar& cpu_buffer)
 {
-    std::transform(text.begin(), text.end(), _buffer.begin(),
-                   [this](char16_t c) -> unsigned char {
+    std::transform(text.begin(), text.end(), cpu_buffer.begin(),
+                   [](char16_t c) -> unsigned char {
                        auto search = char_correspondance.find(c);
                        return search != char_correspondance.end() ? search->second : static_cast<unsigned char>(63); // for '?';
                    });
@@ -58,22 +58,21 @@ static size_t compute_sentence_size(const std::u16string& text)
     return text.length();
 }
 
-void TextRenderer::update_data(const std::u16string& text)
+static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfChar& cpu_buffer, size_t actual_buffer_size)
 {
-    update_buffer_from_str(text);
-
-    _text_buffer.upload_data(
-        static_cast<GLsizei>(compute_sentence_size(text)),
-        &_buffer[0],
+    gpu_buffer.upload_data(
+        static_cast<GLsizei>(actual_buffer_size),
+        cpu_buffer.data(),
         {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
-};
+}
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
 {
-    update_data(text);
+    update_buffer_from_str(text, _cpu_text_buffer);
+    send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, compute_sentence_size(text));
 
     _font_image.texture().bind_to_texture_unit(0);
-    _text_buffer.bind_to_texture_unit(1);
+    _gpu_text_buffer.bind_to_texture_unit(1);
 
     _shader.set("_font_image", 0);
     _shader.set("_text_buffer", 1);

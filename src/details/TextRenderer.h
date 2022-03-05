@@ -32,16 +32,13 @@ public:
     void          setup_rendering_for(const std::u16string& text, TextParams);
     const Shader& shader() const { return _shader; }
 
+    using ArrayOfChar = std::array<unsigned char, 1024>;
+
 private:
-    void update_buffer_from_str(const std::u16string& text);
-    void update_data(const std::u16string& text);
+    ArrayOfChar     _cpu_text_buffer;
+    glpp::Texture1D _gpu_text_buffer;
 
-    std::array<unsigned char, 1024> _buffer;
-
-    glpp::Texture1D _text_buffer;
-    Image           _font_image;
-
-    const static std::map<char16_t, unsigned char> char_correspondance;
+    Image _font_image;
 
     Shader _shader{R"(
 #version 330
