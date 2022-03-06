@@ -11,7 +11,7 @@ namespace p6 {
  * @{*/
 /* ------------------------------- */
 
-class Image {
+class Image : public ImageOrCanvas {
 public:
     /// Creates an Canvas filled with data.
     /// data must be an array of size `size.width() * size.height() * 4`, with R, G, B and A channels, starting with the bottom left pixel, and going row by row.
@@ -19,8 +19,10 @@ public:
     explicit Image(ImageSize size, const uint8_t* data,
                    glpp::TextureLayout texture_layout = {glpp::InternalFormat::RGBA8, glpp::Channels::RGBA, glpp::TexelDataType::UnsignedByte});
 
-    /// Returns the aspect ratio of the canvas (`width / height`)
-    float aspect_ratio() const { return _texture.size().aspect_ratio(); }
+    /// Returns the aspect ratio of the image (`width / height`)
+    float aspect_ratio() const override { return _texture.size().aspect_ratio(); }
+
+    const glpp::Texture2D& texture() const override { return _texture; }
 
 private:
     glpp::Texture2D _texture;
