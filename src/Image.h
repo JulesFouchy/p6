@@ -13,7 +13,8 @@ namespace p6 {
 
 class Image : public ImageOrCanvas {
 public:
-    /// Creates an Canvas filled with data.
+    /// Creates an Image filled with data.
+    /// This is for advanded uses; prefer using p6::load_image().
     /// data must be an array of size `size.width() * size.height() * 4`, with R, G, B and A channels, starting with the bottom left pixel, and going row by row.
     /// texture_layout is an advanced setting; it controls how the pixels are gonna be stored on the GPU.
     explicit Image(ImageSize size, const uint8_t* data,
