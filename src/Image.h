@@ -20,8 +20,12 @@ public:
     explicit Image(ImageSize size, const uint8_t* data,
                    glpp::TextureLayout texture_layout = {glpp::InternalFormat::RGBA8, glpp::Channels::RGBA, glpp::TexelDataType::UnsignedByte});
 
-    /// Returns the aspect ratio of the image (`width / height`)
+    /// Returns the size in pixels.
+    ImageSize size() const { return _texture.size(); }
+    /// Returns the aspect ratio (`width / height`)
     float aspect_ratio() const override { return _texture.size().aspect_ratio(); }
+    /// Returns the inverse aspect ratio (`height / width`)
+    float inverse_aspect_ratio() const { return _texture.size().inverse_aspect_ratio(); }
 
     const glpp::Texture2D& texture() const override { return _texture; }
 
