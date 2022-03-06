@@ -25,7 +25,8 @@ public:
 
 private:
     ArrayOfUint8    _cpu_text_buffer;
-    glpp::Texture1D _gpu_text_buffer;
+    glpp::Texture1D _gpu_text_buffer{glpp::Interpolation::NearestNeighbour,
+                                     glpp::Interpolation::NearestNeighbour};
 
     Image _font_image;
 

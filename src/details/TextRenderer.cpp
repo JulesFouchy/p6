@@ -10,8 +10,6 @@ namespace p6::details {
 
 TextRenderer::TextRenderer()
     : _font_image{load_image("ressources/otaviogoodFontMap.png")}
-    , _gpu_text_buffer{glpp::Interpolation::NearestNeighbour,
-                       glpp::Interpolation::NearestNeighbour}
 {
 }
 
@@ -54,13 +52,11 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, 
 }
 
 namespace TextRendererU {
-
 Radii compute_text_radii(const std::u16string& text, float font_size)
 {
     return font_size * glm::vec2{static_cast<float>(text.length()),
                                  1.f};
 }
-
 } // namespace TextRendererU
 
 } // namespace p6::details
