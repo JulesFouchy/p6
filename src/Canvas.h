@@ -4,12 +4,7 @@
 
 namespace p6 {
 
-/* ------------------------------- */
-/** \defgroup canvas Canvas
- * Create, modify and query information about canvases.
- * @{*/
-/* ------------------------------- */
-
+/// \ingroup canvas
 /// A canvas is an image that can be drawn onto.
 class Canvas : public ImageOrCanvas {
 public:
@@ -41,7 +36,5 @@ public:
 private:
     glpp::RenderTarget _render_target;
 };
-
-/**@}*/
 
 } // namespace p6

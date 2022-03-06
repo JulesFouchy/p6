@@ -173,19 +173,8 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup rendering-destination Rendering Destination
-     * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
-     * 
-     * ```
-     * auto ctx = p6::Context{};
-     * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
-     * ctx.render_to_image(my_image);
-     * ctx.rectangle({}); // Draws on my_image
-     * ctx.ellipse({});   // Draws on my_image again
-     * ctx.render_to_screen();
-     * ctx.rectangle({});       // Draws on the screen
-     * ctx.image(my_image, {}); // Draws my_image onto the screen
-     * ```
+    /** \defgroup canvas Canvas
+     * You can either draw directly to the screen (the default) or onto a Canvas.
      * @{*/
     /* ------------------------------- */
 
