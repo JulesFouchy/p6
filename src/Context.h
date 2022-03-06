@@ -130,29 +130,29 @@ public:
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusY = {}, Rotation = {});
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
-    void image(const Image&, FitX);
-    void image(const Image&, FitY = {});
+    void image(const ImageOrCanvas&, FitX);
+    void image(const ImageOrCanvas&, FitY = {});
     /// Draws an image that takes the entire window. :warning: This might distort the image if the window doesn't have the same aspect ratio as the image.
-    void image(const Image&, FullScreen);
+    void image(const ImageOrCanvas&, FullScreen);
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
-    void image(const Image&, Center, Radii = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, Transform2D);
+    void image(const ImageOrCanvas&, Center, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Transform2D);
     /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
     void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
