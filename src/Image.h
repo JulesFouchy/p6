@@ -7,7 +7,7 @@ namespace p6 {
 
 /* ------------------------------- */
 /** \defgroup image Image
- * Create, modify and query information about images.
+ * Load and query information about images.
  * @{*/
 /* ------------------------------- */
 
