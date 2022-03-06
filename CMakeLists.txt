@@ -29,6 +29,7 @@ target_include_directories(p6 PUBLIC include)
 target_sources(p6 PRIVATE
     src/Context.cpp
     src/Shader.cpp
+    src/Canvas.cpp
     src/Image.cpp
     src/math.cpp
     src/Transform2D.cpp

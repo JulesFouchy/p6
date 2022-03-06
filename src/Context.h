@@ -5,6 +5,7 @@
 #include <glpp/extended.hpp>
 #include <memory>
 #include <stdexcept>
+#include "Canvas.h"
 #include "Color.h"
 #include "Image.h"
 #include "Key.h"
@@ -133,29 +134,29 @@ public:
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusY = {}, Rotation = {});
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
-    void image(const Image&, FitX);
-    void image(const Image&, FitY = {});
+    void image(const ImageOrCanvas&, FitX);
+    void image(const ImageOrCanvas&, FitY = {});
     /// Draws an image that takes the entire window. :warning: This might distort the image if the window doesn't have the same aspect ratio as the image.
-    void image(const Image&, FullScreen);
+    void image(const ImageOrCanvas&, FullScreen);
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
-    void image(const Image&, Center, Radii = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, Transform2D);
+    void image(const ImageOrCanvas&, Center, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Transform2D);
     // Draws text
     void text(const std::u16string& str, Center, Rotation = {});
     void text(const std::u16string& str, TopLeftCorner, Rotation = {});
@@ -183,24 +184,13 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup rendering-destination Rendering Destination
-     * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
-     * 
-     * ```
-     * auto ctx = p6::Context{};
-     * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
-     * ctx.render_to_image(my_image);
-     * ctx.rectangle({}); // Draws on my_image
-     * ctx.ellipse({});   // Draws on my_image again
-     * ctx.render_to_screen();
-     * ctx.rectangle({});       // Draws on the screen
-     * ctx.image(my_image, {}); // Draws my_image onto the screen
-     * ```
+    /** \defgroup canvas Canvas
+     * You can either draw directly to the screen (the default) or onto a Canvas.
      * @{*/
     /* ------------------------------- */
 
-    /// Sets the image where all the drawing commands will happen on
-    void render_to_image(Image& image);
+    /// Sets the canvas where all the drawing commands will happen on
+    void render_to_canvas(Canvas& canvas);
     /// Reset the Context to render to the screen
     void render_to_screen();
 
@@ -342,7 +332,7 @@ private:
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
-    Image                             _default_render_target;
+    Canvas                            _default_canvas;
     Shader                            _rect_shader{R"(
 #version 330
 
