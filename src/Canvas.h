@@ -25,6 +25,10 @@ public:
 
     /// Returns the internal texture, that you can use to do advanced stuff with custom shaders.
     const Texture& texture() const override { return _render_target.texture(); }
+    /// Returns the internal render target, that you can use to do advanced stuff.
+    const glpp::RenderTarget& render_target() const { return _render_target; }
+    /// Returns the internal render target, that you can use to do advanced stuff.
+    glpp::RenderTarget& render_target() { return _render_target; }
 
     /// Resizes the canvas.
     void resize(ImageSize size) { _render_target.conservative_resize(size); }
@@ -33,7 +37,6 @@ public:
     void destructive_resize(ImageSize size) { _render_target.resize(size); }
 
 private:
-    friend class Context;
     glpp::RenderTarget _render_target;
 };
 

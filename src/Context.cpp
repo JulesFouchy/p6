@@ -71,9 +71,9 @@ void Context::start()
             if (!is_paused()) {
                 update();
             }
-            _default_canvas._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                   framebuffer_size(),
-                                                   glpp::Interpolation::NearestNeighbour);
+            _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                    framebuffer_size(),
+                                                    glpp::Interpolation::NearestNeighbour);
             render_to_screen();
             glfwSwapBuffers(*_window);
             _clock->update();
@@ -418,7 +418,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
 
 void Context::render_to_canvas(Canvas& canvas)
 {
-    canvas._render_target.bind();
+    canvas.render_target().bind();
 }
 
 void Context::render_to_screen()
