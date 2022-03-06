@@ -34,7 +34,7 @@ static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRende
         {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
 }
 
-void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams params)
+void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, float inflating)
 {
     if (text.length() > 1024) { // TODO do we need to handle arbitrarily long text?
         throw std::runtime_error("[p6::TextRenderer] This text is too long to be rendered");
@@ -49,8 +49,8 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, TextParams pa
     _shader.set("_font_image", 0);
     _shader.set("_text_buffer", 1);
     _shader.set("_sentence_size", static_cast<int>(text.length()));
-    _shader.set("_inflating", params.inflating);
-    _shader.set("_color", params.color.as_premultiplied_vec4());
+    _shader.set("_inflating", inflating);
+    _shader.set("_color", color.as_premultiplied_vec4());
 }
 
 namespace TextRendererU {

@@ -334,10 +334,7 @@ template<typename PositionSpecifier>
 static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const std::u16string& str,
                       PositionSpecifier position_specifier, Rotation rotation)
 {
-    text_renderer.setup_rendering_for(str,
-                                      {ctx.text_size,
-                                       ctx.text_inflating,
-                                       ctx.fill});
+    text_renderer.setup_rendering_for(str, ctx.fill, ctx.text_inflating);
     ctx.rectangle_with_shader(text_renderer.shader(),
                               position_specifier,
                               details::TextRendererU::compute_text_radii(str, ctx.text_size),

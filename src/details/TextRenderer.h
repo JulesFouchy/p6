@@ -5,21 +5,12 @@
 #include <string>
 #include "../Color.h"
 #include "../Image.h"
-#include "../NamedColor.h"
 #include "../Shader.h"
 
 namespace p6::details {
 
-struct TextParams {
-    float font_size = 0.1f;
-    float inflating = 0.01f;
-    Color color     = NamedColor::Black;
-};
-
 namespace TextRendererU {
-
 Radii compute_text_radii(const std::u16string& text, float font_size);
-
 }
 
 class TextRenderer {
@@ -27,7 +18,7 @@ public:
     TextRenderer();
 
     /// Prepares the shader to render the given text
-    void          setup_rendering_for(const std::u16string& text, TextParams);
+    void          setup_rendering_for(const std::u16string& text, Color color, float inflating = 0.01f);
     const Shader& shader() const { return _shader; }
 
     using ArrayOfUint8 = std::array<uint8_t, 1024>;
