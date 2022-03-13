@@ -13,3 +13,6 @@
 [submodule "third-party/op"]
 	path = third-party/op
 	url = https://github.com/CoolLibs/op
+[submodule "third-party/exe_path"]
+	path = third-party/exe_path
+	url = https://github.com/CoolLibs/exe_path

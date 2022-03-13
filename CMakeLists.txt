@@ -20,6 +20,9 @@ target_link_libraries(p6 PUBLIC img::img)
 # ---Add op---
 add_subdirectory(third-party/op)
 target_link_libraries(p6 PUBLIC op::op)
+# ---Add exe_path---
+add_subdirectory(third-party/exe_path)
+target_link_libraries(p6 PUBLIC exe_path::exe_path)
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
