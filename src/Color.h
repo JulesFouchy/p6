@@ -55,10 +55,8 @@ constexpr Color hex(unsigned int hex_code)
 class BlendMode_Overwrite {
 };
 class BlendMode_Blend {
-    float opacity; // Kind of a wrong name conceptually, but people are used to it
 };
 class BlendMode_Add {
-    float opacity; // Here opacity makes sense. This is the amout of light coming from the underneath layer that is absorbed.
 };
 
 using BlendMode = std::variant<BlendMode_Overwrite,
