@@ -5,7 +5,7 @@
 namespace p6 {
 
 using ImageSize = glpp::ImageSize;
-using Texture   = glpp::Texture;
+using Texture   = glpp::Texture2D;
 
 /* ------------------------------- */
 /** \defgroup image Image
