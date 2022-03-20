@@ -47,8 +47,6 @@ Context::Context(WindowCreationParams window_creation_params)
     glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
 
-    internal::ImGuiWrapper::initialize(*_window);
-
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetFramebufferSizeCallback(*_window, &framebuffer_size_callback);
@@ -60,6 +58,8 @@ Context::Context(WindowCreationParams window_creation_params)
         glfwGetFramebufferSize(*_window, &width, &height);
         on_framebuffer_resize(width, height);
     }
+
+    internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
     render_to_screen();
 }

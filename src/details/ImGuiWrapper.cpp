@@ -36,7 +36,7 @@ static void create_context()
 
 static void setup_for_glfw(GLFWwindow* window)
 {
-    ImGui_ImplGlfw_InitForOpenGL(window, false);
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
 }
 
 void initialize(GLFWwindow* window)
