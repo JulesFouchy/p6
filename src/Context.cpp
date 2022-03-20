@@ -1,15 +1,10 @@
 #include "Context.h"
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
 #include "details/ImGuiWrapper.h"
 #include "math.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui/imgui_internal.h>
 
 namespace p6 {
 
@@ -52,8 +47,7 @@ Context::Context(WindowCreationParams window_creation_params)
     glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
 
-    internal::ImGuiWrapper::create_context();
-    internal::ImGuiWrapper::setup_for_glfw(*_window);
+    internal::ImGuiWrapper::initialize(*_window);
 
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
@@ -86,9 +80,9 @@ void Context::start()
             internal::ImGuiWrapper::begin_frame();
             imgui();
             internal::ImGuiWrapper::end_frame(*_window);
+            render_to_screen();
             glfwSwapBuffers(*_window);
             _clock->update();
-            render_to_screen();
         }
         glfwPollEvents();
     }

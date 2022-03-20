@@ -5,8 +5,7 @@
 
 namespace p6::internal::ImGuiWrapper {
 
-void create_context();
-void setup_for_glfw(GLFWwindow* window);
+void initialize(GLFWwindow* window);
 void begin_frame();
 void end_frame(GLFWwindow* window);
 

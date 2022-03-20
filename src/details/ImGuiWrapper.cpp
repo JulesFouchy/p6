@@ -9,7 +9,7 @@
 
 namespace p6::internal::ImGuiWrapper {
 
-void create_context()
+static void create_context()
 {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -35,9 +35,15 @@ void create_context()
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
-void setup_for_glfw(GLFWwindow* window)
+static void setup_for_glfw(GLFWwindow* window)
 {
     ImGui_ImplGlfw_InitForOpenGL(window, false);
+}
+
+void initialize(GLFWwindow* window)
+{
+    create_context();
+    setup_for_glfw(window);
 }
 
 void begin_frame()

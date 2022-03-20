@@ -34,11 +34,6 @@ struct FitX {
 struct FitY {
 };
 
-inline void imgui_demo_window()
-{
-    ImGui::ShowDemoWindow();
-}
-
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
