@@ -54,3 +54,17 @@ endfunction()
 function(p6_copy_folder TARGET_NAME FOLDERNAME)
     Cool__target_copy_folder(${TARGET_NAME} ${FOLDERNAME})
 endfunction()
+
+# ---Functions to setup p6---
+cmake_path(RELATIVE_PATH CMAKE_CURRENT_SOURCE_DIR BASE_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE _P6_PATH)
+set(P6_PATH ${_P6_PATH} CACHE INTERNAL "") # Makes the variable accessible by parent CMakeLists.txt files; this allows them to call p6_setup_resources() manually if they want to
+function(p6_setup_resources TARGET)
+    Cool__target_copy_folder(${TARGET} ${P6_PATH}/res p6/res)
+endfunction()
+
+#! You **must** call this function to add p6 as a library used by your TARGET
+# Instead of calling the usual target_link_libraries(), because we need to do some additional setup
+function(target_link_p6_library TARGET)
+    target_link_libraries(${TARGET} p6::p6)
+    p6_setup_resources(${TARGET})
+endfunction()
