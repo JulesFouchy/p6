@@ -28,7 +28,7 @@ private:
     glpp::Texture1D _gpu_text_buffer{glpp::Interpolation::NearestNeighbour,
                                      glpp::Interpolation::NearestNeighbour};
 
-    Image _font_image;
+    Image _font_atlas;
 
     Shader _shader{R"(
 #version 330
@@ -38,7 +38,7 @@ in vec2 _uniform_uv;
 in vec2 _raw_uv;
 in vec2 _canvas_uv;
 
-uniform sampler2D _font_image;
+uniform sampler2D _font_atlas;
 
 uniform usampler1D _text_buffer;
 uniform int _sentence_size;
@@ -59,8 +59,8 @@ void main() {
 
     vec2 char_uv = vec2(char_coordinates) / 16. + local_letter_uv;
 
-    vec4 font_texture_sample = textureGrad(_font_image, char_uv, dFdx(local_letter_uv), dFdy(local_letter_uv));
-    // vec4 font_texture_sample = texture(_font_image, char_uv);
+    vec4 font_texture_sample = textureGrad(_font_atlas, char_uv, dFdx(local_letter_uv), dFdy(local_letter_uv));
+    // vec4 font_texture_sample = texture(_font_atlas, char_uv);
 
     float letter_dist_field = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
 

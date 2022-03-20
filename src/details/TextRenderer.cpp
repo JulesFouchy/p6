@@ -2,6 +2,7 @@
 #include <exe_path/exe_path.h>
 #include <algorithm>
 #include <glpp/glpp.hpp>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include "../Shader.h"
@@ -9,11 +10,24 @@
 
 namespace p6::details {
 
+Image load_font_atlas()
+{
+    try {
+        return load_image(
+            (exe_path::dir() / "p6/res/font_atlas.png")
+                .string()
+                .c_str());
+    }
+    catch (const std::exception&) {
+        std::cerr << "[p6] Failed to load \"p6/res/font_atlas.png\"\n"
+                  << "[--] Did you forget to call target_link_p6_library(${PROJECT_NAME}) in your CMakeLists.txt?\n"
+                  << "[--] See https://julesfouchy.github.io/p6-docs/tutorials/creating-a-project#cmakeliststxt\n";
+        throw;
+    }
+}
+
 TextRenderer::TextRenderer()
-    : _font_image{load_image(
-          (exe_path::dir() / "p6/res/font_atlas.png")
-              .string()
-              .c_str())}
+    : _font_atlas{load_font_atlas()}
 {
 }
 
@@ -45,10 +59,10 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, 
     convert_and_copy_text_to_buffer(text, _cpu_text_buffer);
     send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, text.length());
 
-    _font_image.texture().bind_to_texture_unit(0);
+    _font_atlas.texture().bind_to_texture_unit(0);
     _gpu_text_buffer.bind_to_texture_unit(1);
 
-    _shader.set("_font_image", 0);
+    _shader.set("_font_atlas", 0);
     _shader.set("_text_buffer", 1);
     _shader.set("_sentence_size", static_cast<int>(text.length()));
     _shader.set("_inflating", inflating);
