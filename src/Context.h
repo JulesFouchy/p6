@@ -184,7 +184,7 @@ public:
     /* ------------------------------- */
 
     /// Height of the text.
-    float text_size = 0.02f;
+    float text_size = 0.03f;
     /// Gives some "boldness" to the text.
     float text_inflating = 0.01f;
 
