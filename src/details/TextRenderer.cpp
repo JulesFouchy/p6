@@ -10,7 +10,7 @@
 
 namespace p6::details {
 
-Image load_font_atlas()
+static Image load_font_atlas()
 {
     try {
         return load_image(
