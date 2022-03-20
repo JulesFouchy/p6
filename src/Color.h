@@ -52,22 +52,22 @@ constexpr Color hex(unsigned int hex_code)
                  static_cast<float>((hex_code & 0x0000FFu) >> 0) / 255.f);
 }
 
-class BlendMode_Overwrite {
-};
-class BlendMode_Blend {
-    float opacity; // Kind of a wrong name conceptually, but people are used to it
-};
-class BlendMode_Add {
-    float opacity; // Here opacity makes sense. This is the amout of light coming from the underneath layer that is absorbed.
-};
+// class BlendMode_Overwrite {
+// };
+// class BlendMode_Blend {
+//     float opacity; // Kind of a wrong name conceptually, but people are used to it
+// };
+// class BlendMode_Add {
+//     float opacity; // Here opacity makes sense. This is the amout of light coming from the underneath layer that is absorbed.
+// };
 
-using BlendMode = std::variant<BlendMode_Overwrite,
-                               BlendMode_Blend,
-                               BlendMode_Add>;
+// using BlendMode = std::variant<BlendMode_Overwrite,
+//                                BlendMode_Blend,
+//                                BlendMode_Add>;
 
-struct Material {
-    Color     color;
-    BlendMode blend_mode;
-};
+// struct Material {
+//     Color     color;
+//     BlendMode blend_mode;
+// };
 
 } // namespace p6

@@ -433,7 +433,8 @@ void Context::line(glm::vec2 start, glm::vec2 end)
     rectangle_with_shader(_line_shader,
                           Center{(start + end) / 2.f},
                           Radii{glm::distance(start, end) / 2.f, stroke_weight},
-                          Rotation{Radians{glm::orientedAngle(glm::vec2{1.f, 0.f}, glm::normalize(end - start))}});
+                          Rotation{Radians{glm::orientedAngle(glm::vec2{1.f, 0.f},
+                                                              glm::normalize(end - start))}});
 }
 
 void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const
