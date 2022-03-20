@@ -1,4 +1,5 @@
 #include "TextRenderer.h"
+#include <exe_path/exe_path.h>
 #include <algorithm>
 #include <glpp/glpp.hpp>
 #include <stdexcept>
@@ -9,7 +10,10 @@
 namespace p6::details {
 
 TextRenderer::TextRenderer()
-    : _font_image{load_image("ressources/otaviogoodFontMap.png")}
+    : _font_image{load_image(
+          (exe_path::dir() / "p6/res/font_atlas.png")
+              .string()
+              .c_str())}
 {
 }
 
