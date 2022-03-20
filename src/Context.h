@@ -5,6 +5,7 @@
 #include <glpp/extended.hpp>
 #include <memory>
 #include <stdexcept>
+#include "Canvas.h"
 #include "Color.h"
 #include "Image.h"
 #include "Key.h"
@@ -15,108 +16,13 @@
 #include "Shader.h"
 #include "Transform2D.h"
 #include "details/RectRenderer.h"
+#include "details/TextRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
 #include "details/Time/Clock_Realtime.h"
 #include "details/UniqueGlfwWindow.h"
 
 namespace p6 {
-
-struct Center {
-    glm::vec2 value{0.f};
-
-    Center() = default;
-
-    Center(float x, float y)
-        : value{x, y} {}
-
-    Center(glm::vec2 value)
-        : value{value} {}
-};
-
-struct TopLeftCorner {
-    glm::vec2 value{0.f};
-
-    TopLeftCorner() = default;
-
-    TopLeftCorner(float x, float y)
-        : value{x, y} {}
-
-    TopLeftCorner(glm::vec2 value)
-        : value{value} {}
-};
-
-struct TopRightCorner {
-    glm::vec2 value{0.f};
-
-    TopRightCorner() = default;
-
-    TopRightCorner(float x, float y)
-        : value{x, y} {}
-
-    TopRightCorner(glm::vec2 value)
-        : value{value} {}
-};
-
-struct BottomLeftCorner {
-    glm::vec2 value{0.f};
-
-    BottomLeftCorner() = default;
-
-    BottomLeftCorner(float x, float y)
-        : value{x, y} {}
-
-    BottomLeftCorner(glm::vec2 value)
-        : value{value} {}
-};
-
-struct BottomRightCorner {
-    glm::vec2 value{0.f};
-
-    BottomRightCorner() = default;
-
-    BottomRightCorner(float x, float y)
-        : value{x, y} {}
-
-    BottomRightCorner(glm::vec2 value)
-        : value{value} {}
-};
-
-struct Radii {
-    glm::vec2 value{1.f};
-
-    Radii() = default;
-
-    Radii(float x, float y)
-        : value{x, y} {}
-
-    Radii(glm::vec2 v)
-        : value{v} {}
-};
-
-struct Radius {
-    float value{1.f};
-
-    Radius() = default;
-    Radius(float value)
-        : value{value} {};
-};
-
-struct RadiusX {
-    float value{1.f};
-
-    RadiusX() = default;
-    RadiusX(float value)
-        : value{value} {};
-};
-
-struct RadiusY {
-    float value{1.f};
-
-    RadiusY() = default;
-    RadiusY(float value)
-        : value{value} {};
-};
 
 struct FullScreen {
 };
@@ -217,37 +123,41 @@ public:
     void rectangle(BottomLeftCorner, Radii = {}, Rotation = {});
     void rectangle(BottomRightCorner, Radii = {}, Rotation = {});
     void rectangle(Transform2D);
+
     /// Draws a circle
     void circle(FullScreen);
     void circle(Center = {}, Radius = {});
+
     /// Draws an ellipse
     void ellipse(FullScreen = {});
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
+
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusX = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusX = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusX = {}, Rotation = {});
     /// Draws an image. This will respect the aspect ratio of the image.
-    void image(const Image&, Center, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, RadiusY = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Center, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, RadiusY = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, RadiusY = {}, Rotation = {});
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
-    void image(const Image&, FitX);
-    void image(const Image&, FitY = {});
+    void image(const ImageOrCanvas&, FitX);
+    void image(const ImageOrCanvas&, FitY = {});
     /// Draws an image that takes the entire window. :warning: This might distort the image if the window doesn't have the same aspect ratio as the image.
-    void image(const Image&, FullScreen);
+    void image(const ImageOrCanvas&, FullScreen);
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.
-    void image(const Image&, Center, Radii = {}, Rotation = {});
-    void image(const Image&, TopLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, TopRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomLeftCorner, Radii = {}, Rotation = {});
-    void image(const Image&, BottomRightCorner, Radii = {}, Rotation = {});
-    void image(const Image&, Transform2D);
+    void image(const ImageOrCanvas&, Center, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, TopRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomLeftCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, BottomRightCorner, Radii = {}, Rotation = {});
+    void image(const ImageOrCanvas&, Transform2D);
+
     /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
     void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
@@ -268,24 +178,31 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup rendering-destination Rendering Destination
-     * Controls where the rendering happens. You can either draw directly to the screen (the default) or onto an image.
-     * 
-     * ```
-     * auto ctx = p6::Context{};
-     * auto my_image = p6::Image{{1000, 1000}}; // Creates an empty image of size 1000x1000
-     * ctx.render_to_image(my_image);
-     * ctx.rectangle({}); // Draws on my_image
-     * ctx.ellipse({});   // Draws on my_image again
-     * ctx.render_to_screen();
-     * ctx.rectangle({});       // Draws on the screen
-     * ctx.image(my_image, {}); // Draws my_image onto the screen
-     * ```
+    /** \defgroup text Text
+     * Write text to the screen.
      * @{*/
     /* ------------------------------- */
 
-    /// Sets the image where all the drawing commands will happen on
-    void render_to_image(Image& image);
+    /// Height of the text.
+    float text_size = 0.03f;
+    /// Gives some "boldness" to the text.
+    float text_inflating = 0.01f;
+
+    void text(const std::u16string& str, Center, Rotation = {});
+    void text(const std::u16string& str, TopLeftCorner, Rotation = {});
+    void text(const std::u16string& str, TopRightCorner, Rotation = {});
+    void text(const std::u16string& str, BottomLeftCorner, Rotation = {});
+    void text(const std::u16string& str, BottomRightCorner, Rotation = {});
+
+    /**@}*/
+    /* ------------------------------- */
+    /** \defgroup canvas Canvas
+     * You can either draw directly to the screen (the default) or onto a Canvas.
+     * @{*/
+    /* ------------------------------- */
+
+    /// Sets the canvas where all the drawing commands will happen on
+    void render_to_canvas(Canvas& canvas);
     /// Reset the Context to render to the screen
     void render_to_screen();
 
@@ -415,28 +332,19 @@ private:
 
     Transform2D make_transform_2D_impl(glm::vec2 offset_to_center, glm::vec2 corner_position, Radii radii, Rotation rotation) const;
     Transform2D make_transform_2D(FullScreen) const;
-    Transform2D make_transform_2D(Center, Radius, Rotation) const;
-    Transform2D make_transform_2D(Center, Radii, Rotation) const;
-    Transform2D make_transform_2D(TopLeftCorner, Radius, Rotation) const;
-    Transform2D make_transform_2D(TopLeftCorner, Radii, Rotation) const;
-    Transform2D make_transform_2D(TopRightCorner, Radius, Rotation) const;
-    Transform2D make_transform_2D(TopRightCorner, Radii, Rotation) const;
-    Transform2D make_transform_2D(BottomLeftCorner, Radius, Rotation) const;
-    Transform2D make_transform_2D(BottomLeftCorner, Radii, Rotation) const;
-    Transform2D make_transform_2D(BottomRightCorner, Radius, Rotation) const;
-    Transform2D make_transform_2D(BottomRightCorner, Radii, Rotation) const;
 
 private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
+    details::TextRenderer             _text_renderer;
     ImageSize                         _framebuffer_size;
     ImageSize                         _window_size;
     glm::vec2                         _mouse_position;
     glm::vec2                         _mouse_position_delta{0.f, 0.f};
     glm::vec2                         _drag_start_position{};
     bool                              _is_dragging = false;
-    Image                             _default_render_target;
+    Canvas                            _default_canvas;
     Shader                            _rect_shader{R"(
 #version 330
 
