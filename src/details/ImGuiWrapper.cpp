@@ -7,9 +7,9 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
 
-namespace p6::internal {
+namespace p6::internal::ImGuiWrapper {
 
-void imgui_create_context()
+void create_context()
 {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -17,7 +17,6 @@ void imgui_create_context()
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;   // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
@@ -36,39 +35,16 @@ void imgui_create_context()
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
-void imgui_setup_for_glfw(GLFWwindow* window)
+void setup_for_glfw(GLFWwindow* window)
 {
     ImGui_ImplGlfw_InitForOpenGL(window, false);
 }
 
-static void imgui_dockspace()
-{
-    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) { // NOLINT
-        constexpr ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-        constexpr ImGuiWindowFlags   window_flags    = ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
-        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-        ImGui::Begin("MyMainDockSpace", nullptr, window_flags);
-        ImGui::PopStyleVar(3);
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-        ImGui::End();
-    }
-}
-
-void imgui_new_frame()
+void begin_frame()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    imgui_dockspace();
 }
 
 void end_frame(GLFWwindow* window)
@@ -77,8 +53,6 @@ void end_frame(GLFWwindow* window)
     int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // Update and Render additional Platform Windows
@@ -93,4 +67,4 @@ void end_frame(GLFWwindow* window)
     }
 }
 
-} // namespace p6::internal
+} // namespace p6::internal::ImGuiWrapper

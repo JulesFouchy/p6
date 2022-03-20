@@ -6,7 +6,7 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
-#include "ImGui/ImGuiWrapper.h"
+#include "details/ImGuiWrapper.h"
 #include "math.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
@@ -52,8 +52,8 @@ Context::Context(WindowCreationParams window_creation_params)
     glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
 
-    internal::imgui_create_context();
-    internal::imgui_setup_for_glfw(*_window);
+    internal::ImGuiWrapper::create_context();
+    internal::ImGuiWrapper::setup_for_glfw(*_window);
 
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
@@ -70,18 +70,6 @@ Context::Context(WindowCreationParams window_creation_params)
     render_to_screen();
 }
 
-// static void imgui_render(IApp& app)
-// {
-//     // Menu bar
-//     if (app.wants_to_show_menu_bar()) {
-//         ImGui::BeginMainMenuBar();
-//         app.imgui_menus();
-//         ImGui::EndMainMenuBar();
-//     }
-//     // Windows
-//     app.imgui_windows();
-// }
-
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window)) {
@@ -91,23 +79,16 @@ void Context::start()
             if (!is_paused()) {
                 update();
             }
-            glpp::bind_framebuffer(glpp::SCREEN_FRAMEBUFFER_ID);
-            internal::imgui_new_frame();
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-            ImGui::Begin("Canvas");
-            const auto size = ImGui::GetContentRegionAvail();
-            // ImGui::SetCursorPos((ImGui::GetWindowSize() + ImVec2{0.f, ImGui::GetCurrentWindow()->TitleBarHeight()} - size) * 0.5f);
-            ImGui::Image(reinterpret_cast<ImTextureID>(*_default_canvas.texture()), size, ImVec2(0, 1), ImVec2(1, 0));
-            ImGui::End();
-            ImGui::PopStyleVar();
-            // imgui_render(_app);
-            internal::end_frame(*_window);
-            // _default_render_target._render_target.blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-            //                                               framebuffer_size(),
-            //                                               glpp::Interpolation::NearestNeighbour);
-            // render_to_screen();
+            _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                    framebuffer_size(),
+                                                    glpp::Interpolation::NearestNeighbour);
+            glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+            internal::ImGuiWrapper::begin_frame();
+            imgui();
+            internal::ImGuiWrapper::end_frame(*_window);
             glfwSwapBuffers(*_window);
             _clock->update();
+            render_to_screen();
         }
         glfwPollEvents();
     }

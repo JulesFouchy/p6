@@ -54,8 +54,8 @@ target_sources(p6 PRIVATE
     src/Canvas.cpp
     src/Image.cpp
     src/math.cpp
-    src/ImGui/ImGuiWrapper.cpp
     src/Transform2D.cpp
+    src/details/ImGuiWrapper.cpp
     src/details/UniqueGlfwWindow.cpp
     src/details/Time/Clock.cpp
     src/details/Time/Clock_FixedTimestep.cpp
