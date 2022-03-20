@@ -35,10 +35,10 @@ static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRend
 {
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
                    [](char16_t c) {
-                       auto search = char_correspondance.find(c);
+                       const auto search = char_correspondance.find(c);
                        return search != char_correspondance.end()
                                   ? search->second
-                                  : static_cast<uint8_t>(63); // for '?';
+                                  : static_cast<uint8_t>(63); // Render unknown characters as '?';
                    });
 }
 
