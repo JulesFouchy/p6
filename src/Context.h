@@ -123,13 +123,16 @@ public:
     void rectangle(BottomLeftCorner, Radii = {}, Rotation = {});
     void rectangle(BottomRightCorner, Radii = {}, Rotation = {});
     void rectangle(Transform2D);
+
     /// Draws a circle
     void circle(FullScreen);
     void circle(Center = {}, Radius = {});
+
     /// Draws an ellipse
     void ellipse(FullScreen = {});
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
+
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
     void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
