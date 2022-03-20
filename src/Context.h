@@ -1,6 +1,7 @@
 #pragma once
 
 #include <imgui/imgui.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
 #include <functional>
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
