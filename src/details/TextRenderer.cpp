@@ -42,12 +42,14 @@ static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRend
                    });
 }
 
-static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfUint8& cpu_buffer, size_t actual_buffer_size)
+static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRenderer::ArrayOfUint8& cpu_buffer, GLsizei actual_buffer_size)
 {
     gpu_buffer.upload_data(
-        static_cast<GLsizei>(actual_buffer_size),
+        actual_buffer_size,
         cpu_buffer.data(),
-        {glpp::InternalFormat::R8UI, glpp::Channels::R_Integer, glpp::TexelDataType::UnsignedByte});
+        {glpp::InternalFormat::R8UI,
+         glpp::Channels::R_Integer,
+         glpp::TexelDataType::UnsignedByte});
 }
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, float inflating)
@@ -57,14 +59,14 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, 
     }
 
     convert_and_copy_text_to_buffer(text, _cpu_text_buffer);
-    send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, text.length());
+    send_text_buffer_to_gpu(_gpu_text_buffer, _cpu_text_buffer, static_cast<GLsizei>(text.length()));
 
     _font_atlas.texture().bind_to_texture_unit(0);
     _gpu_text_buffer.bind_to_texture_unit(1);
 
     _shader.set("_font_atlas", 0);
     _shader.set("_text_buffer", 1);
-    _shader.set("_sentence_size", static_cast<int>(text.length()));
+    _shader.set("_sentence_size", static_cast<float>(text.length()));
     _shader.set("_inflating", inflating);
     _shader.set("_color", color.as_premultiplied_vec4());
 }

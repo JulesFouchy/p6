@@ -34,35 +34,33 @@ private:
 #version 330
 out vec4 _frag_color;
 
-in vec2 _uniform_uv;
 in vec2 _raw_uv;
-in vec2 _canvas_uv;
 
 uniform sampler2D _font_atlas;
 
 uniform usampler1D _text_buffer;
-uniform int _sentence_size;
+uniform float _sentence_size;
 
 uniform vec4 _color;
 uniform float _inflating;
 
-void main() {
+void main()
+{
+    const float smoothing = 0.01;
 
-    float smoothing = 0.01;
-
-    int letter_index = int(_raw_uv.x * float(_sentence_size));
+    int letter_index = int(_raw_uv.x * _sentence_size);
     uint font_index = texelFetch(_text_buffer, letter_index, 0).r;
 
     uvec2 char_coordinates = uvec2(font_index % 16u, 15u - font_index / 16u);
 
-    vec2 local_letter_uv = vec2(fract(_raw_uv.x * float(_sentence_size)), _raw_uv.y) / 16.;
+    vec2 local_letter_uv = vec2(fract(_raw_uv.x * _sentence_size), _raw_uv.y) / 16.;
 
     vec2 char_uv = vec2(char_coordinates) / 16. + local_letter_uv;
 
     vec4 font_texture_sample = textureGrad(_font_atlas, char_uv, dFdx(local_letter_uv), dFdy(local_letter_uv));
     // vec4 font_texture_sample = texture(_font_atlas, char_uv);
 
-    float letter_dist_field = font_texture_sample.w - 0.5 + 1.0/256.0 - _inflating;
+    float letter_dist_field = font_texture_sample.w - 0.5 + 1./256. - _inflating;
 
     _frag_color = _color * smoothstep(smoothing, -smoothing, letter_dist_field);
 }
