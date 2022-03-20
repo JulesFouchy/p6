@@ -94,9 +94,6 @@ public:
 
     /// The color that is used for the interior of the shapes.
     Color fill{1.f, 1.f, 1.f, 0.5f};
-    /// Sets/gets the current text size. This size will be used in all subsequent calls to the text() method.
-    float text_size      = 0.02f;
-    float text_inflating = 0.01f;
     /// Whether the shapes will have an interior
     bool use_fill = true;
     /// The color that is used for the boundary of the shapes.
@@ -157,12 +154,6 @@ public:
     void image(const ImageOrCanvas&, BottomLeftCorner, Radii = {}, Rotation = {});
     void image(const ImageOrCanvas&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const ImageOrCanvas&, Transform2D);
-    // Draws text
-    void text(const std::u16string& str, Center, Rotation = {});
-    void text(const std::u16string& str, TopLeftCorner, Rotation = {});
-    void text(const std::u16string& str, TopRightCorner, Rotation = {});
-    void text(const std::u16string& str, BottomLeftCorner, Rotation = {});
-    void text(const std::u16string& str, BottomRightCorner, Rotation = {});
 
     /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
@@ -181,6 +172,24 @@ public:
     /// Draws a line between two points.
     /// It uses the `stroke` color, and `stroke_weight` as its thickness.
     void line(glm::vec2 start, glm::vec2 end);
+
+    /**@}*/
+    /* ------------------------------- */
+    /** \defgroup text Text
+     * Write text to the screen.
+     * @{*/
+    /* ------------------------------- */
+
+    /// Height of the text.
+    float text_size = 0.02f;
+    /// Gives some "boldness" to the text.
+    float text_inflating = 0.01f;
+
+    void text(const std::u16string& str, Center, Rotation = {});
+    void text(const std::u16string& str, TopLeftCorner, Rotation = {});
+    void text(const std::u16string& str, TopRightCorner, Rotation = {});
+    void text(const std::u16string& str, BottomLeftCorner, Rotation = {});
+    void text(const std::u16string& str, BottomRightCorner, Rotation = {});
 
     /**@}*/
     /* ------------------------------- */
