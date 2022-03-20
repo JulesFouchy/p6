@@ -1,5 +1,7 @@
 #pragma once
 
+#include <imgui/imgui.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
 #include <functional>
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
@@ -53,6 +55,8 @@ public:
 
     /// This function is called repeatedly. The framerate will be capped at your monitors refresh rate (60 frames per second on a typical monitor).
     std::function<void()> update = []() {};
+    /// In this function you can render all the ImGui windows you want.
+    std::function<void()> imgui = []() {};
     /// This function is called whenever the mouse is moved
     std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
     /// This function is called whenever the mouse is dragged

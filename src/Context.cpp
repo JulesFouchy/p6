@@ -1,9 +1,9 @@
 #include "Context.h"
-#include <glad/glad.h>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
+#include "details/ImGuiWrapper.h"
 #include "math.h"
 
 namespace p6 {
@@ -59,6 +59,8 @@ Context::Context(WindowCreationParams window_creation_params)
         on_framebuffer_resize(width, height);
     }
 
+    internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
+
     render_to_screen();
 }
 
@@ -74,6 +76,10 @@ void Context::start()
             _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
                                                     framebuffer_size(),
                                                     glpp::Interpolation::NearestNeighbour);
+            glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+            internal::ImGuiWrapper::begin_frame();
+            imgui();
+            internal::ImGuiWrapper::end_frame(*_window);
             render_to_screen();
             glfwSwapBuffers(*_window);
             _clock->update();
