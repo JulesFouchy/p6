@@ -330,6 +330,42 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
     p6::internal::set_vertex_shader_uniforms(shader, transform, aspect_ratio());
 }
 
+template<typename PositionSpecifier>
+static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const std::u16string& str,
+                      PositionSpecifier position_specifier, Rotation rotation)
+{
+    text_renderer.setup_rendering_for(str, ctx.fill, ctx.text_inflating);
+    ctx.rectangle_with_shader(text_renderer.shader(),
+                              position_specifier,
+                              details::TextRendererU::compute_text_radii(str, ctx.text_size),
+                              rotation);
+}
+
+void Context::text(const std::u16string& str, Center center, Rotation rotation)
+{
+    text_impl(*this, _text_renderer, str, center, rotation);
+}
+
+void Context::text(const std::u16string& str, TopLeftCorner corner, Rotation rotation)
+{
+    text_impl(*this, _text_renderer, str, corner, rotation);
+}
+
+void Context::text(const std::u16string& str, TopRightCorner corner, Rotation rotation)
+{
+    text_impl(*this, _text_renderer, str, corner, rotation);
+}
+
+void Context::text(const std::u16string& str, BottomLeftCorner corner, Rotation rotation)
+{
+    text_impl(*this, _text_renderer, str, corner, rotation);
+}
+
+void Context::text(const std::u16string& str, BottomRightCorner corner, Rotation rotation)
+{
+    text_impl(*this, _text_renderer, str, corner, rotation);
+}
+
 void Context::rectangle_with_shader(const Shader& shader, FullScreen)
 {
     rectangle_with_shader(shader, make_transform_2D(FullScreen{}));

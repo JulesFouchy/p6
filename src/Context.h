@@ -16,6 +16,7 @@
 #include "Shader.h"
 #include "Transform2D.h"
 #include "details/RectRenderer.h"
+#include "details/TextRenderer.h"
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
 #include "details/Time/Clock_Realtime.h"
@@ -122,13 +123,16 @@ public:
     void rectangle(BottomLeftCorner, Radii = {}, Rotation = {});
     void rectangle(BottomRightCorner, Radii = {}, Rotation = {});
     void rectangle(Transform2D);
+
     /// Draws a circle
     void circle(FullScreen);
     void circle(Center = {}, Radius = {});
+
     /// Draws an ellipse
     void ellipse(FullScreen = {});
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
+
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
     void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
@@ -153,6 +157,7 @@ public:
     void image(const ImageOrCanvas&, BottomLeftCorner, Radii = {}, Rotation = {});
     void image(const ImageOrCanvas&, BottomRightCorner, Radii = {}, Rotation = {});
     void image(const ImageOrCanvas&, Transform2D);
+
     /// Draws a rectangle using a custom fragment shader
     void rectangle_with_shader(const Shader& shader, FullScreen = {});
     void rectangle_with_shader(const Shader& shader, Center, Radii = {}, Rotation = {});
@@ -170,6 +175,24 @@ public:
     /// Draws a line between two points.
     /// It uses the `stroke` color, and `stroke_weight` as its thickness.
     void line(glm::vec2 start, glm::vec2 end);
+
+    /**@}*/
+    /* ------------------------------- */
+    /** \defgroup text Text
+     * Write text to the screen.
+     * @{*/
+    /* ------------------------------- */
+
+    /// Height of the text.
+    float text_size = 0.02f;
+    /// Gives some "boldness" to the text.
+    float text_inflating = 0.01f;
+
+    void text(const std::u16string& str, Center, Rotation = {});
+    void text(const std::u16string& str, TopLeftCorner, Rotation = {});
+    void text(const std::u16string& str, TopRightCorner, Rotation = {});
+    void text(const std::u16string& str, BottomLeftCorner, Rotation = {});
+    void text(const std::u16string& str, BottomRightCorner, Rotation = {});
 
     /**@}*/
     /* ------------------------------- */
@@ -314,6 +337,7 @@ private:
     mutable details::UniqueGlfwWindow _window;
     std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
     details::RectRenderer             _rect_renderer;
+    details::TextRenderer             _text_renderer;
     ImageSize                         _framebuffer_size;
     ImageSize                         _window_size;
     glm::vec2                         _mouse_position;
