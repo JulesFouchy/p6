@@ -1,6 +1,6 @@
 #include "Shader.h"
-#include <glm/gtx/matrix_transform_2d.hpp>
 #include <fstream>
+#include <glm/gtx/matrix_transform_2d.hpp>
 #include <iterator>
 #include <stdexcept>
 
@@ -58,7 +58,7 @@ void main()
     {
         const auto err = frag.check_compilation_errors();
         if (err) {
-            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
+            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message() + fragment_source_code.data()};
         }
     }
 #endif
@@ -125,7 +125,8 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
 
 namespace internal {
 
-void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio) {
+void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio)
+{
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
     shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
