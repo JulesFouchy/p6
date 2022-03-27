@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exe_path/exe_path.h>
 #include "../../src/Canvas.h"
 #include "../../src/Color.h"
 #include "../../src/Context.h"
