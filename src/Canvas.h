@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include "ImageCommon.h"
 
 namespace p6 {
@@ -36,5 +37,8 @@ public:
 private:
     glpp::RenderTarget _render_target;
 };
+
+/// Saves
+void save_canvas(const Canvas& canvas, std::filesystem::path path);
 
 } // namespace p6

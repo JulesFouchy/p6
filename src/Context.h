@@ -39,6 +39,11 @@ class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
 
+    void save(std::filesystem::path path) const
+    {
+        save_canvas(_default_canvas, path);
+    }
+
     /* ------------------------------- */
     /** \defgroup events Events
      * You can set those functions as you wish to react to various events.
