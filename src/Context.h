@@ -248,6 +248,10 @@ public:
     int framebuffer_width() const;
     /// Returns the height of the framebuffer.
     int framebuffer_height() const;
+    /// Returns the color of the pixel at the given position.
+    /// The coordinates are expressed in the usual p6 coordinate system.
+    /// The pixel is read from the current render target (which will be the screen in most cases, unless you used render_to_canvas())
+    Color read_pixel(glm::vec2 position) const;
     /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
     /// Focuses the window, making it pop to the foreground.

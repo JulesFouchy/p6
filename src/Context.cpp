@@ -1,4 +1,5 @@
 #include "Context.h"
+#include <cstdint>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
@@ -539,6 +540,22 @@ int Context::framebuffer_width() const
 int Context::framebuffer_height() const
 {
     return framebuffer_size().height();
+}
+
+Color Context::read_pixel(glm::vec2 position) const
+{
+    const auto x = static_cast<int>(p6::map(position.x,
+                                            -aspect_ratio(), +aspect_ratio(),
+                                            0.f, static_cast<float>(framebuffer_width())));
+    const auto y = static_cast<int>(p6::map(position.y,
+                                            -1.f, +1.f,
+                                            0.f, static_cast<float>(framebuffer_height())));
+    uint8_t    channels[4];
+    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
+    return p6::Color{static_cast<float>(channels[0]) / 255.f,
+                     static_cast<float>(channels[1]) / 255.f,
+                     static_cast<float>(channels[2]) / 255.f,
+                     static_cast<float>(channels[3]) / 255.f};
 }
 
 bool Context::window_is_focused() const
