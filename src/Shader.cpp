@@ -1,7 +1,6 @@
 #include "Shader.h"
 #include <fstream>
 #include <glm/gtx/matrix_transform_2d.hpp>
-#include <iostream>
 #include <iterator>
 #include <stdexcept>
 
@@ -12,12 +11,6 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
     program.attach_shader(*vertex_shader);
     program.attach_shader(*fragment_shader);
     program.link();
-#if !defined(NDEBUG)
-    const auto err = program.check_linking_errors();
-    if (err) {
-        std::cerr << "Shader problem:\n" + err.message() << '\n';
-    }
-#endif
 }
 
 Shader::Shader(std::string_view fragment_source_code)
