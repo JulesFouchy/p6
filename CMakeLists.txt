@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.20)
-cmake_policy(SET CMP0079 NEW) # To allow us to add libraries to the ImGui target
-cmake_policy(SET CMP0076 NEW) # To allow us to use target_sources() on ImGui
 
 add_library(p6)
 add_library(p6::p6 ALIAS p6)
