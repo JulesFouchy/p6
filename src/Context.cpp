@@ -75,25 +75,42 @@ static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::duration<f
     return delta < *capped_delta_time;
 }
 
+static bool skip_first_frames(details::Clock& clock)
+{
+    static int frame_count = 0;
+    if (frame_count < 2) {
+        frame_count++;
+        clock.update();
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window)) {
         if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
-            render_to_screen();
-            check_for_mouse_movements();
-            if (!is_paused() && !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
-                _last_update = std::chrono::steady_clock::now();
-                _clock->update();
-                update();
+            if (!skip_first_frames(*_clock)) {                // Allow the clock to compute its delta_time() properly
+                render_to_screen();
+                check_for_mouse_movements();
+                if (!needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
+                    _clock->update();
+                    if (!is_paused()) {
+                        _last_update = std::chrono::steady_clock::now();
+                        update();
+                    }
+                }
+                _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                        framebuffer_size(),
+                                                        glpp::Interpolation::NearestNeighbour);
+                glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+                internal::ImGuiWrapper::begin_frame();
+                imgui();
+                internal::ImGuiWrapper::end_frame(*_window);
+                render_to_screen();
             }
-            _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                    framebuffer_size(),
-                                                    glpp::Interpolation::NearestNeighbour);
-            glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
-            internal::ImGuiWrapper::begin_frame();
-            imgui();
-            internal::ImGuiWrapper::end_frame(*_window);
-            render_to_screen();
             glfwSwapBuffers(*_window);
         }
         glfwPollEvents();
