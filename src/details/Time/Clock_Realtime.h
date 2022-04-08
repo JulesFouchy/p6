@@ -20,14 +20,13 @@ public:
     void pause() override;
 
 private:
-    std::chrono::steady_clock::time_point std_time() { return std::chrono::steady_clock::now(); }
+    std::chrono::steady_clock::time_point now() { return std::chrono::steady_clock::now(); }
 
 private:
-    std::chrono::steady_clock::time_point _initial_time;
-    std::chrono::steady_clock::time_point _last_time;
-    std::chrono::steady_clock::time_point _current_time;
+    std::chrono::steady_clock::time_point _time_origin;
+    std::chrono::steady_clock::time_point _time_last_frame;
+    std::chrono::steady_clock::time_point _time_this_frame;
     std::chrono::steady_clock::time_point _time_when_paused;
-    std::chrono::nanoseconds              _offset_with_std_time{0}; // Allows us to set_time as we wish
 };
 
 } // namespace details
