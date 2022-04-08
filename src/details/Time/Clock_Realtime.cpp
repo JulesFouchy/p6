@@ -32,7 +32,7 @@ float Clock_Realtime::time() const
 void Clock_Realtime::set_time(float new_time)
 {
     const auto new_chrono_time = std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(
-        1000000000.f * new_time // Convert to nanoseconds
+        1000000000.f * new_time // Convert from seconds to nanoseconds
         )};
 
     _time_origin = _time_this_frame - new_chrono_time;
@@ -40,10 +40,8 @@ void Clock_Realtime::set_time(float new_time)
 
 void Clock_Realtime::update()
 {
-    if (is_playing()) {
-        _time_last_frame = _time_this_frame;
-        _time_this_frame = now();
-    }
+    _time_last_frame = _time_this_frame;
+    _time_this_frame = now();
 }
 
 void Clock_Realtime::play()

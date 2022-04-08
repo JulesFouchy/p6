@@ -65,14 +65,14 @@ Context::Context(WindowCreationParams window_creation_params)
     framerate_synced_with_monitor();
 }
 
-static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::duration<float, std::micro>> capped_delta_time,
-                                           std::chrono::steady_clock::time_point                   last_update)
+static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanoseconds> capped_delta_time,
+                                           std::chrono::steady_clock::time_point   last_update)
 {
     if (!capped_delta_time) {
         return false;
     }
-    const auto delta = std::chrono::steady_clock::now() - last_update;
-    return delta < *capped_delta_time;
+    const auto delta_time = std::chrono::steady_clock::now() - last_update;
+    return delta_time < *capped_delta_time;
 }
 
 static bool skip_first_frames(details::Clock& clock)
@@ -95,13 +95,14 @@ void Context::start()
             if (!skip_first_frames(*_clock)) {                // Allow the clock to compute its delta_time() properly
                 render_to_screen();
                 check_for_mouse_movements();
-                if (!needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
+
+                if (!is_paused() &&
+                    !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
                     _clock->update();
-                    if (!is_paused()) {
-                        _last_update = std::chrono::steady_clock::now();
-                        update();
-                    }
+                    _last_update = std::chrono::steady_clock::now();
+                    update();
                 }
+
                 _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
                                                         framebuffer_size(),
                                                         glpp::Interpolation::NearestNeighbour);
@@ -661,7 +662,9 @@ void Context::framerate_synced_with_monitor()
 void Context::framerate_capped_at(float framerate)
 {
     glfwSwapInterval(0);
-    _capped_delta_time = std::chrono::duration<float, std::nano>{1000000000.f / framerate};
+    _capped_delta_time = std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(
+        1000000000.f / framerate // Convert from fps to nanoseconds
+        )};
 }
 
 void Context::framerate_as_fast_as_possible()

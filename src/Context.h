@@ -353,20 +353,20 @@ private:
     Transform2D make_transform_2D(FullScreen) const;
 
 private:
-    mutable details::UniqueGlfwWindow                       _window;
-    std::unique_ptr<details::Clock>                         _clock{std::make_unique<details::Clock_Realtime>()};
-    details::RectRenderer                                   _rect_renderer;
-    details::TextRenderer                                   _text_renderer;
-    ImageSize                                               _framebuffer_size;
-    ImageSize                                               _window_size;
-    glm::vec2                                               _mouse_position;
-    glm::vec2                                               _mouse_position_delta{0.f, 0.f};
-    glm::vec2                                               _drag_start_position{};
-    bool                                                    _is_dragging{false};
-    std::optional<std::chrono::duration<float, std::micro>> _capped_delta_time{std::nullopt};
-    std::chrono::steady_clock::time_point                   _last_update{};
-    Canvas                                                  _default_canvas{{1, 1}};
-    Shader                                                  _rect_shader{R"(
+    mutable details::UniqueGlfwWindow       _window;
+    std::unique_ptr<details::Clock>         _clock{std::make_unique<details::Clock_Realtime>()};
+    details::RectRenderer                   _rect_renderer;
+    details::TextRenderer                   _text_renderer;
+    ImageSize                               _framebuffer_size;
+    ImageSize                               _window_size;
+    glm::vec2                               _mouse_position;
+    glm::vec2                               _mouse_position_delta{0.f, 0.f};
+    glm::vec2                               _drag_start_position{};
+    bool                                    _is_dragging{false};
+    std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
+    std::chrono::steady_clock::time_point   _last_update{};
+    Canvas                                  _default_canvas{{1, 1}};
+    Shader                                  _rect_shader{R"(
 #version 330
 
 in vec2 _raw_uv;
@@ -429,7 +429,7 @@ void main() {
     _frag_color *= shape_factor;
 }
     )"};
-    Shader                                                  _line_shader{R"(
+    Shader                                  _line_shader{R"(
 #version 330
 out vec4 _frag_color;
 
