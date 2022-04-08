@@ -39,7 +39,6 @@ Context::Context(WindowCreationParams window_creation_params)
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
-    , _default_canvas{{1, 1}}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -63,6 +62,17 @@ Context::Context(WindowCreationParams window_creation_params)
     internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
     render_to_screen();
+    framerate_synced_with_monitor();
+}
+
+static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::duration<float, std::micro>> capped_delta_time,
+                                           std::chrono::steady_clock::time_point                   last_update)
+{
+    if (!capped_delta_time) {
+        return false;
+    }
+    const auto delta = std::chrono::steady_clock::now() - last_update;
+    return delta < *capped_delta_time;
 }
 
 void Context::start()
@@ -71,7 +81,9 @@ void Context::start()
         if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
             render_to_screen();
             check_for_mouse_movements();
-            if (!is_paused()) {
+            if (!is_paused() && !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
+                _last_update = std::chrono::steady_clock::now();
+                _clock->update();
                 update();
             }
             _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
@@ -83,7 +95,6 @@ void Context::start()
             internal::ImGuiWrapper::end_frame(*_window);
             render_to_screen();
             glfwSwapBuffers(*_window);
-            _clock->update();
         }
         glfwPollEvents();
     }
@@ -622,6 +633,24 @@ void Context::set_time_mode_fixedstep(float framerate)
     if (was_paused) {
         _clock->pause();
     }
+}
+
+void Context::framerate_synced_with_monitor()
+{
+    glfwSwapInterval(1);
+    _capped_delta_time.reset();
+}
+
+void Context::framerate_capped_at(float framerate)
+{
+    glfwSwapInterval(0);
+    _capped_delta_time = std::chrono::duration<float, std::nano>{1000000000.f / framerate};
+}
+
+void Context::framerate_as_fast_as_possible()
+{
+    glfwSwapInterval(0);
+    _capped_delta_time.reset();
 }
 
 /* ------------------------------- *

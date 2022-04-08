@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include "Canvas.h"
 #include "Color.h"
@@ -289,6 +290,16 @@ public:
     /// `framerate` is expressed in frames per second
     void set_time_mode_fixedstep(float framerate);
 
+    /// Makes sure that the framerate is adapted to your monitor: it will be 60 fps if you have a 60 Herz monitor (which is the most common), or 120 fps if you have a 120 Hertz monitor, etc.
+    /// This is the default framerate mode.
+    void framerate_synced_with_monitor();
+
+    /// Makes sure that the framerate will never go above the specified value.
+    void framerate_capped_at(float framerate);
+
+    /// Removes any limit on the framerate. update() will be called as fast as possible.
+    void framerate_as_fast_as_possible();
+
     /**@}*/
     /* ------------------------------- */
     /** \defgroup update-flow Update Flow
@@ -342,18 +353,20 @@ private:
     Transform2D make_transform_2D(FullScreen) const;
 
 private:
-    mutable details::UniqueGlfwWindow _window;
-    std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
-    details::RectRenderer             _rect_renderer;
-    details::TextRenderer             _text_renderer;
-    ImageSize                         _framebuffer_size;
-    ImageSize                         _window_size;
-    glm::vec2                         _mouse_position;
-    glm::vec2                         _mouse_position_delta{0.f, 0.f};
-    glm::vec2                         _drag_start_position{};
-    bool                              _is_dragging = false;
-    Canvas                            _default_canvas;
-    Shader                            _rect_shader{R"(
+    mutable details::UniqueGlfwWindow                       _window;
+    std::unique_ptr<details::Clock>                         _clock{std::make_unique<details::Clock_Realtime>()};
+    details::RectRenderer                                   _rect_renderer;
+    details::TextRenderer                                   _text_renderer;
+    ImageSize                                               _framebuffer_size;
+    ImageSize                                               _window_size;
+    glm::vec2                                               _mouse_position;
+    glm::vec2                                               _mouse_position_delta{0.f, 0.f};
+    glm::vec2                                               _drag_start_position{};
+    bool                                                    _is_dragging{false};
+    std::optional<std::chrono::duration<float, std::micro>> _capped_delta_time{std::nullopt};
+    std::chrono::steady_clock::time_point                   _last_update{};
+    Canvas                                                  _default_canvas{{1, 1}};
+    Shader                                                  _rect_shader{R"(
 #version 330
 
 in vec2 _raw_uv;
@@ -416,7 +429,7 @@ void main() {
     _frag_color *= shape_factor;
 }
     )"};
-    Shader                            _line_shader{R"(
+    Shader                                                  _line_shader{R"(
 #version 330
 out vec4 _frag_color;
 
