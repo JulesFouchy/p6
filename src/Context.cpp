@@ -475,7 +475,7 @@ void Context::line(glm::vec2 start, glm::vec2 end)
     _line_shader.set("_material", stroke.as_premultiplied_vec4());
     rectangle_with_shader(_line_shader,
                           Center{(start + end) / 2.f},
-                          Radii{glm::distance(start, end) / 2.f, stroke_weight},
+                          Radii{glm::distance(start, end) / 2.f + stroke_weight, stroke_weight},
                           Rotation{Radians{glm::orientedAngle(glm::vec2{1.f, 0.f},
                                                               glm::normalize(end - start))}});
 }
