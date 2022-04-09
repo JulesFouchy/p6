@@ -1,5 +1,6 @@
 #include "TextRenderer.h"
 #include <exe_path/exe_path.h>
+#include <stb_image/stb_image.h>
 #include <algorithm>
 #include <glpp/glpp.hpp>
 #include <iostream>
@@ -7,25 +8,20 @@
 #include <string>
 #include "../Shader.h"
 #include "CharCorrespondanceTable.h"
+#include "font_atlas"
+
+#define ARRAY_SIZE(A) (sizeof(A) / sizeof(*(A)))
 
 namespace p6::details
 {
 static Image load_font_atlas()
 {
-    try
-    {
-        return load_image(
-            (exe_path::dir() / "p6/res/font_atlas.png")
-                .string()
-                .c_str());
-    }
-    catch (const std::exception&)
-    {
-        std::cerr << "[p6] Failed to load \"p6/res/font_atlas.png\"\n"
-                  << "[--] Did you forget to call target_link_p6_library(${PROJECT_NAME}) in your CMakeLists.txt?\n"
-                  << "[--] See https://julesfouchy.github.io/p6-docs/tutorials/creating-a-project#cmakeliststxt\n";
-        throw;
-    }
+    stbi_set_flip_vertically_on_load(1);
+    int         w, h;
+    const auto* data = stbi_load_from_memory(font_atlas, ARRAY_SIZE(font_atlas), &w, &h, nullptr, 4);
+    return Image({static_cast<GLsizei>(w),
+                  static_cast<GLsizei>(h)},
+                 data);
 }
 
 TextRenderer::TextRenderer()
