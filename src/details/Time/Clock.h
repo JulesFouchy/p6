@@ -1,9 +1,11 @@
 #pragma once
 
-namespace p6 {
-namespace details {
-
-class Clock {
+namespace p6
+{
+namespace details
+{
+class Clock
+{
 public:
     Clock()          = default;
     virtual ~Clock() = default;

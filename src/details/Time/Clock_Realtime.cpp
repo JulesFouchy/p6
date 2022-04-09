@@ -1,8 +1,9 @@
 #include "Clock_Realtime.h"
 
-namespace p6 {
-namespace details {
-
+namespace p6
+{
+namespace details
+{
 Clock_Realtime::Clock_Realtime()
     : _time_origin(now())
     , _time_last_frame(now())
@@ -13,11 +14,13 @@ Clock_Realtime::Clock_Realtime()
 
 float Clock_Realtime::delta_time() const
 {
-    if (is_playing()) {
+    if (is_playing())
+    {
         const std::chrono::duration<float> dt = _time_this_frame - _time_last_frame;
         return dt.count();
     }
-    else {
+    else
+    {
         return 0.f;
     }
 }

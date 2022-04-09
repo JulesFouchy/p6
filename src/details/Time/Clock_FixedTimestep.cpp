@@ -1,9 +1,10 @@
 #include "Clock_FixedTimestep.h"
 #include <cmath>
 
-namespace p6 {
-namespace details {
-
+namespace p6
+{
+namespace details
+{
 Clock_FixedTimestep::Clock_FixedTimestep(float fps, float initial_time)
     : _dt(1.f / fps)
 {
@@ -12,10 +13,12 @@ Clock_FixedTimestep::Clock_FixedTimestep(float fps, float initial_time)
 
 float Clock_FixedTimestep::delta_time() const
 {
-    if (is_playing()) {
+    if (is_playing())
+    {
         return _dt;
     }
-    else {
+    else
+    {
         return 0.f;
     }
 }
@@ -32,7 +35,8 @@ void Clock_FixedTimestep::set_time(float new_time)
 
 void Clock_FixedTimestep::update()
 {
-    if (is_playing()) {
+    if (is_playing())
+    {
         _frames_count++;
     }
 }

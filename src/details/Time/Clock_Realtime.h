@@ -3,10 +3,12 @@
 #include <chrono>
 #include "Clock.h"
 
-namespace p6 {
-namespace details {
-
-class Clock_Realtime : public Clock {
+namespace p6
+{
+namespace details
+{
+class Clock_Realtime : public Clock
+{
 public:
     Clock_Realtime();
 

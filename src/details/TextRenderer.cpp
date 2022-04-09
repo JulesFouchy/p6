@@ -8,17 +8,19 @@
 #include "../Shader.h"
 #include "CharCorrespondanceTable.h"
 
-namespace p6::details {
-
+namespace p6::details
+{
 static Image load_font_atlas()
 {
-    try {
+    try
+    {
         return load_image(
             (exe_path::dir() / "p6/res/font_atlas.png")
                 .string()
                 .c_str());
     }
-    catch (const std::exception&) {
+    catch (const std::exception&)
+    {
         std::cerr << "[p6] Failed to load \"p6/res/font_atlas.png\"\n"
                   << "[--] Did you forget to call target_link_p6_library(${PROJECT_NAME}) in your CMakeLists.txt?\n"
                   << "[--] See https://julesfouchy.github.io/p6-docs/tutorials/creating-a-project#cmakeliststxt\n";
@@ -34,7 +36,8 @@ TextRenderer::TextRenderer()
 static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRenderer::ArrayOfUint8& cpu_buffer)
 {
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
-                   [](char16_t c) {
+                   [](char16_t c)
+                   {
                        const auto search = char_correspondance.find(c);
                        return search != char_correspondance.end()
                                   ? search->second
@@ -54,7 +57,8 @@ static void send_text_buffer_to_gpu(glpp::Texture1D& gpu_buffer, const TextRende
 
 void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, float inflating)
 {
-    if (text.length() > 1024) { // TODO do we need to handle arbitrarily long text?
+    if (text.length() > 1024)
+    { // TODO do we need to handle arbitrarily long text?
         throw std::runtime_error("[p6::TextRenderer] This text is too long to be rendered");
     }
 
@@ -71,11 +75,11 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, 
     _shader.set("_color", color.as_premultiplied_vec4());
 }
 
-namespace TextRendererU {
+namespace TextRendererU
+{
 Radii compute_text_radii(const std::u16string& text, float font_size)
 {
-    return font_size * glm::vec2{static_cast<float>(text.length()),
-                                 1.f};
+    return font_size * glm::vec2{static_cast<float>(text.length()), 1.f};
 }
 } // namespace TextRendererU
 

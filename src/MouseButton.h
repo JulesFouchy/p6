@@ -2,15 +2,17 @@
 
 #include <glm/glm.hpp>
 
-namespace p6 {
-
-enum class Button {
+namespace p6
+{
+enum class Button
+{
     Left,
     Right,
     Middle,
 };
 
-struct MouseButton {
+struct MouseButton
+{
     glm::vec2 position;
     Button    button;
 };

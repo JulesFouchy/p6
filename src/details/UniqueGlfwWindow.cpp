@@ -2,10 +2,12 @@
 #include <glpp/glpp.hpp>
 #include <stdexcept>
 
-namespace p6 {
-namespace details {
-
-class WindowFactory {
+namespace p6
+{
+namespace details
+{
+class WindowFactory
+{
 public:
     static void init()
     {
@@ -19,7 +21,8 @@ public:
 private:
     WindowFactory()
     {
-        if (!glfwInit()) {
+        if (!glfwInit())
+        {
             throw std::runtime_error("[p6::WindowFactory] Failed to intialize glfw");
         }
     }
@@ -43,11 +46,13 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
                                window_creation_params.height,
                                window_creation_params.title,
                                nullptr, nullptr);
-    if (!_window) {
+    if (!_window)
+    {
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to create a window");
     }
     glfwMakeContextCurrent(_window);
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) { // NOLINT
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+    { // NOLINT
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to intialize glad");
     }
 }
@@ -65,7 +70,8 @@ UniqueGlfwWindow::UniqueGlfwWindow(UniqueGlfwWindow&& rhs) noexcept
 
 UniqueGlfwWindow& UniqueGlfwWindow::operator=(UniqueGlfwWindow&& rhs) noexcept
 {
-    if (this != &rhs) {
+    if (this != &rhs)
+    {
         _window     = rhs._window;
         rhs._window = nullptr;
     }

@@ -2,10 +2,10 @@
 
 #include <glpp/glpp.hpp>
 
-namespace p6 {
-namespace details {
-
-class RectRenderer {
+namespace p6::details
+{
+class RectRenderer
+{
 public:
     RectRenderer();
     void render() const;
@@ -16,5 +16,4 @@ private:
     glpp::UniqueBuffer      _ibo;
 };
 
-} // namespace details
-} // namespace p6
+} // namespace p6::details

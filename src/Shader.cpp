@@ -4,8 +4,8 @@
 #include <iterator>
 #include <stdexcept>
 
-namespace p6 {
-
+namespace p6
+{
 static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
     program.attach_shader(*vertex_shader);
@@ -45,13 +45,15 @@ void main()
 #if !defined(NDEBUG)
     {
         const auto err = vert.check_compilation_errors();
-        if (err) {
+        if (err)
+        {
             throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
         }
     }
     {
         const auto err = frag.check_compilation_errors();
-        if (err) {
+        if (err)
+        {
             throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
         }
     }
@@ -117,8 +119,8 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 
-namespace internal {
-
+namespace internal
+{
 void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio)
 {
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);

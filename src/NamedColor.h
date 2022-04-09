@@ -4,8 +4,8 @@
 #pragma once
 #include "Color.h"
 
-namespace p6::NamedColor {
-
+namespace p6::NamedColor
+{
 static constexpr Color AirForceBlueRaf                     = hex(0x5D8AA8);
 static constexpr Color AirForceBlueUsaf                    = hex(0x00308F);
 static constexpr Color AirSuperiorityBlue                  = hex(0x72A0C1);

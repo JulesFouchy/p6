@@ -7,8 +7,8 @@
 #include "details/ImGuiWrapper.h"
 #include "math.h"
 
-namespace p6 {
-
+namespace p6
+{
 static Context& get_context(GLFWwindow* window)
 {
     return *reinterpret_cast<p6::Context*>(glfwGetWindowUserPointer(window)); // NOLINT
@@ -68,7 +68,8 @@ Context::Context(WindowCreationParams window_creation_params)
 static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanoseconds> capped_delta_time,
                                            std::chrono::steady_clock::time_point   last_update)
 {
-    if (!capped_delta_time) {
+    if (!capped_delta_time)
+    {
         return false;
     }
     const auto delta_time = std::chrono::steady_clock::now() - last_update;
@@ -78,26 +79,32 @@ static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanosecond
 static bool skip_first_frames(details::Clock& clock)
 {
     static int frame_count = 0;
-    if (frame_count < 2) {
+    if (frame_count < 2)
+    {
         frame_count++;
         clock.update();
         return true;
     }
-    else {
+    else
+    {
         return false;
     }
 }
 
 void Context::start()
 {
-    while (!glfwWindowShouldClose(*_window)) {
-        if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
-            if (!skip_first_frames(*_clock)) {                // Allow the clock to compute its delta_time() properly
+    while (!glfwWindowShouldClose(*_window))
+    {
+        if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
+        {
+            if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
+            {
                 render_to_screen();
                 check_for_mouse_movements();
 
-                if (!is_paused() &&
-                    !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update)) {
+                if (!is_paused()
+                    && !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update))
+                {
                     _clock->update();
                     _last_update = std::chrono::steady_clock::now();
                     update();
@@ -485,6 +492,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_stroke_weight", stroke_weight);
     _rect_renderer.render();
 }
+
 /* -------------------------------- *
  * ---------RENDER TARGETS--------- *
  * -------------------------------- */
@@ -516,30 +524,27 @@ glm::vec2 Context::mouse_delta() const
 
 bool Context::mouse_is_in_window() const
 {
-    if (!window_is_focused()) {
+    if (!window_is_focused())
+    {
         return false;
     }
     const auto pos = mouse();
-    return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() &&
-           pos.y >= -1.f && pos.y <= 1.f;
+    return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() && pos.y >= -1.f && pos.y <= 1.f;
 }
 
 bool Context::ctrl() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
 }
 
 bool Context::shift() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
 }
 
 bool Context::alt() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
 }
 
 /* ------------------------ *
@@ -637,7 +642,8 @@ void Context::set_time_mode_realtime()
     const auto was_paused = !_clock->is_playing();
     _clock                = std::make_unique<details::Clock_Realtime>();
     _clock->set_time(t);
-    if (was_paused) {
+    if (was_paused)
+    {
         _clock->pause();
     }
 }
@@ -648,7 +654,8 @@ void Context::set_time_mode_fixedstep(float framerate)
     const auto was_paused = !_clock->is_playing();
     _clock                = std::make_unique<details::Clock_FixedTimestep>(framerate);
     _clock->set_time(t);
-    if (was_paused) {
+    if (was_paused)
+    {
         _clock->pause();
     }
 }
@@ -714,7 +721,8 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 
 void Context::on_framebuffer_resize(int width, int height)
 {
-    if (width > 0 && height > 0) {
+    if (width > 0 && height > 0)
+    {
         _framebuffer_size = {width, height};
         _default_canvas.resize(_framebuffer_size);
         framebuffer_resized();
@@ -723,15 +731,18 @@ void Context::on_framebuffer_resize(int width, int height)
 
 void Context::on_window_resize(int width, int height)
 {
-    if (width > 0 && height > 0) {
+    if (width > 0 && height > 0)
+    {
         _window_size = {width, height};
     }
 }
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
 {
-    const auto mouse_button = [&]() {
-        switch (button) {
+    const auto mouse_button = [&]()
+    {
+        switch (button)
+        {
         case GLFW_MOUSE_BUTTON_LEFT:
             return Button::Left;
         case GLFW_MOUSE_BUTTON_RIGHT:
@@ -743,16 +754,19 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
         };
     }();
     const auto button_event = MouseButton{_mouse_position, mouse_button};
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS)
+    {
         _is_dragging         = true;
         _drag_start_position = _mouse_position;
         mouse_pressed(button_event);
     }
-    else if (action == GLFW_RELEASE) {
+    else if (action == GLFW_RELEASE)
+    {
         _is_dragging = false;
         mouse_released(button_event);
     }
-    else {
+    else
+    {
         throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
     }
 }
@@ -769,26 +783,32 @@ void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
     const auto  key      = Key{key_code == GLFW_KEY_SPACE ? " " : key_name ? key_name
                                                                            : "",
                          key_code};
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS)
+    {
         key_pressed(key);
     }
-    else if (action == GLFW_REPEAT) {
+    else if (action == GLFW_REPEAT)
+    {
         key_repeated(key);
     }
-    else if (action == GLFW_RELEASE) {
+    else if (action == GLFW_RELEASE)
+    {
         key_released(key);
     }
-    else {
+    else
+    {
         throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
     }
 }
 
 void Context::on_mouse_move()
 {
-    if (_is_dragging) {
+    if (_is_dragging)
+    {
         mouse_dragged({mouse(), mouse_delta(), _drag_start_position});
     }
-    else {
+    else
+    {
         mouse_moved({mouse(), mouse_delta()});
     }
 }
@@ -796,14 +816,17 @@ void Context::on_mouse_move()
 void Context::check_for_mouse_movements()
 {
     const auto mouse_pos = compute_mouse_position();
-    if (mouse_pos != _mouse_position) {
+    if (mouse_pos != _mouse_position)
+    {
         _mouse_position_delta = mouse_pos - _mouse_position;
         _mouse_position       = mouse_pos;
-        if (window_is_focused()) {
+        if (window_is_focused())
+        {
             on_mouse_move();
         }
     }
-    else {
+    else
+    {
         _mouse_position_delta = glm::vec2{0.f};
     }
 }

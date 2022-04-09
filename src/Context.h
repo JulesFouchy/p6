@@ -25,18 +25,22 @@
 #include "details/Time/Clock_Realtime.h"
 #include "details/UniqueGlfwWindow.h"
 
-namespace p6 {
-
-struct FullScreen {
+namespace p6
+{
+struct FullScreen
+{
 };
 
-struct FitX {
+struct FitX
+{
 };
 
-struct FitY {
+struct FitY
+{
 };
 
-class Context {
+class Context
+{
 public:
     Context(WindowCreationParams window_creation_params = {});
 
@@ -55,23 +59,32 @@ public:
     /* ------------------------------- */
 
     /// This function is called repeatedly. The framerate will be capped at your monitors refresh rate (60 frames per second on a typical monitor).
-    std::function<void()> update = []() {};
+    std::function<void()> update = []() {
+    };
     /// In this function you can render all the ImGui windows you want.
-    std::function<void()> imgui = []() {};
+    std::function<void()> imgui = []() {
+    };
     /// This function is called whenever the mouse is moved
-    std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
+    std::function<void(MouseMove)> mouse_moved = [](MouseMove) {
+    };
     /// This function is called whenever the mouse is dragged
-    std::function<void(MouseDrag)> mouse_dragged = [](MouseDrag) {};
+    std::function<void(MouseDrag)> mouse_dragged = [](MouseDrag) {
+    };
     /// This function is called whenever a mouse button is pressed
-    std::function<void(MouseButton)> mouse_pressed = [](MouseButton) {};
+    std::function<void(MouseButton)> mouse_pressed = [](MouseButton) {
+    };
     /// This function is called whenever a mouse button is released
-    std::function<void(MouseButton)> mouse_released = [](MouseButton) {};
+    std::function<void(MouseButton)> mouse_released = [](MouseButton) {
+    };
     /// This function is called whenever the mouse wheel is scrolled
-    std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {};
+    std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {
+    };
     /// This function is called whenever a keyboard key is pressed
-    std::function<void(Key)> key_pressed = [](Key) {};
+    std::function<void(Key)> key_pressed = [](Key) {
+    };
     /// This function is called whenever a keyboard key is released
-    std::function<void(Key)> key_released = [](Key) {};
+    std::function<void(Key)> key_released = [](Key) {
+    };
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
     ///
     /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
@@ -81,14 +94,17 @@ public:
     ///     character.move_forward(p6.delta_time());
     /// }
     /// ```
-    std::function<void(Key)> key_repeated = [](Key) {};
+    std::function<void(Key)> key_repeated = [](Key) {
+    };
     /// This function is called whenever an error occurs.
-    std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
+    std::function<void(std::string&&)> on_error = [](std::string&& error_message)
+    {
         throw std::runtime_error{error_message};
     };
     /// This function is called whenever the framebuffer is resized.
     /// If you call framebuffer_size(), framebuffer_width(), framebuffer_height() or aspect_ratio() inside framebuffer_resized() they will already be referring to the new size.
-    std::function<void()> framebuffer_resized = []() {};
+    std::function<void()> framebuffer_resized = []() {
+    };
 
     /**@}*/
     /* ------------------------------- */

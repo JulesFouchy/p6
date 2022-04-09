@@ -1,9 +1,8 @@
 #include "Transform2D.h"
-
 #include "math.h"
 
-namespace p6 {
-
+namespace p6
+{
 Transform2D make_transform_2D(Center center, Radius radius, Rotation rotation)
 {
     return make_transform_2D(center,

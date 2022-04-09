@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 #include "Angle.h"
 
-namespace p6 {
+namespace p6
+{
 /* ------------------------------- */
 /** \defgroup math Math
  * Mathematical functions and numerical constants.

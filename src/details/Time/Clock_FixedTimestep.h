@@ -2,10 +2,12 @@
 
 #include "Clock.h"
 
-namespace p6 {
-namespace details {
-
-class Clock_FixedTimestep : public Clock {
+namespace p6
+{
+namespace details
+{
+class Clock_FixedTimestep : public Clock
+{
 public:
     Clock_FixedTimestep(float fps, float initial_time = 0.f);
     ~Clock_FixedTimestep() = default;

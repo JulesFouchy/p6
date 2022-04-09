@@ -2,16 +2,19 @@
 #include <glm/glm.hpp>
 #include "Angle.h"
 
-namespace p6 {
-
+namespace p6
+{
 using Rotation = Angle;
 
-struct Transform2D {
+struct Transform2D
+{
     glm::vec2 position{0.f};
     glm::vec2 scale{1.f};
     Rotation  rotation{0.0_radians};
 };
-struct Center {
+
+struct Center
+{
     glm::vec2 value{0.f};
 
     Center() = default;
@@ -23,7 +26,8 @@ struct Center {
         : value{value} {}
 };
 
-struct TopLeftCorner {
+struct TopLeftCorner
+{
     glm::vec2 value{0.f};
 
     TopLeftCorner() = default;
@@ -35,7 +39,8 @@ struct TopLeftCorner {
         : value{value} {}
 };
 
-struct TopRightCorner {
+struct TopRightCorner
+{
     glm::vec2 value{0.f};
 
     TopRightCorner() = default;
@@ -47,7 +52,8 @@ struct TopRightCorner {
         : value{value} {}
 };
 
-struct BottomLeftCorner {
+struct BottomLeftCorner
+{
     glm::vec2 value{0.f};
 
     BottomLeftCorner() = default;
@@ -59,7 +65,8 @@ struct BottomLeftCorner {
         : value{value} {}
 };
 
-struct BottomRightCorner {
+struct BottomRightCorner
+{
     glm::vec2 value{0.f};
 
     BottomRightCorner() = default;
@@ -71,7 +78,8 @@ struct BottomRightCorner {
         : value{value} {}
 };
 
-struct Radii {
+struct Radii
+{
     glm::vec2 value{1.f};
 
     Radii() = default;
@@ -83,7 +91,8 @@ struct Radii {
         : value{v} {}
 };
 
-struct Radius {
+struct Radius
+{
     float value{1.f};
 
     Radius() = default;
@@ -91,7 +100,8 @@ struct Radius {
         : value{value} {};
 };
 
-struct RadiusX {
+struct RadiusX
+{
     float value{1.f};
 
     RadiusX() = default;
@@ -99,7 +109,8 @@ struct RadiusX {
         : value{value} {};
 };
 
-struct RadiusY {
+struct RadiusY
+{
     float value{1.f};
 
     RadiusY() = default;

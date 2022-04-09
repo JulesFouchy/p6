@@ -2,17 +2,19 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-namespace p6 {
-
-struct WindowCreationParams {
+namespace p6
+{
+struct WindowCreationParams
+{
     int         width  = 1280;
     int         height = 720;
     const char* title  = "p6";
 };
 
-namespace details {
-
-class UniqueGlfwWindow {
+namespace details
+{
+class UniqueGlfwWindow
+{
 public:
     explicit UniqueGlfwWindow(WindowCreationParams window_creation_params);
     ~UniqueGlfwWindow();

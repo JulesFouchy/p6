@@ -2,11 +2,12 @@
 
 #include "ImageCommon.h"
 
-namespace p6 {
-
+namespace p6
+{
 /// \ingroup canvas
 /// A canvas is an image that can be drawn onto.
-class Canvas : public ImageOrCanvas {
+class Canvas : public ImageOrCanvas
+{
 public:
     /// Creates an empty canvas
     /// texture_layout is an advanced setting; it controls how the pixels are gonna be stored on the GPU.

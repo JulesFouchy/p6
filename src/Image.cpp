@@ -1,8 +1,8 @@
 #include "Image.h"
 #include <img/img.hpp>
 
-namespace p6 {
-
+namespace p6
+{
 Image::Image(ImageSize size, const uint8_t* data, glpp::TextureLayout texture_layout)
 {
     _texture.upload_data(size, data, texture_layout);

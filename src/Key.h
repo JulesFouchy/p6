@@ -2,9 +2,10 @@
 
 #include <string>
 
-namespace p6 {
-
-struct Key {
+namespace p6
+{
+struct Key
+{
     /// The character that was pressed. This depends on the keyboard layout (qwerty vs azerty).
     /// If the key pressed was not a character (for example ENTER, SHIFT etc.) then this is an empty string.
     std::string logical;
