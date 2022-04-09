@@ -636,7 +636,7 @@ float Context::delta_time() const
     return _clock->delta_time();
 }
 
-void Context::set_time_mode_realtime()
+void Context::time_perceived_as_realtime()
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
@@ -648,7 +648,7 @@ void Context::set_time_mode_realtime()
     }
 }
 
-void Context::set_time_mode_fixedstep(float framerate)
+void Context::time_perceived_as_constant_delta_time(float framerate)
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
@@ -666,18 +666,18 @@ void Context::framerate_synced_with_monitor()
     _capped_delta_time.reset();
 }
 
+void Context::framerate_as_high_as_possible()
+{
+    glfwSwapInterval(0);
+    _capped_delta_time.reset();
+}
+
 void Context::framerate_capped_at(float framerate)
 {
     glfwSwapInterval(0);
     _capped_delta_time = std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(
         1000000000.f / framerate // Convert from fps to nanoseconds
         )};
-}
-
-void Context::framerate_as_fast_as_possible()
-{
-    glfwSwapInterval(0);
-    _capped_delta_time.reset();
 }
 
 /* ------------------------------- *

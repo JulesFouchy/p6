@@ -285,36 +285,36 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup time Time
-     * Query time information and control how the time evolves.
+     * Query time information and control how it elapses.
      * @{*/
     /* ------------------------------- */
 
     /// Returns the time in seconds since the creation of the Context.
     float time() const;
 
-    /// Returns the time in seconds since the last update() call (or 0 if this is the first update).
+    /// Returns an estimate of the time that elapses between two update() calls.
     float delta_time() const;
 
     /// Sets the time mode as *realtime*.
     /// This means that what is returned by time() and delta_time() corresponds to the actual time that elapsed in the real world.
     /// This is ideal when you want to do realtime animation and interactive sketches.
-    void set_time_mode_realtime();
+    void time_perceived_as_realtime();
 
-    /// Sets the time mode as *fixedstep*.
+    /// Sets the time mode as *constant delta time*.
     /// This means that what is returned by time() and delta_time() corresponds to an ideal world where there is exactly `1/framerate` seconds between each updates.
     /// This is ideal when you are exporting a video and don't want the long export time to influence your animation.
     /// `framerate` is expressed in frames per second
-    void set_time_mode_fixedstep(float framerate);
+    void time_perceived_as_constant_delta_time(float framerate);
 
-    /// Makes sure that the framerate is adapted to your monitor: it will be 60 fps if you have a 60 Herz monitor (which is the most common), or 120 fps if you have a 120 Hertz monitor, etc.
+    /// Makes sure that the framerate is adapted to your monitor: it will be 60 fps if you have a 60 Hertz monitor (which is the most common), or 120 fps if you have a 120 Hertz monitor, etc.
     /// This is the default framerate mode.
     void framerate_synced_with_monitor();
 
-    /// Makes sure that the framerate will never go above the specified value.
-    void framerate_capped_at(float framerate);
-
     /// Removes any limit on the framerate. update() will be called as fast as possible.
-    void framerate_as_fast_as_possible();
+    void framerate_as_high_as_possible();
+
+    /// Keeps the framerate at the given value.
+    void framerate_capped_at(float framerate);
 
     /**@}*/
     /* ------------------------------- */
