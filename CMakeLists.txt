@@ -76,5 +76,5 @@ endfunction()
 #! Deprecated
 function(target_link_p6_library TARGET)
     target_link_libraries(${TARGET} p6::p6)
-    message("[p6] Sorry, target_link_p6_library() is deprecated, you should go back to using the usual `target_link_libraries(${PROJECT_NAME} p6::p6)`")
+    message("[p6] Sorry, target_link_p6_library() is deprecated, you should go back to using the usual `target_link_libraries(\${PROJECT_NAME} p6::p6)`")
 endfunction()
