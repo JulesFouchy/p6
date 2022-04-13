@@ -46,6 +46,12 @@ void initialize(GLFWwindow* window)
     setup_for_glfw(window);
 }
 
+void shut_down()
+{
+    ImGui_ImplGlfw_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+}
+
 void begin_frame()
 {
     ImGui_ImplOpenGL3_NewFrame();

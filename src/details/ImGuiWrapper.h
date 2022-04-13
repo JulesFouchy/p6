@@ -6,6 +6,8 @@
 namespace p6::internal::ImGuiWrapper
 {
 void initialize(GLFWwindow* window);
+void shut_down();
+
 void begin_frame();
 void end_frame(GLFWwindow* window);
 

@@ -43,6 +43,7 @@ class Context
 {
 public:
     Context(WindowCreationParams window_creation_params = {});
+    ~Context();
 
     /* ------------------------------- */
     /** \defgroup events Events
