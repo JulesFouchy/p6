@@ -231,6 +231,15 @@ void Context::ellipse(Transform2D transform)
     render_with_rect_shader(transform, true, false);
 }
 
+void Context::triangle(Point2D p1, Point2D p2, Point2D p3)
+{
+    _triangle_renderer.render(p1.value, p2.value, p3.value,
+                              static_cast<float>(framebuffer_height()), aspect_ratio(),
+                              use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
+                              use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,
+                              stroke_weight);
+}
+
 static Radii make_radii(RadiusX radiusX, float aspect_ratio)
 {
     return {radiusX.value, radiusX.value / aspect_ratio};

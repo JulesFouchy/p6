@@ -23,6 +23,7 @@
 #include "details/Time/Clock.h"
 #include "details/Time/Clock_FixedTimestep.h"
 #include "details/Time/Clock_Realtime.h"
+#include "details/TriangleRenderer.h"
 #include "details/UniqueGlfwWindow.h"
 
 namespace p6
@@ -37,6 +38,17 @@ struct FitX
 
 struct FitY
 {
+};
+
+struct Point2D
+{
+    glm::vec2 value;
+
+    Point2D(float x, float y)
+        : value{x, y} {}
+
+    Point2D(glm::vec2 value)
+        : value{value} {}
 };
 
 class Context
@@ -154,6 +166,9 @@ public:
     void ellipse(FullScreen = {});
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
+
+    /// Draws a triangle
+    void triangle(Point2D, Point2D, Point2D);
 
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
@@ -373,6 +388,7 @@ private:
     mutable details::UniqueGlfwWindow       _window;
     std::unique_ptr<details::Clock>         _clock{std::make_unique<details::Clock_Realtime>()};
     details::RectRenderer                   _rect_renderer;
+    details::TriangleRenderer               _triangle_renderer;
     details::TextRenderer                   _text_renderer;
     ImageSize                               _framebuffer_size;
     ImageSize                               _window_size;
