@@ -13,10 +13,6 @@ uniform vec2 _p1;
 uniform vec2 _p2;
 uniform vec2 _p3;
 uniform float _window_aspect_ratio;
-// uniform mat3 _transform;
-// uniform float _window_inverse_aspect_ratio;
-// uniform vec2 _size;
-// uniform float _aspect_ratio;
 
 void main()
 {
@@ -51,10 +47,9 @@ void main()
     vec2 uv = 2. * (gl_FragCoord.xy / _window_height - vec2(0.5 * _window_aspect_ratio, 0.5));
     float d12 = dist(uv, _p1, _p2);
     float d = min(min(dist(uv, _p1, _p2), dist(uv, _p1, _p3)), dist(uv, _p2, _p3));
-    _frag_color = _fill_material;
-    if (d < _stroke_weight) {
-         _frag_color = _stroke_material + _frag_color * (1. - _stroke_material.a);
-    }
+    _frag_color = (d < _stroke_weight) 
+                    ? _stroke_material
+                    : _fill_material;
 }
     )"};
 
@@ -94,7 +89,7 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
     _shader.set("_window_height", framebuffer_height);
     _shader.set("_window_aspect_ratio", framebuffer_ratio);
     _shader.set("_fill_material", fill_material.value_or(glm::vec4{0.f}));
-    _shader.set("_stroke_material", stroke_material.value_or(glm::vec4{0.f}));
+    _shader.set("_stroke_material", stroke_material ? *stroke_material : *fill_material);
     _shader.set("_stroke_weight", stroke_weight);
     glBindVertexArray(*_vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
