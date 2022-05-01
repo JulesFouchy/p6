@@ -71,7 +71,7 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// This function is called repeatedly. The framerate will be capped at your monitors refresh rate (60 frames per second on a typical monitor).
+    /// This function is called repeatedly. The framerate is controlled by the framerate_xxx() functions.
     std::function<void()> update = []() {
     };
     /// In this function you can render all the ImGui windows you want.
