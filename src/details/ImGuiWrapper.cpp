@@ -46,10 +46,24 @@ void initialize(GLFWwindow* window)
     setup_for_glfw(window);
 }
 
-void shut_down()
+Raii::~Raii()
 {
-    ImGui_ImplGlfw_Shutdown();
-    ImGui_ImplOpenGL3_Shutdown();
+    if (!_moved_from)
+    {
+        ImGui_ImplGlfw_Shutdown();
+        ImGui_ImplOpenGL3_Shutdown();
+    }
+}
+
+Raii::Raii(Raii&& other) noexcept
+{
+    other._moved_from = true;
+}
+Raii& Raii::operator=(Raii&& other) noexcept
+{
+    _moved_from       = false;
+    other._moved_from = true;
+    return *this;
 }
 
 void begin_frame()

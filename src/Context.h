@@ -18,6 +18,7 @@
 #include "MouseScroll.h"
 #include "Shader.h"
 #include "Transform2D.h"
+#include "details/ImGuiWrapper.h"
 #include "details/RectRenderer.h"
 #include "details/TextRenderer.h"
 #include "details/Time/Clock.h"
@@ -55,7 +56,12 @@ class Context
 {
 public:
     Context(WindowCreationParams window_creation_params = {});
-    ~Context();
+
+    Context(Context&&) noexcept = default;
+    Context& operator=(Context&&) noexcept = default;
+
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
 
     /* ------------------------------- */
     /** \defgroup events Events
@@ -385,6 +391,7 @@ private:
     Transform2D make_transform_2D(FullScreen) const;
 
 private:
+    internal::ImGuiWrapper::Raii            _imgui_raii;
     mutable details::UniqueGlfwWindow       _window;
     std::unique_ptr<details::Clock>         _clock{std::make_unique<details::Clock_Realtime>()};
     details::RectRenderer                   _rect_renderer;

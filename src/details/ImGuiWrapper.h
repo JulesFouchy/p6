@@ -6,7 +6,22 @@
 namespace p6::internal::ImGuiWrapper
 {
 void initialize(GLFWwindow* window);
-void shut_down();
+
+class Raii
+{
+public:
+    Raii() = default;
+    ~Raii();
+
+    Raii(Raii&&) noexcept;
+    Raii& operator=(Raii&&) noexcept;
+
+    Raii(const Raii&) = delete;
+    Raii& operator=(const Raii&) = delete;
+
+private:
+    bool _moved_from{false};
+};
 
 void begin_frame();
 void end_frame(GLFWwindow* window);

@@ -4,7 +4,6 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
-#include "details/ImGuiWrapper.h"
 #include "math.h"
 
 namespace p6
@@ -63,11 +62,6 @@ Context::Context(WindowCreationParams window_creation_params)
 
     render_to_screen();
     framerate_synced_with_monitor();
-}
-
-Context::~Context()
-{
-    internal::ImGuiWrapper::shut_down();
 }
 
 static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanoseconds> capped_delta_time,
