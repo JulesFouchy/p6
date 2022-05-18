@@ -9,8 +9,8 @@ A take on improving the (already amazing) [p5](https://p5js.org/) API.
 
 int main()
 {
-    auto ctx = p6::Context{{1280, 720, "p6 example"}}; // Create a context with a window
-    ctx.start();                                       // Start the p6 application
+    auto ctx = p6::Context{{1280, 720, "Hello p6"}}; // Create a context with a window
+    ctx.start();                                     // Start the p6 application
 }
 ```
 
