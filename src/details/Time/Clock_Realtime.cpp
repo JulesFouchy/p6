@@ -1,9 +1,8 @@
 #include "Clock_Realtime.h"
 
-namespace p6
-{
-namespace details
-{
+namespace p6 {
+namespace details {
+
 Clock_Realtime::Clock_Realtime()
     : _time_origin(now())
     , _time_last_frame(now())
@@ -62,5 +61,5 @@ void Clock_Realtime::pause()
     _time_when_paused = now();
 }
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

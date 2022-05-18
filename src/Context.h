@@ -27,22 +27,13 @@
 #include "details/TriangleRenderer.h"
 #include "details/UniqueGlfwWindow.h"
 
-namespace p6
-{
-struct FullScreen
-{
-};
+namespace p6 {
 
-struct FitX
-{
-};
+struct FullScreen {};
+struct FitX {};
+struct FitY {};
 
-struct FitY
-{
-};
-
-struct Point2D
-{
+struct Point2D {
     glm::vec2 value;
 
     Point2D(float x, float y)
@@ -52,8 +43,7 @@ struct Point2D
         : value{value} {}
 };
 
-class Context
-{
+class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
 
@@ -116,8 +106,7 @@ public:
     std::function<void(Key)> key_repeated = [](Key) {
     };
     /// This function is called whenever an error occurs.
-    std::function<void(std::string&&)> on_error = [](std::string&& error_message)
-    {
+    std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};
     };
     /// This function is called whenever the framebuffer is resized.

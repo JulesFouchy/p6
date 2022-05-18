@@ -12,8 +12,8 @@
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof(*(A)))
 
-namespace p6::details
-{
+namespace p6::details {
+
 static Image load_font_atlas()
 {
     stbi_set_flip_vertically_on_load(1);
@@ -32,8 +32,7 @@ TextRenderer::TextRenderer()
 static void convert_and_copy_text_to_buffer(const std::u16string& text, TextRenderer::ArrayOfUint8& cpu_buffer)
 {
     std::transform(text.begin(), text.end(), cpu_buffer.begin(),
-                   [](char16_t c)
-                   {
+                   [](char16_t c) {
                        const auto search = char_correspondance.find(c);
                        return search != char_correspondance.end()
                                   ? search->second
@@ -71,8 +70,7 @@ void TextRenderer::setup_rendering_for(const std::u16string& text, Color color, 
     _shader.set("_color", color.as_premultiplied_vec4());
 }
 
-namespace TextRendererU
-{
+namespace TextRendererU {
 Radii compute_text_radii(const std::u16string& text, float font_size)
 {
     return font_size * glm::vec2{static_cast<float>(text.length()), 1.f};

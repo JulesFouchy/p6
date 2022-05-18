@@ -5,10 +5,9 @@
 #include <string_view>
 #include "Transform2D.h"
 
-namespace p6
-{
-class Shader
-{
+namespace p6 {
+
+class Shader {
 public:
     /// Throws std::runtime_error if there is an error while compiling the shader source code
     explicit Shader(std::string_view fragment_source_code);
@@ -37,8 +36,7 @@ private:
 /// Throws std::runtime_error if there is an error while compiling the shader source code.
 [[nodiscard]] Shader load_shader(std::filesystem::path fragment_shader_path);
 
-namespace internal
-{
+namespace internal {
 /// Set all needed uniforms for the p6 default vertex shader.
 void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio);
 

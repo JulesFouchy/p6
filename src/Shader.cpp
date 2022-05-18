@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include "details/make_absolute_path.h"
 
-namespace p6
-{
+namespace p6 {
+
 static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
     program.attach_shader(*vertex_shader);
@@ -120,8 +120,7 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 
-namespace internal
-{
+namespace internal {
 void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio)
 {
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);

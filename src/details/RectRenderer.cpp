@@ -39,5 +39,5 @@ void RectRenderer::render() const
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

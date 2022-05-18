@@ -3,12 +3,11 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-namespace p6::internal::ImGuiWrapper
-{
+namespace p6::internal::ImGuiWrapper {
+
 void initialize(GLFWwindow* window);
 
-class Raii
-{
+class Raii {
 public:
     Raii() = default;
     ~Raii();

@@ -4,16 +4,15 @@
 #include <glpp/extended.hpp>
 #include "ImageCommon.h"
 
-namespace p6
-{
+namespace p6 {
+
 /* ------------------------------- */
 /** \defgroup image Image
  * Load and query information about images.
  * @{*/
 /* ------------------------------- */
 
-class Image : public ImageOrCanvas
-{
+class Image : public ImageOrCanvas {
 public:
     /// Creates an Image filled with data.
     /// This is for advanded uses; prefer using p6::load_image().

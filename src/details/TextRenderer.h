@@ -7,15 +7,13 @@
 #include "../Image.h"
 #include "../Shader.h"
 
-namespace p6::details
-{
-namespace TextRendererU
-{
+namespace p6::details {
+
+namespace TextRendererU {
 Radii compute_text_radii(const std::u16string& text, float font_size);
 }
 
-class TextRenderer
-{
+class TextRenderer {
 public:
     TextRenderer();
 

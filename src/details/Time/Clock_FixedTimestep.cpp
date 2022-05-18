@@ -1,10 +1,9 @@
 #include "Clock_FixedTimestep.h"
 #include <cmath>
 
-namespace p6
-{
-namespace details
-{
+namespace p6 {
+namespace details {
+
 Clock_FixedTimestep::Clock_FixedTimestep(float fps, float initial_time)
     : _dt(1.f / fps)
 {
@@ -41,5 +40,5 @@ void Clock_FixedTimestep::update()
     }
 }
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

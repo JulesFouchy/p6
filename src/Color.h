@@ -4,10 +4,9 @@
 #include <string_view>
 #include <variant>
 
-namespace p6
-{
-class Color
-{
+namespace p6 {
+
+class Color {
 public:
     constexpr Color(float r = 0.f, float g = 0.f, float b = 0.f, float a = 1.f)
         : _r{r}, _g{g}, _b{b}, _a{a}

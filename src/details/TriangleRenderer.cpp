@@ -2,8 +2,8 @@
 #include <array>
 #include <stdexcept>
 
-namespace p6::details
-{
+namespace p6::details {
+
 TriangleRenderer::TriangleRenderer()
 {
     const auto vertex_shader = glpp::VertexShader{R"(

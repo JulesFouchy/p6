@@ -2,12 +2,10 @@
 #include <glpp/glpp.hpp>
 #include <stdexcept>
 
-namespace p6
-{
-namespace details
-{
-class WindowFactory
-{
+namespace p6 {
+namespace details {
+
+class WindowFactory {
 public:
     static void init()
     {
@@ -78,5 +76,5 @@ UniqueGlfwWindow& UniqueGlfwWindow::operator=(UniqueGlfwWindow&& rhs) noexcept
     return *this;
 }
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

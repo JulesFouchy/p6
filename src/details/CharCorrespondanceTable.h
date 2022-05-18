@@ -2,8 +2,7 @@
 
 #include <map>
 
-namespace p6::details
-{
+namespace p6::details {
 // "⏮⏪⏴⏺⏹⏵⏸⏩⏭♩♪♫♬♭♮♯←↑→↓↔↕↖↗↘↙↺↻★☻🕨🕪!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ αβγδεθλμξπρστφψωΓΔΘΛΠΣΦΨΩ∞ƒ∘∫∂∇√¡¢£¤¥¦§¨©ª«¬ ®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
 #pragma warning(disable : 4244)

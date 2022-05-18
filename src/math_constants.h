@@ -1,7 +1,7 @@
 #pragma once
 
-namespace p6
-{
+namespace p6 {
+
 /* ------------------------------- */
 /** \ingroup math 
  * @{*/

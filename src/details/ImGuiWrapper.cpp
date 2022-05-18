@@ -6,8 +6,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
 
-namespace p6::internal::ImGuiWrapper
-{
+namespace p6::internal::ImGuiWrapper {
+
 static void create_context()
 {
     // Setup Dear ImGui context

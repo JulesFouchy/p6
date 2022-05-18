@@ -3,12 +3,10 @@
 #include <chrono>
 #include "Clock.h"
 
-namespace p6
-{
-namespace details
-{
-class Clock_Realtime : public Clock
-{
+namespace p6 {
+namespace details {
+
+class Clock_Realtime : public Clock {
 public:
     Clock_Realtime();
 
@@ -31,5 +29,5 @@ private:
     std::chrono::steady_clock::time_point _time_when_paused;
 };
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

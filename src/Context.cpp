@@ -6,8 +6,8 @@
 #include <string>
 #include "math.h"
 
-namespace p6
-{
+namespace p6 {
+
 static Context& get_context(GLFWwindow* window)
 {
     return *reinterpret_cast<p6::Context*>(glfwGetWindowUserPointer(window)); // NOLINT
@@ -747,8 +747,7 @@ void Context::on_window_resize(int width, int height)
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
 {
-    const auto mouse_button = [&]()
-    {
+    const auto mouse_button = [&]() {
         switch (button)
         {
         case GLFW_MOUSE_BUTTON_LEFT:

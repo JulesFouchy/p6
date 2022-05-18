@@ -3,14 +3,13 @@
 #include <op/op.hpp>
 #include "math_constants.h"
 
-namespace p6
-{
+namespace p6 {
+
 struct Radians
     : public op::Addable<Radians>
     , public op::Subtractable<Radians>
     , public op::Negatable<Radians>
-    , public op::Scalable<Radians>
-{
+    , public op::Scalable<Radians> {
     float value{0.f};
 
     constexpr Radians() = default;
@@ -43,8 +42,7 @@ class Angle
     : public op::Addable<Angle>
     , public op::Subtractable<Angle>
     , public op::Negatable<Angle>
-    , public op::Scalable<Angle>
-{
+    , public op::Scalable<Angle> {
 public:
     constexpr Angle() = default;
     constexpr explicit Angle(Radians value)

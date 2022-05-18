@@ -2,10 +2,9 @@
 
 #include <glpp/glpp.hpp>
 
-namespace p6::details
-{
-class RectRenderer
-{
+namespace p6::details {
+
+class RectRenderer {
 public:
     RectRenderer();
     void render() const;

@@ -1,11 +1,9 @@
 #pragma once
 
-namespace p6
-{
-namespace details
-{
-class Clock
-{
+namespace p6 {
+namespace details {
+
+class Clock {
 public:
     Clock()          = default;
     virtual ~Clock() = default;
@@ -25,5 +23,5 @@ private:
     bool _is_playing = true;
 };
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

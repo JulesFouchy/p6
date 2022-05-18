@@ -1,10 +1,9 @@
 #include "Clock.h"
 #include <cassert>
 
-namespace p6
-{
-namespace details
-{
+namespace p6 {
+namespace details {
+
 void Clock::play()
 {
     _is_playing = true;
@@ -27,5 +26,5 @@ void Clock::toggle_play_pause()
     }
 }
 
-} // namespace details
-} // namespace p6
+}
+} // namespace p6::details

@@ -4,10 +4,9 @@
 #include <glpp/extended.hpp>
 #include <optional>
 
-namespace p6::details
-{
-class TriangleRenderer
-{
+namespace p6::details {
+
+class TriangleRenderer {
 public:
     TriangleRenderer();
     void render(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
