@@ -36,7 +36,7 @@ private:
 
 /// Loads an image from a file.
 /// Throws a `std::runtime_error` if the file doesn't exist or isn't a valid image file.
-Image load_image(const char* file_path);
+[[nodiscard]] Image load_image(const char* file_path);
 
 /**@}*/
 

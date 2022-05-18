@@ -34,7 +34,7 @@ private:
 
 /// Loads a Shader from a file containing the fragment shader's source code
 /// Throws std::runtime_error if there is an error while compiling the shader source code
-Shader load_shader(std::filesystem::path fragment_shader_path);
+[[nodiscard]] Shader load_shader(std::filesystem::path fragment_shader_path);
 
 namespace internal
 {
