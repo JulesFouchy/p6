@@ -44,24 +44,10 @@ target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_opengl3.cpp)
 target_link_libraries(p6 PUBLIC ImGui::ImGui)
 
 # ---Add p6 files---
+file(GLOB_RECURSE P6_SOURCES CONFIGURE_DEPENDS src/*)
+target_sources(p6 PRIVATE ${P6_SOURCES})
 target_include_directories(p6 PUBLIC include
-                                     third-party)
-target_sources(p6 PRIVATE
-    src/Context.cpp
-    src/Shader.cpp
-    src/Canvas.cpp
-    src/Image.cpp
-    src/math.cpp
-    src/Transform2D.cpp
-    src/internal/ImGuiWrapper.cpp
-    src/internal/UniqueGlfwWindow.cpp
-    src/internal/Time/Clock.cpp
-    src/internal/Time/Clock_FixedTimestep.cpp
-    src/internal/Time/Clock_Realtime.cpp
-    src/internal/RectRenderer.cpp
-    src/internal/TriangleRenderer.cpp
-    src/internal/TextRenderer.cpp
-    src/internal/make_absolute_path.cpp
+                                     third-party # For Dear ImGui
 )
 
 # ---Functions to copy files and folders---
