@@ -12,7 +12,7 @@
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof(*(A)))
 
-namespace p6::details {
+namespace p6::internal {
 
 static Image load_font_atlas()
 {
@@ -77,4 +77,4 @@ Radii compute_text_radii(const std::u16string& text, float font_size)
 }
 } // namespace TextRendererU
 
-} // namespace p6::details
+} // namespace p6::internal

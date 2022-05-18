@@ -18,14 +18,14 @@
 #include "MouseScroll.h"
 #include "Shader.h"
 #include "Transform2D.h"
-#include "details/ImGuiWrapper.h"
-#include "details/RectRenderer.h"
-#include "details/TextRenderer.h"
-#include "details/Time/Clock.h"
-#include "details/Time/Clock_FixedTimestep.h"
-#include "details/Time/Clock_Realtime.h"
-#include "details/TriangleRenderer.h"
-#include "details/UniqueGlfwWindow.h"
+#include "internal/ImGuiWrapper.h"
+#include "internal/RectRenderer.h"
+#include "internal/TextRenderer.h"
+#include "internal/Time/Clock.h"
+#include "internal/Time/Clock_FixedTimestep.h"
+#include "internal/Time/Clock_Realtime.h"
+#include "internal/TriangleRenderer.h"
+#include "internal/UniqueGlfwWindow.h"
 
 namespace p6 {
 
@@ -381,11 +381,11 @@ private:
 
 private:
     internal::ImGuiWrapper::Raii            _imgui_raii;
-    mutable details::UniqueGlfwWindow       _window;
-    std::unique_ptr<details::Clock>         _clock{std::make_unique<details::Clock_Realtime>()};
-    details::RectRenderer                   _rect_renderer;
-    details::TriangleRenderer               _triangle_renderer;
-    details::TextRenderer                   _text_renderer;
+    mutable internal::UniqueGlfwWindow      _window;
+    std::unique_ptr<internal::Clock>        _clock{std::make_unique<internal::Clock_Realtime>()};
+    internal::RectRenderer                  _rect_renderer;
+    internal::TriangleRenderer              _triangle_renderer;
+    internal::TextRenderer                  _text_renderer;
     ImageSize                               _framebuffer_size;
     ImageSize                               _window_size;
     glm::vec2                               _mouse_position;

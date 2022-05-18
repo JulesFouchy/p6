@@ -75,7 +75,7 @@ static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanosecond
     return delta_time < *capped_delta_time;
 }
 
-static bool skip_first_frames(details::Clock& clock)
+static bool skip_first_frames(internal::Clock& clock)
 {
     static int frame_count = 0;
     if (frame_count < 2)
@@ -382,13 +382,13 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
 }
 
 template<typename PositionSpecifier>
-static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const std::u16string& str,
+static void text_impl(Context& ctx, internal::TextRenderer& text_renderer, const std::u16string& str,
                       PositionSpecifier position_specifier, Rotation rotation)
 {
     text_renderer.setup_rendering_for(str, ctx.fill, ctx.text_inflating);
     ctx.rectangle_with_shader(text_renderer.shader(),
                               position_specifier,
-                              details::TextRendererU::compute_text_radii(str, ctx.text_size),
+                              internal::TextRendererU::compute_text_radii(str, ctx.text_size),
                               rotation);
 }
 
@@ -648,7 +648,7 @@ void Context::time_perceived_as_realtime()
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
-    _clock                = std::make_unique<details::Clock_Realtime>();
+    _clock                = std::make_unique<internal::Clock_Realtime>();
     _clock->set_time(t);
     if (was_paused)
     {
@@ -660,7 +660,7 @@ void Context::time_perceived_as_constant_delta_time(float framerate)
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
-    _clock                = std::make_unique<details::Clock_FixedTimestep>(framerate);
+    _clock                = std::make_unique<internal::Clock_FixedTimestep>(framerate);
     _clock->set_time(t);
     if (was_paused)
     {

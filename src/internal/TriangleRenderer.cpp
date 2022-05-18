@@ -2,7 +2,7 @@
 #include <array>
 #include <stdexcept>
 
-namespace p6::details {
+namespace p6::internal {
 
 TriangleRenderer::TriangleRenderer()
 {
@@ -95,4 +95,4 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-} // namespace p6::details
+} // namespace p6::internal

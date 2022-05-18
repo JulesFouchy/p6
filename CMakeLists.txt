@@ -53,15 +53,15 @@ target_sources(p6 PRIVATE
     src/Image.cpp
     src/math.cpp
     src/Transform2D.cpp
-    src/details/ImGuiWrapper.cpp
-    src/details/UniqueGlfwWindow.cpp
-    src/details/Time/Clock.cpp
-    src/details/Time/Clock_FixedTimestep.cpp
-    src/details/Time/Clock_Realtime.cpp
-    src/details/RectRenderer.cpp
-    src/details/TriangleRenderer.cpp
-    src/details/TextRenderer.cpp
-    src/details/make_absolute_path.cpp
+    src/internal/ImGuiWrapper.cpp
+    src/internal/UniqueGlfwWindow.cpp
+    src/internal/Time/Clock.cpp
+    src/internal/Time/Clock_FixedTimestep.cpp
+    src/internal/Time/Clock_Realtime.cpp
+    src/internal/RectRenderer.cpp
+    src/internal/TriangleRenderer.cpp
+    src/internal/TextRenderer.cpp
+    src/internal/make_absolute_path.cpp
 )
 
 # ---Functions to copy files and folders---

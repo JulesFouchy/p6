@@ -2,8 +2,7 @@
 
 #include "Clock.h"
 
-namespace p6 {
-namespace details {
+namespace p6::internal {
 
 class Clock_FixedTimestep : public Clock {
 public:
@@ -21,5 +20,4 @@ private:
     unsigned int _frames_count; // store time as an int to avoid floating point imprecisions when adding a small number (dt) to a big one (time) [don't know if this is really necessary though]
 };
 
-}
-} // namespace p6::details
+} // namespace p6::internal

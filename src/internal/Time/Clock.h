@@ -1,7 +1,6 @@
 #pragma once
 
-namespace p6 {
-namespace details {
+namespace p6::internal {
 
 class Clock {
 public:
@@ -23,5 +22,4 @@ private:
     bool _is_playing = true;
 };
 
-}
-} // namespace p6::details
+} // namespace p6::internal

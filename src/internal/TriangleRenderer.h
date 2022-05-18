@@ -4,7 +4,7 @@
 #include <glpp/extended.hpp>
 #include <optional>
 
-namespace p6::details {
+namespace p6::internal {
 
 class TriangleRenderer {
 public:
@@ -20,4 +20,4 @@ private:
     glpp::ext::Program      _shader;
 };
 
-} // namespace p6::details
+} // namespace p6::internal

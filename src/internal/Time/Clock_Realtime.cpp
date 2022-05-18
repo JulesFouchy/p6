@@ -1,7 +1,6 @@
 #include "Clock_Realtime.h"
 
-namespace p6 {
-namespace details {
+namespace p6::internal {
 
 Clock_Realtime::Clock_Realtime()
     : _time_origin(now())
@@ -61,5 +60,4 @@ void Clock_Realtime::pause()
     _time_when_paused = now();
 }
 
-}
-} // namespace p6::details
+} // namespace p6::internal
