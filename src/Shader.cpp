@@ -3,6 +3,7 @@
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <iterator>
 #include <stdexcept>
+#include "details/make_absolute_path.h"
 
 namespace p6
 {
@@ -115,7 +116,7 @@ void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
 
 Shader load_shader(std::filesystem::path fragment_shader_path)
 {
-    auto ifs = std::ifstream{fragment_shader_path};
+    auto ifs = std::ifstream{details::make_absolute_path(fragment_shader_path)};
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 
