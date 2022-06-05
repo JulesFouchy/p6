@@ -280,6 +280,9 @@ public:
     /// The default mode is CanvasSizeMode_SameAsWindow.
     void set_canvas_size_mode(CanvasSizeMode);
 
+    /// Returns the ratio that you need to multiply with in order to match the position and size of the `canvas` when it is fitted in the window.
+    float canvas_ratio(const Canvas& canvas) const;
+
     /// Saves the content of the window as an image file.
     /// Supported file types are .png and .jpeg/.jpg
     /// Simply use the corresponding extension to save in the desired format.
@@ -429,7 +432,7 @@ public:
 private:
     ImageSize window_size() const { return _window_size; }
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
-    float     window_to_canvas_ratio() const;
+    float     default_canvas_ratio() const;
 
     void        on_framebuffer_resize(int width, int height);
     friend void framebuffer_size_callback(GLFWwindow* window, int width, int height);

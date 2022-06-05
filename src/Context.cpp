@@ -558,6 +558,24 @@ void Context::set_canvas_size_mode(CanvasSizeMode mode)
     adapt_canvas_size_to_framebuffer_size();
 }
 
+static float canvas_ratio_impl(float canvas_ratio, float frame_ratio)
+{
+    if (canvas_ratio > frame_ratio)
+    {
+        return canvas_ratio / frame_ratio;
+    }
+    else
+    {
+        return 1.f;
+    }
+}
+
+float Context::canvas_ratio(const Canvas& canvas) const
+{
+    return canvas_ratio_impl(canvas.aspect_ratio(),
+                             _default_canvas.aspect_ratio());
+}
+
 /* ----------------------- *
  * ---------INPUT--------- *
  * ----------------------- */
@@ -855,18 +873,10 @@ bool Context::is_paused() const
  * ---------PRIVATE--------- *
  * ------------------------- */
 
-float Context::window_to_canvas_ratio() const
+float Context::default_canvas_ratio() const
 {
-    const auto canvas_ratio = _default_canvas.aspect_ratio();
-    const auto window_ratio = _window_size.aspect_ratio();
-    if (canvas_ratio > window_ratio)
-    {
-        return canvas_ratio / window_ratio;
-    }
-    else
-    {
-        return 1.f;
-    }
+    return canvas_ratio_impl(_default_canvas.aspect_ratio(),
+                             _window_size.aspect_ratio());
 }
 
 glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
@@ -874,11 +884,11 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
     const auto w = static_cast<float>(window_size().width());
     const auto h = static_cast<float>(window_size().height());
 
-    pos.y = h - pos.y;               // Make y-axis point up
-    pos.x -= w / 2.f;                // Center around 0
-    pos.y -= h / 2.f;                // Center around 0
-    pos /= h / 2.f;                  // Normalize
-    pos *= window_to_canvas_ratio(); // Adapt to the canvas, not the window
+    pos.y = h - pos.y;             // Make y-axis point up
+    pos.x -= w / 2.f;              // Center around 0
+    pos.y -= h / 2.f;              // Center around 0
+    pos /= h / 2.f;                // Normalize
+    pos *= default_canvas_ratio(); // Adapt to the canvas
     return pos;
 }
 
