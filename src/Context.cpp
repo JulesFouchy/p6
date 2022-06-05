@@ -684,24 +684,30 @@ static GLFWmonitor* current_monitor(GLFWwindow* window)
 
 void Context::go_fullscreen()
 {
-    glfwGetWindowPos(*_window, &_window_pos_x_before_fullscreen, &_window_pos_y_before_fullscreen);
-    glfwGetWindowSize(*_window, &_window_width_before_fullscreen, &_window_height_before_fullscreen);
+    if (!window_is_fullscreen())
+    {
+        glfwGetWindowPos(*_window, &_window_pos_x_before_fullscreen, &_window_pos_y_before_fullscreen);
+        glfwGetWindowSize(*_window, &_window_width_before_fullscreen, &_window_height_before_fullscreen);
 
-    GLFWmonitor*       monitor = current_monitor(*_window);
-    const GLFWvidmode* mode    = glfwGetVideoMode(monitor);
-    glfwSetWindowMonitor(*_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-    _window_is_fullscreen = true;
+        GLFWmonitor*       monitor = current_monitor(*_window);
+        const GLFWvidmode* mode    = glfwGetVideoMode(monitor);
+        glfwSetWindowMonitor(*_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        _window_is_fullscreen = true;
+    }
 }
 
 void Context::escape_fullscreen()
 {
-    glfwSetWindowMonitor(*_window, nullptr,
-                         _window_pos_x_before_fullscreen,
-                         _window_pos_y_before_fullscreen,
-                         _window_width_before_fullscreen,
-                         _window_height_before_fullscreen,
-                         0);
-    _window_is_fullscreen = false;
+    if (window_is_fullscreen())
+    {
+        glfwSetWindowMonitor(*_window, nullptr,
+                             _window_pos_x_before_fullscreen,
+                             _window_pos_y_before_fullscreen,
+                             _window_width_before_fullscreen,
+                             _window_height_before_fullscreen,
+                             0);
+        _window_is_fullscreen = false;
+    }
 }
 
 void Context::toggle_fullscreen()
