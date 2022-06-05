@@ -276,9 +276,13 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// Returns the aspect ratio of the window (a.k.a. width / height).
+    /// Returns the aspect ratio (a.k.a. width / height) of the current render target.
+    /// This render target is the window by default, unless you called render_to_canvas() in which case it will be the given canvas.
+    /// When you call render_to_screen() the render target goes back to beeing the window.
     float aspect_ratio() const;
-    /// Returns the inverse aspect ratio of the window (a.k.a. height / width).
+    /// Returns the inverse aspect ratio (a.k.a. height / width) of the current render target.
+    /// This render target is the window by default, unless you called render_to_canvas() in which case it will be the given canvas.
+    /// When you call render_to_screen() the render target goes back to beeing the window.
     float inverse_aspect_ratio() const;
     /// Returns the size of the framebuffer (width and height).
     ImageSize framebuffer_size() const;
@@ -405,6 +409,7 @@ private:
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};
     Canvas                                  _default_canvas{{1, 1}};
+    std::reference_wrapper<Canvas>          _current_render_target{_default_canvas};
     Shader                                  _rect_shader{R"(
 #version 330
 

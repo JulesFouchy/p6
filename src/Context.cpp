@@ -508,6 +508,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
 void Context::render_to_canvas(Canvas& canvas)
 {
     canvas.render_target().bind();
+    _current_render_target = canvas;
 }
 
 void Context::render_to_screen()
@@ -561,12 +562,12 @@ bool Context::alt() const
 
 float Context::aspect_ratio() const
 {
-    return static_cast<float>(framebuffer_width()) / static_cast<float>(framebuffer_height());
+    return _current_render_target.get().aspect_ratio();
 }
 
 float Context::inverse_aspect_ratio() const
 {
-    return static_cast<float>(framebuffer_height()) / static_cast<float>(framebuffer_width());
+    return _current_render_target.get().inverse_aspect_ratio();
 }
 
 ImageSize Context::framebuffer_size() const
