@@ -883,6 +883,14 @@ void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
                          key_code};
     if (action == GLFW_PRESS)
     {
+        if (key.physical == GLFW_KEY_F11)
+        {
+            toggle_fullscreen();
+        }
+        if (key.physical == GLFW_KEY_ESCAPE)
+        {
+            escape_fullscreen();
+        }
         key_pressed(key);
     }
     else if (action == GLFW_REPEAT)
