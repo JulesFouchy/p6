@@ -42,6 +42,7 @@ private:
 /// Saves the content of the canvas as an image file.
 /// Supported file types are .png and .jpeg/.jpg
 /// Simply use the corresponding extension to save in the desired format.
+/// If the path already exists, a number will be appended to the name and the previous file won't be overwritten.
 /// If the path is relative, it will be relative to the directory containing your executable.
 /// If some directories in the path don't exist yet, they will be created automatically.
 void save_image(const Canvas& canvas, std::filesystem::path path);
