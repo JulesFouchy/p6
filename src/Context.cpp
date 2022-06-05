@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/vector_angle.hpp>
+#include <img/img.hpp>
 #include <stdexcept>
 #include <string>
 #include "math.h"
@@ -92,6 +93,18 @@ static bool skip_first_frames(internal::Clock& clock)
     }
 }
 
+static auto to_img_size(const ImageSize& size)
+{
+    return img::SizeT<GLsizei>{size.width(),
+                               size.height()};
+}
+
+static auto to_p6_size(const img::SizeT<float>& size)
+{
+    return ImageSize{static_cast<GLsizei>(size.width()),
+                     static_cast<GLsizei>(size.height())};
+}
+
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window))
@@ -100,6 +113,11 @@ void Context::start()
         {
             if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
             {
+                // Clear the window in case the default canvas doesn't cover the whole window
+                glpp::bind_framebuffer(glpp::SCREEN_FRAMEBUFFER_ID);
+                glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+                glClear(GL_COLOR_BUFFER_BIT);
+
                 render_to_screen();
                 check_for_mouse_movements();
 
@@ -111,9 +129,14 @@ void Context::start()
                     update();
                 }
 
+                const auto size_inside_window = to_p6_size(img::SizeU::fit_into(to_img_size(_framebuffer_size),
+                                                                                to_img_size(_default_canvas.size())));
+                const auto pos_inside_window  = glpp::BlitTopLeftCorner{_framebuffer_size.width() / 2 - size_inside_window.width() / 2,
+                                                                       _framebuffer_size.height() / 2 - size_inside_window.height() / 2};
                 _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                        framebuffer_size(),
-                                                        glpp::Interpolation::NearestNeighbour);
+                                                        size_inside_window,
+                                                        glpp::Interpolation::NearestNeighbour,
+                                                        pos_inside_window);
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
                 internal::ImGuiWrapper::begin_frame();
                 imgui();
@@ -530,6 +553,12 @@ void Context::render_to_screen()
     render_to_canvas(_default_canvas);
 }
 
+void Context::set_canvas_size_mode(CanvasSizeMode mode)
+{
+    _default_canvas_size_mode = mode;
+    adapt_canvas_size_to_framebuffer_size();
+}
+
 /* ----------------------- *
  * ---------INPUT--------- *
  * ----------------------- */
@@ -597,6 +626,21 @@ int Context::framebuffer_width() const
 int Context::framebuffer_height() const
 {
     return framebuffer_size().height();
+}
+
+ImageSize Context::canvas_size() const
+{
+    return _default_canvas.size();
+}
+
+int Context::canvas_width() const
+{
+    return canvas_size().width();
+}
+
+int Context::canvas_height() const
+{
+    return canvas_size().height();
 }
 
 Color Context::read_pixel(glm::vec2 position) const
@@ -824,12 +868,46 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
     return pos / h * 2.f; // Normalize
 }
 
+namespace internal {
+
+static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size,
+                                                  CanvasSizeMode_SameAsWindow)
+{
+    canvas.resize(size);
+}
+
+static void adapt_canvas_size_to_framebuffer_size(Canvas&                  canvas, ImageSize,
+                                                  CanvasSizeMode_FixedSize mode)
+{
+    canvas.resize(mode.size);
+}
+
+static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size,
+                                                  CanvasSizeMode_FixedAspectRatio mode)
+{
+    canvas.resize(to_p6_size(img::SizeU::fit_into(to_img_size(size), mode.aspect_ratio)));
+}
+
+static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size,
+                                                  CanvasSizeMode_RelativeToWindow mode)
+{
+    canvas.resize({static_cast<GLsizei>(mode.width_scale * static_cast<float>(size.width())),
+                   static_cast<GLsizei>(mode.height_scale * static_cast<float>(size.height()))});
+}
+
+} // namespace internal
+
+void Context::adapt_canvas_size_to_framebuffer_size()
+{
+    std::visit([&](auto&& mode) { internal::adapt_canvas_size_to_framebuffer_size(_default_canvas, _framebuffer_size, mode); }, _default_canvas_size_mode);
+}
+
 void Context::on_framebuffer_resize(int width, int height)
 {
     if (width > 0 && height > 0)
     {
         _framebuffer_size = {width, height};
-        _default_canvas.resize(_framebuffer_size);
+        adapt_canvas_size_to_framebuffer_size();
         framebuffer_resized();
     }
 }

@@ -44,6 +44,42 @@ struct Point2D {
         : value{value} {}
 };
 
+/// The canvas will have the same size as the window's framebuffer
+struct CanvasSizeMode_SameAsWindow {};
+
+/// The canvas will have a size that perfectly fits into the window's framebuffer, while keeping the given aspect ratio
+struct CanvasSizeMode_FixedAspectRatio {
+    float aspect_ratio;
+};
+
+/// The canvas will have a given size, independently of the size of the window's framebuffer
+struct CanvasSizeMode_FixedSize {
+    ImageSize size;
+};
+
+/// The canvas will have a size that is a multiple of the windows's framebuffer size
+struct CanvasSizeMode_RelativeToWindow {
+    explicit CanvasSizeMode_RelativeToWindow(float scale)
+        : width_scale{scale}
+        , height_scale{scale}
+    {
+    }
+
+    CanvasSizeMode_RelativeToWindow(float width_scale, float height_scale)
+        : width_scale{width_scale}
+        , height_scale{height_scale}
+    {
+    }
+
+    float width_scale;
+    float height_scale;
+};
+
+using CanvasSizeMode = std::variant<CanvasSizeMode_SameAsWindow,
+                                    CanvasSizeMode_FixedAspectRatio,
+                                    CanvasSizeMode_FixedSize,
+                                    CanvasSizeMode_RelativeToWindow>;
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -236,9 +272,13 @@ public:
     /* ------------------------------- */
 
     /// Sets the canvas where all the drawing commands will happen on
-    void render_to_canvas(Canvas& canvas);
+    void render_to_canvas(Canvas&);
     /// Reset the Context to render to the screen
     void render_to_screen();
+
+    /// Sets how the size of the default canvas will be computed.
+    /// The default mode is CanvasSizeMode_SameAsWindow.
+    void set_canvas_size_mode(CanvasSizeMode);
 
     /// Saves the content of the window as an image file.
     /// Supported file types are .png and .jpeg/.jpg
@@ -292,6 +332,12 @@ public:
     int framebuffer_width() const;
     /// Returns the height of the framebuffer.
     int framebuffer_height() const;
+    /// Returns the size of the canvas (width and height).
+    ImageSize canvas_size() const;
+    /// Returns the width of the canvas.
+    int canvas_width() const;
+    /// Returns the height of the canvas.
+    int canvas_height() const;
     /// Returns the color of the pixel at the given position.
     /// The coordinates are expressed in the usual p6 coordinate system.
     /// The pixel is read from the current render target (which will be the screen in most cases, unless you used render_to_canvas())
@@ -399,6 +445,8 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
+    void adapt_canvas_size_to_framebuffer_size();
+
     void set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const;
     void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
 
@@ -421,6 +469,7 @@ private:
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};
     Canvas                                  _default_canvas{{1, 1}};
+    CanvasSizeMode                          _default_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
     std::reference_wrapper<Canvas>          _current_render_target{_default_canvas};
     bool                                    _window_is_fullscreen{false};
     int                                     _window_pos_x_before_fullscreen{};
