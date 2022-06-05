@@ -53,16 +53,6 @@ public:
     Context(const Context&) = delete;
     Context& operator=(const Context&) = delete;
 
-    /// Saves the content of the window as an image file.
-    /// Supported file types are .png and .jpeg/.jpg
-    /// Simply use the corresponding extension to save in the desired format.
-    /// If the path is relative, it will be relative to the directory containing your executable.
-    /// If some directories in the path don't exist yet, they will be created.
-    void save_image(std::filesystem::path path) const
-    {
-        p6::save_image(_default_canvas, path);
-    }
-
     /* ------------------------------- */
     /** \defgroup events Events
      * You can set those functions as you wish to react to various events.
@@ -247,6 +237,16 @@ public:
     void render_to_canvas(Canvas& canvas);
     /// Reset the Context to render to the screen
     void render_to_screen();
+
+    /// Saves the content of the window as an image file.
+    /// Supported file types are .png and .jpeg/.jpg
+    /// Simply use the corresponding extension to save in the desired format.
+    /// If the path is relative, it will be relative to the directory containing your executable.
+    /// If some directories in the path don't exist yet, they will be created.
+    void save_image(std::filesystem::path path) const
+    {
+        p6::save_image(_default_canvas, path);
+    }
 
     /**@}*/
     /* ------------------------------- */
