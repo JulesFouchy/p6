@@ -11,7 +11,7 @@ Canvas::Canvas(ImageSize size, glpp::TextureLayout texture_layout)
 
 void save_image(const Canvas& canvas, std::filesystem::path path)
 {
-    canvas.texture().bind();
+    canvas.render_target().bind();
     const auto                 width  = canvas.size().width();
     const auto                 height = canvas.size().height();
     std::unique_ptr<uint8_t[]> data{new uint8_t[4 * width * height]};
