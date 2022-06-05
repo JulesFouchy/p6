@@ -308,6 +308,16 @@ public:
     void restore_window();
     /// Returns true iff the window is currently maximized.
     bool window_is_maximized() const;
+    /// Makes the window fullscreen.
+    /// Does nothing if it was already fullscreen.
+    void go_fullscreen();
+    /// Exits the fullscreen mode.
+    /// Does nothing if the window wasn't fullscreen.
+    void escape_fullscreen();
+    /// Goes fullscreen if it wasn't, escapes fullscreen if it was.
+    void toggle_fullscreen();
+    /// Returns true iff the window is currently fullscreen.
+    bool window_is_fullscreen() const;
 
     /**@}*/
     /* ------------------------------- */
@@ -412,6 +422,11 @@ private:
     std::chrono::steady_clock::time_point   _last_update{};
     Canvas                                  _default_canvas{{1, 1}};
     std::reference_wrapper<Canvas>          _current_render_target{_default_canvas};
+    bool                                    _window_is_fullscreen{false};
+    int                                     _window_pos_x_before_fullscreen{};
+    int                                     _window_pos_y_before_fullscreen{};
+    int                                     _window_width_before_fullscreen;
+    int                                     _window_height_before_fullscreen;
     Shader                                  _rect_shader{R"(
 #version 330
 

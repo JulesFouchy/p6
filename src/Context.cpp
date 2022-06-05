@@ -38,6 +38,8 @@ Context::Context(WindowCreationParams window_creation_params)
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
+    , _window_width_before_fullscreen{window_creation_params.width}
+    , _window_height_before_fullscreen{window_creation_params.height}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -641,6 +643,82 @@ void Context::restore_window()
 bool Context::window_is_maximized() const
 {
     return glfwGetWindowAttrib(*_window, GLFW_MAXIMIZED);
+}
+
+static GLFWmonitor* current_monitor(GLFWwindow* window)
+{
+    // Thanks to https://stackoverflow.com/questions/21421074/how-to-create-a-full-screen-window-on-the-current-monitor-with-glfw
+    int                nmonitors, i;
+    int                wx, wy, ww, wh;
+    int                mx, my, mw, mh;
+    int                overlap, bestoverlap;
+    GLFWmonitor*       bestmonitor;
+    GLFWmonitor**      monitors;
+    const GLFWvidmode* mode;
+
+    bestoverlap = 0;
+    bestmonitor = NULL;
+
+    glfwGetWindowPos(window, &wx, &wy);
+    glfwGetWindowSize(window, &ww, &wh);
+    monitors = glfwGetMonitors(&nmonitors);
+
+    for (i = 0; i < nmonitors; i++)
+    {
+        mode = glfwGetVideoMode(monitors[i]);
+        glfwGetMonitorPos(monitors[i], &mx, &my);
+        mw = mode->width;
+        mh = mode->height;
+
+        overlap = std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) * std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
+
+        if (bestoverlap < overlap)
+        {
+            bestoverlap = overlap;
+            bestmonitor = monitors[i];
+        }
+    }
+
+    return bestmonitor;
+}
+
+void Context::go_fullscreen()
+{
+    glfwGetWindowPos(*_window, &_window_pos_x_before_fullscreen, &_window_pos_y_before_fullscreen);
+    glfwGetWindowSize(*_window, &_window_width_before_fullscreen, &_window_height_before_fullscreen);
+
+    GLFWmonitor*       monitor = current_monitor(*_window);
+    const GLFWvidmode* mode    = glfwGetVideoMode(monitor);
+    glfwSetWindowMonitor(*_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    _window_is_fullscreen = true;
+}
+
+void Context::escape_fullscreen()
+{
+    glfwSetWindowMonitor(*_window, nullptr,
+                         _window_pos_x_before_fullscreen,
+                         _window_pos_y_before_fullscreen,
+                         _window_width_before_fullscreen,
+                         _window_height_before_fullscreen,
+                         0);
+    _window_is_fullscreen = false;
+}
+
+void Context::toggle_fullscreen()
+{
+    if (window_is_fullscreen())
+    {
+        escape_fullscreen();
+    }
+    else
+    {
+        go_fullscreen();
+    }
+}
+
+bool Context::window_is_fullscreen() const
+{
+    return _window_is_fullscreen;
 }
 
 /* ---------------------- *
