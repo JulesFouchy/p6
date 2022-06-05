@@ -53,9 +53,14 @@ public:
     Context(const Context&) = delete;
     Context& operator=(const Context&) = delete;
 
+    /// Saves the content of the window as an image file.
+    /// Supported file types are .png and .jpeg/.jpg
+    /// Simply use the corresponding extension to save in the desired format.
+    /// If the path is relative, it will be relative to the directory containing your executable.
+    /// If some directories in the path don't exist yet, they will be created.
     void save(std::filesystem::path path) const
     {
-        save_canvas(_default_canvas, path);
+        p6::save(_default_canvas, path);
     }
 
     /* ------------------------------- */

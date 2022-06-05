@@ -9,7 +9,7 @@ Canvas::Canvas(ImageSize size, glpp::TextureLayout texture_layout)
     : _render_target{size, nullptr, texture_layout}
 {}
 
-void save_canvas(const Canvas& canvas, std::filesystem::path path)
+void save(const Canvas& canvas, std::filesystem::path path)
 {
     canvas.texture().bind();
     const auto                 width  = canvas.size().width();

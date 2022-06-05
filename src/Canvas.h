@@ -38,7 +38,12 @@ private:
     glpp::RenderTarget _render_target;
 };
 
-/// Saves
-void save_canvas(const Canvas& canvas, std::filesystem::path path);
+/// \ingroup canvas
+/// Saves the content of the canvas as an image file.
+/// Supported file types are .png and .jpeg/.jpg
+/// Simply use the corresponding extension to save in the desired format.
+/// If the path is relative, it will be relative to the directory containing your executable.
+/// If some directories in the path don't exist yet, they will be created.
+void save(const Canvas& canvas, std::filesystem::path path);
 
 } // namespace p6
