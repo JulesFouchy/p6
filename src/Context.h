@@ -58,9 +58,9 @@ public:
     /// Simply use the corresponding extension to save in the desired format.
     /// If the path is relative, it will be relative to the directory containing your executable.
     /// If some directories in the path don't exist yet, they will be created.
-    void save(std::filesystem::path path) const
+    void save_image(std::filesystem::path path) const
     {
-        p6::save(_default_canvas, path);
+        p6::save_image(_default_canvas, path);
     }
 
     /* ------------------------------- */
