@@ -7,6 +7,8 @@
 
 namespace p6 {
 
+int Shader::s_available_texture_slot{0};
+
 static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
     program.attach_shader(*vertex_shader);
@@ -112,6 +114,12 @@ void Shader::set(std::string_view uniform_name, const glm::mat3& value) const
 void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
 {
     set_uniform(_program, uniform_name, value);
+}
+void Shader::set(std::string_view uniform_name, const ImageOrCanvas& image) const
+{
+    image.texture().bind_to_texture_unit(s_available_texture_slot);
+    set_uniform(_program, uniform_name, s_available_texture_slot);
+    s_available_texture_slot = (s_available_texture_slot + 1) % 8;
 }
 
 Shader load_shader(std::filesystem::path fragment_shader_path)

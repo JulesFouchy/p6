@@ -23,7 +23,8 @@ public:
     void set(std::string_view uniform_name, const glm::mat2& value) const;
     void set(std::string_view uniform_name, const glm::mat3& value) const;
     void set(std::string_view uniform_name, const glm::mat4& value) const;
-    void set(std::string_view uniform_name, const ImageOrCanvas& value) const;
+    /// :warning: You can have at most 8 images set at once. This is a limitation of the GPUs.
+    void set(std::string_view uniform_name, const ImageOrCanvas& image) const;
 
 private:
     friend class Context;
@@ -31,6 +32,7 @@ private:
 
 private:
     glpp::ext::Program _program;
+    static int         s_available_texture_slot;
 };
 
 /// Loads a Shader from a file containing the fragment shader's source code.
