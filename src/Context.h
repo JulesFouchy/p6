@@ -271,7 +271,7 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// Sets a canvas to be the one that all the drawing commands will draw on, until you call render_to_main_canvas().
+    /// Sets a canvas to be the one that all the drawing commands will draw on, until you call render_to_main_canvas.
     void render_to_canvas(Canvas&);
     /// Reset the Context to render to the main canvas. The main canvas is the one that will be displayed in the window.
     void render_to_main_canvas();
