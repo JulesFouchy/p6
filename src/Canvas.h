@@ -43,7 +43,7 @@ private:
 /// Supported file types are .png and .jpeg/.jpg
 /// Simply use the corresponding extension to save in the desired format.
 /// If the path is relative, it will be relative to the directory containing your executable.
-/// If some directories in the path don't exist yet, they will be created.
+/// If some directories in the path don't exist yet, they will be created automatically.
 void save_image(const Canvas& canvas, std::filesystem::path path);
 
 } // namespace p6
