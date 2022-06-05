@@ -30,6 +30,7 @@
 namespace p6 {
 
 struct FullScreen {};
+struct Fit {};
 struct FitX {};
 struct FitY {};
 
@@ -165,6 +166,10 @@ public:
     /// Draws a triangle
     void triangle(Point2D, Point2D, Point2D);
 
+    /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
+    void image(const ImageOrCanvas&, Fit = {});
+    void image(const ImageOrCanvas&, FitX);
+    void image(const ImageOrCanvas&, FitY);
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
     void image(const ImageOrCanvas&, TopLeftCorner, RadiusX = {}, Rotation = {});
@@ -177,9 +182,6 @@ public:
     void image(const ImageOrCanvas&, TopRightCorner, RadiusY = {}, Rotation = {});
     void image(const ImageOrCanvas&, BottomLeftCorner, RadiusY = {}, Rotation = {});
     void image(const ImageOrCanvas&, BottomRightCorner, RadiusY = {}, Rotation = {});
-    /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
-    void image(const ImageOrCanvas&, FitX);
-    void image(const ImageOrCanvas&, FitY = {});
     /// Draws an image that takes the entire window. :warning: This might distort the image if the window doesn't have the same aspect ratio as the image.
     void image(const ImageOrCanvas&, FullScreen);
     /// Draws an image. :warning: This might distort the image if radii doesn't have the same aspect ratio as the image.

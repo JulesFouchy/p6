@@ -321,6 +321,18 @@ void Context::image(const ImageOrCanvas& img, Center center, Radii radii, Rotati
                                      rotation));
 }
 
+void Context::image(const ImageOrCanvas& img, Fit)
+{
+    if (img.aspect_ratio() < aspect_ratio())
+    {
+        image(img, FitY{});
+    }
+    else
+    {
+        image(img, FitX{});
+    }
+}
+
 void Context::image(const ImageOrCanvas& img, FitX)
 {
     image(img, Center{},
