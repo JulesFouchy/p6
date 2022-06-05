@@ -13,8 +13,8 @@ void save_image(const Canvas& canvas, std::filesystem::path path)
 {
     const auto automatically_restore_previous_bindings_at_end_of_scope = glpp::RenderTargetBindState_RAII{};
     canvas.render_target().bind();
-    const auto                 width  = canvas.size().width();
-    const auto                 height = canvas.size().height();
+    const auto                 width  = static_cast<img::Size::DataType>(canvas.size().width());
+    const auto                 height = static_cast<img::Size::DataType>(canvas.size().height());
     std::unique_ptr<uint8_t[]> data{new uint8_t[4 * width * height]};
     glReadPixels(0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height), GL_RGBA, GL_UNSIGNED_BYTE, data.get());
     const auto absolute_path = internal::make_absolute_path(path);

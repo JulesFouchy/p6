@@ -677,7 +677,7 @@ Color Context::read_pixel(glm::vec2 position) const
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previous_framebuffer);
     glpp::bind_framebuffer_as_read(main_canvas().render_target().framebuffer());
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
-    glpp::bind_framebuffer_as_read(previous_framebuffer);
+    glpp::bind_framebuffer_as_read(static_cast<GLuint>(previous_framebuffer));
     return p6::Color{static_cast<float>(channels[0]) / 255.f,
                      static_cast<float>(channels[1]) / 255.f,
                      static_cast<float>(channels[2]) / 255.f,

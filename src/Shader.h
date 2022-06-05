@@ -32,7 +32,7 @@ private:
 
 private:
     glpp::ext::Program _program;
-    static int         s_available_texture_slot;
+    static GLenum      s_available_texture_slot;
 };
 
 /// Loads a Shader from a file containing the fragment shader's source code.

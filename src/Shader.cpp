@@ -7,7 +7,7 @@
 
 namespace p6 {
 
-int Shader::s_available_texture_slot{0};
+GLenum Shader::s_available_texture_slot{0};
 
 static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
 {
