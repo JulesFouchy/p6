@@ -326,9 +326,8 @@ public:
         p6::save_image(_main_canvas, path);
     }
 
-    /// Returns the color of the pixel at the given position.
+    /// Returns the color of the pixel at the given position in the main canvas.
     /// The coordinates are expressed in the usual p6 coordinate system.
-    /// The pixel is read from the current canvas (which will be the main canvas in most cases, unless you used render_to_canvas())
     Color read_pixel(glm::vec2 position) const;
 
     /**@}*/

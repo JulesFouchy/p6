@@ -666,16 +666,18 @@ int Context::current_canvas_height() const
 
 Color Context::read_pixel(glm::vec2 position) const
 {
-    // const auto canvas_size = main_canvas_displayed_size_inside_window(); //TODO
-    // const auto size_ratio = canvas_size / ;
     const auto x = static_cast<int>(p6::map(position.x,
-                                            -aspect_ratio(), +aspect_ratio(),
+                                            -main_canvas_size().aspect_ratio(), +main_canvas_size().aspect_ratio(),
                                             0.f, static_cast<float>(main_canvas_width())));
     const auto y = static_cast<int>(p6::map(position.y,
                                             -1.f, +1.f,
                                             0.f, static_cast<float>(main_canvas_height())));
     uint8_t    channels[4];
+    GLint      previous_framebuffer;
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previous_framebuffer);
+    glpp::bind_framebuffer_as_read(main_canvas().render_target().framebuffer());
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
+    glpp::bind_framebuffer_as_read(previous_framebuffer);
     return p6::Color{static_cast<float>(channels[0]) / 255.f,
                      static_cast<float>(channels[1]) / 255.f,
                      static_cast<float>(channels[2]) / 255.f,
