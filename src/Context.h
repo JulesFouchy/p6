@@ -429,6 +429,7 @@ public:
 private:
     ImageSize window_size() const { return _window_size; }
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
+    float     window_to_canvas_ratio() const;
 
     void        on_framebuffer_resize(int width, int height);
     friend void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -462,7 +463,7 @@ private:
     internal::TextRenderer                  _text_renderer;
     ImageSize                               _framebuffer_size;
     ImageSize                               _window_size;
-    glm::vec2                               _mouse_position;
+    glm::vec2                               _mouse_position{};
     glm::vec2                               _mouse_position_delta{0.f, 0.f};
     glm::vec2                               _drag_start_position{};
     bool                                    _is_dragging{false};

@@ -38,7 +38,6 @@ Context::Context(WindowCreationParams window_creation_params)
     : _window{window_creation_params}
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
-    , _mouse_position{compute_mouse_position()}
     , _window_width_before_fullscreen{window_creation_params.width}
     , _window_height_before_fullscreen{window_creation_params.height}
 {
@@ -563,8 +562,7 @@ void Context::set_canvas_size_mode(CanvasSizeMode mode)
  * ---------INPUT--------- *
  * ----------------------- */
 
-glm::vec2
-    Context::mouse() const
+glm::vec2 Context::mouse() const
 {
     return _mouse_position;
 }
@@ -857,15 +855,31 @@ bool Context::is_paused() const
  * ---------PRIVATE--------- *
  * ------------------------- */
 
+float Context::window_to_canvas_ratio() const
+{
+    const auto canvas_ratio = _default_canvas.aspect_ratio();
+    const auto window_ratio = _window_size.aspect_ratio();
+    if (canvas_ratio > window_ratio)
+    {
+        return canvas_ratio / window_ratio;
+    }
+    else
+    {
+        return 1.f;
+    }
+}
+
 glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 {
     const auto w = static_cast<float>(window_size().width());
     const auto h = static_cast<float>(window_size().height());
 
-    pos.y = h - pos.y;    // Make y-axis point up
-    pos.x -= w / 2.f;     // Center around 0
-    pos.y -= h / 2.f;     // Center around 0
-    return pos / h * 2.f; // Normalize
+    pos.y = h - pos.y;               // Make y-axis point up
+    pos.x -= w / 2.f;                // Center around 0
+    pos.y -= h / 2.f;                // Center around 0
+    pos /= h / 2.f;                  // Normalize
+    pos *= window_to_canvas_ratio(); // Adapt to the canvas, not the window
+    return pos;
 }
 
 namespace internal {
