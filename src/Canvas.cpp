@@ -18,7 +18,19 @@ void save_image(const Canvas& canvas, std::filesystem::path path)
     glReadPixels(0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height), GL_RGBA, GL_UNSIGNED_BYTE, data.get());
     const auto absolute_path = internal::make_absolute_path(path);
     internal::make_directories_if_necessary(absolute_path);
-    img::save_png(absolute_path.string().c_str(), width, height, data.get(), 4);
+    if (path.extension() == ".png")
+    {
+        img::save_png(absolute_path.string().c_str(), width, height, data.get(), 4);
+    }
+    else if (path.extension() == ".jpg"
+             || path.extension() == ".jpeg")
+    {
+        img::save_jpeg(absolute_path.string().c_str(), width, height, data.get(), 4);
+    }
+    else
+    {
+        throw std::runtime_error{"[p6::save_image] Only supports .png, .jpeg and .jpg extensions"};
+    }
 }
 
 } // namespace p6
