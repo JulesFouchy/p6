@@ -146,9 +146,9 @@ public:
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};
     };
-    /// This function is called whenever the framebuffer is resized.
-    /// If you call framebuffer_size(), framebuffer_width(), framebuffer_height() or aspect_ratio() inside framebuffer_resized() they will already be referring to the new size.
-    std::function<void()> framebuffer_resized = []() {
+    /// This function is called whenever the main canvas is resized.
+    /// If you call main_canvas_size(), main_canvas_width(), main_canvas_height() or aspect_ratio() inside main_canvas_resized() they will already be referring to the new size.
+    std::function<void()> main_canvas_resized = []() {
     };
 
     /**@}*/
@@ -267,31 +267,69 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup canvas Canvas
-     * You can either draw directly to the screen (the default) or onto a Canvas.
+     * You can either draw directly in the window (the default) or onto a custom Canvas.
      * @{*/
     /* ------------------------------- */
 
-    /// Sets the canvas where all the drawing commands will happen on
+    /// Sets a canvas to be the one that all the drawing commands will draw on, until you call render_to_main_canvas().
     void render_to_canvas(Canvas&);
-    /// Reset the Context to render to the screen
-    void render_to_screen();
+    /// Reset the Context to render to the main canvas. The main canvas is the one that will be displayed in the window.
+    void render_to_main_canvas();
 
-    /// Sets how the size of the default canvas will be computed.
+    Canvas&       main_canvas() { return _main_canvas; }
+    const Canvas& main_canvas() const { return _main_canvas; }
+    Canvas&       current_canvas() { return _current_canvas; }
+    const Canvas& current_canvas() const { return _current_canvas; }
+
+    /// Returns the aspect ratio (a.k.a. width / height) of the current canvas.
+    /// This canvas is the window's main canvas by default, unless you called render_to_canvas() in which case it will be the given canvas.
+    /// When you call render_to_main_canvas() the current canvas goes back to beeing the window's main canvas.
+    float aspect_ratio() const;
+
+    /// Returns the inverse aspect ratio (a.k.a. height / width) of the current canvas.
+    /// This canvas is the window's main canvas by default, unless you called render_to_canvas() in which case it will be the given canvas.
+    /// When you call render_to_main_canvas() the current canvas goes back to beeing the window's main canvas.
+    float inverse_aspect_ratio() const;
+
+    /// Returns the size of the main canvas (width and height).
+    ImageSize main_canvas_size() const;
+
+    /// Returns the width of the main canvas.
+    int main_canvas_width() const;
+
+    /// Returns the height of the main canvas.
+    int main_canvas_height() const;
+
+    /// Returns the size of the current canvas (width and height).
+    ImageSize current_canvas_size() const;
+
+    /// Returns the width of the current canvas.
+    int current_canvas_width() const;
+
+    /// Returns the height of the current canvas.
+    int current_canvas_height() const;
+
+    /// Sets how the size of the main canvas will be computed.
     /// The default mode is CanvasSizeMode_SameAsWindow.
-    void set_canvas_size_mode(CanvasSizeMode);
+    void main_canvas_mode(CanvasSizeMode);
 
     /// Returns the ratio that you need to multiply with in order to match the position and size of the `canvas` when it is fitted in the window.
     float canvas_ratio(const Canvas& canvas) const;
 
-    /// Saves the content of the window as an image file.
+    /// Saves the content of the window's main canvas as an image file.
     /// Supported file types are .png and .jpeg/.jpg
     /// Simply use the corresponding extension to save in the desired format.
     /// If the path is relative, it will be relative to the directory containing your executable.
     /// If some directories in the path don't exist yet, they will be created automatically.
     void save_image(std::filesystem::path path) const
     {
-        p6::save_image(_default_canvas, path);
+        p6::save_image(_main_canvas, path);
     }
+
+    /// Returns the color of the pixel at the given position.
+    /// The coordinates are expressed in the usual p6 coordinate system.
+    /// The pixel is read from the current canvas (which will be the main canvas in most cases, unless you used render_to_canvas())
+    Color read_pixel(glm::vec2 position) const;
 
     /**@}*/
     /* ------------------------------- */
@@ -321,30 +359,6 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// Returns the aspect ratio (a.k.a. width / height) of the current render target.
-    /// This render target is the window by default, unless you called render_to_canvas() in which case it will be the given canvas.
-    /// When you call render_to_screen() the render target goes back to beeing the window.
-    float aspect_ratio() const;
-    /// Returns the inverse aspect ratio (a.k.a. height / width) of the current render target.
-    /// This render target is the window by default, unless you called render_to_canvas() in which case it will be the given canvas.
-    /// When you call render_to_screen() the render target goes back to beeing the window.
-    float inverse_aspect_ratio() const;
-    /// Returns the size of the framebuffer (width and height).
-    ImageSize framebuffer_size() const;
-    /// Returns the width of the framebuffer.
-    int framebuffer_width() const;
-    /// Returns the height of the framebuffer.
-    int framebuffer_height() const;
-    /// Returns the size of the canvas (width and height).
-    ImageSize canvas_size() const;
-    /// Returns the width of the canvas.
-    int canvas_width() const;
-    /// Returns the height of the canvas.
-    int canvas_height() const;
-    /// Returns the color of the pixel at the given position.
-    /// The coordinates are expressed in the usual p6 coordinate system.
-    /// The pixel is read from the current render target (which will be the screen in most cases, unless you used render_to_canvas())
-    Color read_pixel(glm::vec2 position) const;
     /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
     /// Focuses the window, making it pop to the foreground.
@@ -430,7 +444,6 @@ public:
 
     /**@}*/
 private:
-    ImageSize window_size() const { return _window_size; }
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
     float     default_canvas_ratio() const;
 
@@ -449,7 +462,9 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
-    void adapt_canvas_size_to_framebuffer_size();
+    void adapt_main_canvas_size_to_framebuffer_size();
+
+    ImageSize main_canvas_displayed_size_inside_window();
 
     void set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const;
     void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
@@ -472,9 +487,9 @@ private:
     bool                                    _is_dragging{false};
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};
-    Canvas                                  _default_canvas{{1, 1}};
-    CanvasSizeMode                          _default_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
-    std::reference_wrapper<Canvas>          _current_render_target{_default_canvas};
+    Canvas                                  _main_canvas{{1, 1}};
+    CanvasSizeMode                          _main_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
+    std::reference_wrapper<Canvas>          _current_canvas{_main_canvas};
     bool                                    _window_is_fullscreen{false};
     int                                     _window_pos_x_before_fullscreen{};
     int                                     _window_pos_y_before_fullscreen{};

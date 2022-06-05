@@ -62,7 +62,7 @@ Context::Context(WindowCreationParams window_creation_params)
 
     internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
-    render_to_screen();
+    render_to_main_canvas();
     framerate_synced_with_monitor();
 }
 
@@ -104,6 +104,12 @@ static auto to_p6_size(const img::SizeT<float>& size)
                      static_cast<GLsizei>(size.height())};
 }
 
+ImageSize Context::main_canvas_displayed_size_inside_window()
+{
+    return to_p6_size(img::SizeU::fit_into(to_img_size(_framebuffer_size),
+                                           to_img_size(_main_canvas.size())));
+}
+
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window))
@@ -117,7 +123,7 @@ void Context::start()
                 glClearColor(0.3f, 0.3f, 0.3f, 1.f);
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                render_to_screen();
+                render_to_main_canvas();
                 check_for_mouse_movements();
 
                 if (!is_paused()
@@ -128,19 +134,18 @@ void Context::start()
                     update();
                 }
 
-                const auto size_inside_window = to_p6_size(img::SizeU::fit_into(to_img_size(_framebuffer_size),
-                                                                                to_img_size(_default_canvas.size())));
+                const auto size_inside_window = main_canvas_displayed_size_inside_window();
                 const auto pos_inside_window  = glpp::BlitTopLeftCorner{_framebuffer_size.width() / 2 - size_inside_window.width() / 2,
                                                                        _framebuffer_size.height() / 2 - size_inside_window.height() / 2};
-                _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                        size_inside_window,
-                                                        glpp::Interpolation::NearestNeighbour,
-                                                        pos_inside_window);
+                _main_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                     size_inside_window,
+                                                     glpp::Interpolation::NearestNeighbour,
+                                                     pos_inside_window);
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
                 internal::ImGuiWrapper::begin_frame();
                 imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
-                render_to_screen();
+                render_to_main_canvas();
             }
             glfwSwapBuffers(*_window);
         }
@@ -252,7 +257,7 @@ void Context::ellipse(Transform2D transform)
 void Context::triangle(Point2D p1, Point2D p2, Point2D p3)
 {
     _triangle_renderer.render(p1.value, p2.value, p3.value,
-                              static_cast<float>(framebuffer_height()), aspect_ratio(),
+                              static_cast<float>(current_canvas_height()), aspect_ratio(),
                               use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
                               use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,
                               stroke_weight);
@@ -544,18 +549,18 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
 void Context::render_to_canvas(Canvas& canvas)
 {
     canvas.render_target().bind();
-    _current_render_target = canvas;
+    _current_canvas = canvas;
 }
 
-void Context::render_to_screen()
+void Context::render_to_main_canvas()
 {
-    render_to_canvas(_default_canvas);
+    render_to_canvas(_main_canvas);
 }
 
-void Context::set_canvas_size_mode(CanvasSizeMode mode)
+void Context::main_canvas_mode(CanvasSizeMode mode)
 {
-    _default_canvas_size_mode = mode;
-    adapt_canvas_size_to_framebuffer_size();
+    _main_canvas_size_mode = mode;
+    adapt_main_canvas_size_to_framebuffer_size();
 }
 
 static float canvas_ratio_impl(float canvas_ratio, float frame_ratio)
@@ -573,7 +578,7 @@ static float canvas_ratio_impl(float canvas_ratio, float frame_ratio)
 float Context::canvas_ratio(const Canvas& canvas) const
 {
     return canvas_ratio_impl(canvas.aspect_ratio(),
-                             _default_canvas.aspect_ratio());
+                             _main_canvas.aspect_ratio());
 }
 
 /* ----------------------- *
@@ -621,52 +626,54 @@ bool Context::alt() const
 
 float Context::aspect_ratio() const
 {
-    return _current_render_target.get().aspect_ratio();
+    return current_canvas().aspect_ratio();
 }
 
 float Context::inverse_aspect_ratio() const
 {
-    return _current_render_target.get().inverse_aspect_ratio();
+    return current_canvas().inverse_aspect_ratio();
 }
 
-ImageSize Context::framebuffer_size() const
+ImageSize Context::main_canvas_size() const
 {
-    return _framebuffer_size;
+    return _main_canvas.size();
 }
 
-int Context::framebuffer_width() const
+int Context::main_canvas_width() const
 {
-    return framebuffer_size().width();
+    return main_canvas_size().width();
 }
 
-int Context::framebuffer_height() const
+int Context::main_canvas_height() const
 {
-    return framebuffer_size().height();
+    return main_canvas_size().height();
 }
 
-ImageSize Context::canvas_size() const
+ImageSize Context::current_canvas_size() const
 {
-    return _default_canvas.size();
+    return current_canvas().size();
 }
 
-int Context::canvas_width() const
+int Context::current_canvas_width() const
 {
-    return canvas_size().width();
+    return current_canvas_size().width();
 }
 
-int Context::canvas_height() const
+int Context::current_canvas_height() const
 {
-    return canvas_size().height();
+    return current_canvas_size().height();
 }
 
 Color Context::read_pixel(glm::vec2 position) const
 {
+    // const auto canvas_size = main_canvas_displayed_size_inside_window(); //TODO
+    // const auto size_ratio = canvas_size / ;
     const auto x = static_cast<int>(p6::map(position.x,
                                             -aspect_ratio(), +aspect_ratio(),
-                                            0.f, static_cast<float>(framebuffer_width())));
+                                            0.f, static_cast<float>(main_canvas_width())));
     const auto y = static_cast<int>(p6::map(position.y,
                                             -1.f, +1.f,
-                                            0.f, static_cast<float>(framebuffer_height())));
+                                            0.f, static_cast<float>(main_canvas_height())));
     uint8_t    channels[4];
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
     return p6::Color{static_cast<float>(channels[0]) / 255.f,
@@ -875,14 +882,14 @@ bool Context::is_paused() const
 
 float Context::default_canvas_ratio() const
 {
-    return canvas_ratio_impl(_default_canvas.aspect_ratio(),
+    return canvas_ratio_impl(_main_canvas.aspect_ratio(),
                              _window_size.aspect_ratio());
 }
 
 glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 {
-    const auto w = static_cast<float>(window_size().width());
-    const auto h = static_cast<float>(window_size().height());
+    const auto w = static_cast<float>(_window_size.width());
+    const auto h = static_cast<float>(_window_size.height());
 
     pos.y = h - pos.y;             // Make y-axis point up
     pos.x -= w / 2.f;              // Center around 0
@@ -921,9 +928,10 @@ static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size
 
 } // namespace internal
 
-void Context::adapt_canvas_size_to_framebuffer_size()
+void Context::adapt_main_canvas_size_to_framebuffer_size()
 {
-    std::visit([&](auto&& mode) { internal::adapt_canvas_size_to_framebuffer_size(_default_canvas, _framebuffer_size, mode); }, _default_canvas_size_mode);
+    std::visit([&](auto&& mode) { internal::adapt_canvas_size_to_framebuffer_size(_main_canvas, _framebuffer_size, mode); }, _main_canvas_size_mode);
+    main_canvas_resized();
 }
 
 void Context::on_framebuffer_resize(int width, int height)
@@ -931,8 +939,7 @@ void Context::on_framebuffer_resize(int width, int height)
     if (width > 0 && height > 0)
     {
         _framebuffer_size = {width, height};
-        adapt_canvas_size_to_framebuffer_size();
-        framebuffer_resized();
+        adapt_main_canvas_size_to_framebuffer_size();
     }
 }
 

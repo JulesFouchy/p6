@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <glpp/extended.hpp>
 #include <string_view>
+#include "ImageCommon.h"
 #include "Transform2D.h"
 
 namespace p6 {
@@ -22,6 +23,7 @@ public:
     void set(std::string_view uniform_name, const glm::mat2& value) const;
     void set(std::string_view uniform_name, const glm::mat3& value) const;
     void set(std::string_view uniform_name, const glm::mat4& value) const;
+    void set(std::string_view uniform_name, const ImageOrCanvas& value) const;
 
 private:
     friend class Context;
