@@ -11,6 +11,7 @@ struct Transform2D {
     glm::vec2 scale{1.f};
     Rotation  rotation{0.0_radians};
 };
+
 struct Center {
     glm::vec2 value{0.f};
 

@@ -3,6 +3,7 @@
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <iterator>
 #include <stdexcept>
+#include "internal/make_absolute_path.h"
 
 namespace p6 {
 
@@ -11,12 +12,6 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
     program.attach_shader(*vertex_shader);
     program.attach_shader(*fragment_shader);
     program.link();
-#if !defined(NDEBUG)
-    const auto err = program.check_linking_errors();
-    if (err) {
-        throw std::runtime_error{"Shader linking failed:\n" + err.message()};
-    }
-#endif
 }
 
 Shader::Shader(std::string_view fragment_source_code)
@@ -51,14 +46,16 @@ void main()
 #if !defined(NDEBUG)
     {
         const auto err = vert.check_compilation_errors();
-        if (err) {
+        if (err)
+        {
             throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
         }
     }
     {
         const auto err = frag.check_compilation_errors();
-        if (err) {
-            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message() + fragment_source_code.data()};
+        if (err)
+        {
+            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
         }
     }
 #endif
@@ -119,7 +116,7 @@ void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
 
 Shader load_shader(std::filesystem::path fragment_shader_path)
 {
-    auto ifs = std::ifstream{fragment_shader_path};
+    auto ifs = std::ifstream{internal::make_absolute_path(fragment_shader_path)};
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 

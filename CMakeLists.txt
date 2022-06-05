@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
-cmake_policy(SET CMP0079 NEW) # To allow us to add libraries to the ImGui target
-cmake_policy(SET CMP0076 NEW) # To allow us to use target_sources() on ImGui
+cmake_minimum_required(VERSION 3.20)
 
 add_library(p6)
 add_library(p6::p6 ALIAS p6)
@@ -11,7 +9,7 @@ if (p6_ENABLE_WARNINGS_AS_ERRORS)
     if(MSVC)
         target_compile_options(p6 PRIVATE /WX /W4)
     else()
-        target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wsign-conversion)
+        target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wno-unknown-pragmas)
     endif()
     set(glpp_extended_ENABLE_WARNINGS_AS_ERRORS true)
     set(img_ENABLE_WARNINGS_AS_ERRORS true)
@@ -46,22 +44,10 @@ target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_opengl3.cpp)
 target_link_libraries(p6 PUBLIC ImGui::ImGui)
 
 # ---Add p6 files---
+file(GLOB_RECURSE P6_SOURCES CONFIGURE_DEPENDS src/*)
+target_sources(p6 PRIVATE ${P6_SOURCES})
 target_include_directories(p6 PUBLIC include
-                                     third-party)
-target_sources(p6 PRIVATE
-    src/Context.cpp
-    src/Shader.cpp
-    src/Canvas.cpp
-    src/Image.cpp
-    src/math.cpp
-    src/Transform2D.cpp
-    src/details/ImGuiWrapper.cpp
-    src/details/UniqueGlfwWindow.cpp
-    src/details/Time/Clock.cpp
-    src/details/Time/Clock_FixedTimestep.cpp
-    src/details/Time/Clock_Realtime.cpp
-    src/details/RectRenderer.cpp
-    src/details/TextRenderer.cpp
+                                     third-party # For Dear ImGui
 )
 
 # ---Functions to copy files and folders---
@@ -75,16 +61,8 @@ function(p6_copy_folder TARGET_NAME FOLDERNAME)
     Cool__target_copy_folder(${TARGET_NAME} ${FOLDERNAME})
 endfunction()
 
-# ---Functions to setup p6---
-cmake_path(RELATIVE_PATH CMAKE_CURRENT_SOURCE_DIR BASE_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE _P6_PATH)
-set(P6_PATH ${_P6_PATH} CACHE INTERNAL "") # Makes the variable accessible by parent CMakeLists.txt files; this allows them to call p6_setup_resources() manually if they want to
-function(p6_setup_resources TARGET)
-    Cool__target_copy_folder(${TARGET} ${P6_PATH}/res p6/res)
-endfunction()
-
-#! You **must** call this function to add p6 as a library used by your TARGET
-# Instead of calling the usual target_link_libraries(), because we need to do some additional setup
+#! Deprecated
 function(target_link_p6_library TARGET)
     target_link_libraries(${TARGET} p6::p6)
-    p6_setup_resources(${TARGET})
+    message("[p6] Sorry, target_link_p6_library() is deprecated, you should go back to using the usual `target_link_libraries(\${PROJECT_NAME} p6::p6)`")
 endfunction()

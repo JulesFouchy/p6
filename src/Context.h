@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include "Canvas.h"
 #include "Color.h"
@@ -17,27 +18,40 @@
 #include "MouseScroll.h"
 #include "Shader.h"
 #include "Transform2D.h"
-#include "details/RectRenderer.h"
-#include "details/TextRenderer.h"
-#include "details/Time/Clock.h"
-#include "details/Time/Clock_FixedTimestep.h"
-#include "details/Time/Clock_Realtime.h"
-#include "details/UniqueGlfwWindow.h"
+#include "internal/ImGuiWrapper.h"
+#include "internal/RectRenderer.h"
+#include "internal/TextRenderer.h"
+#include "internal/Time/Clock.h"
+#include "internal/Time/Clock_FixedTimestep.h"
+#include "internal/Time/Clock_Realtime.h"
+#include "internal/TriangleRenderer.h"
+#include "internal/UniqueGlfwWindow.h"
 
 namespace p6 {
 
-struct FullScreen {
-};
+struct FullScreen {};
+struct FitX {};
+struct FitY {};
 
-struct FitX {
-};
+struct Point2D {
+    glm::vec2 value;
 
-struct FitY {
+    Point2D(float x, float y)
+        : value{x, y} {}
+
+    Point2D(glm::vec2 value)
+        : value{value} {}
 };
 
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
+
+    Context(Context&&) noexcept = default;
+    Context& operator=(Context&&) noexcept = default;
+
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
 
     void save(std::filesystem::path path) const
     {
@@ -58,24 +72,33 @@ public:
      * @{*/
     /* ------------------------------- */
 
-    /// This function is called repeatedly. The framerate will be capped at your monitors refresh rate (60 frames per second on a typical monitor).
-    std::function<void()> update = []() {};
+    /// This function is called repeatedly. The framerate is controlled by the framerate_xxx() functions.
+    std::function<void()> update = []() {
+    };
     /// In this function you can render all the ImGui windows you want.
-    std::function<void()> imgui = []() {};
+    std::function<void()> imgui = []() {
+    };
     /// This function is called whenever the mouse is moved
-    std::function<void(MouseMove)> mouse_moved = [](MouseMove) {};
+    std::function<void(MouseMove)> mouse_moved = [](MouseMove) {
+    };
     /// This function is called whenever the mouse is dragged
-    std::function<void(MouseDrag)> mouse_dragged = [](MouseDrag) {};
+    std::function<void(MouseDrag)> mouse_dragged = [](MouseDrag) {
+    };
     /// This function is called whenever a mouse button is pressed
-    std::function<void(MouseButton)> mouse_pressed = [](MouseButton) {};
+    std::function<void(MouseButton)> mouse_pressed = [](MouseButton) {
+    };
     /// This function is called whenever a mouse button is released
-    std::function<void(MouseButton)> mouse_released = [](MouseButton) {};
+    std::function<void(MouseButton)> mouse_released = [](MouseButton) {
+    };
     /// This function is called whenever the mouse wheel is scrolled
-    std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {};
+    std::function<void(MouseScroll)> mouse_scrolled = [](MouseScroll) {
+    };
     /// This function is called whenever a keyboard key is pressed
-    std::function<void(Key)> key_pressed = [](Key) {};
+    std::function<void(Key)> key_pressed = [](Key) {
+    };
     /// This function is called whenever a keyboard key is released
-    std::function<void(Key)> key_released = [](Key) {};
+    std::function<void(Key)> key_released = [](Key) {
+    };
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
     ///
     /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
@@ -85,14 +108,16 @@ public:
     ///     character.move_forward(p6.delta_time());
     /// }
     /// ```
-    std::function<void(Key)> key_repeated = [](Key) {};
+    std::function<void(Key)> key_repeated = [](Key) {
+    };
     /// This function is called whenever an error occurs.
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
         throw std::runtime_error{error_message};
     };
     /// This function is called whenever the framebuffer is resized.
     /// If you call framebuffer_size(), framebuffer_width(), framebuffer_height() or aspect_ratio() inside framebuffer_resized() they will already be referring to the new size.
-    std::function<void()> framebuffer_resized = []() {};
+    std::function<void()> framebuffer_resized = []() {
+    };
 
     /**@}*/
     /* ------------------------------- */
@@ -141,6 +166,9 @@ public:
     void ellipse(FullScreen = {});
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
+
+    /// Draws a triangle
+    void triangle(Point2D, Point2D, Point2D);
 
     /// Draws an image. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Center, RadiusX = {}, Rotation = {});
@@ -253,6 +281,10 @@ public:
     int framebuffer_width() const;
     /// Returns the height of the framebuffer.
     int framebuffer_height() const;
+    /// Returns the color of the pixel at the given position.
+    /// The coordinates are expressed in the usual p6 coordinate system.
+    /// The pixel is read from the current render target (which will be the screen in most cases, unless you used render_to_canvas())
+    Color read_pixel(glm::vec2 position) const;
     /// Returns true iff the window is currently focused.
     bool window_is_focused() const;
     /// Focuses the window, making it pop to the foreground.
@@ -269,26 +301,36 @@ public:
     /**@}*/
     /* ------------------------------- */
     /** \defgroup time Time
-     * Query time information and control how the time evolves.
+     * Query time information and control how it elapses.
      * @{*/
     /* ------------------------------- */
 
     /// Returns the time in seconds since the creation of the Context.
     float time() const;
 
-    /// Returns the time in seconds since the last update() call (or 0 if this is the first update).
+    /// Returns an estimate of the time that elapses between two update() calls.
     float delta_time() const;
 
     /// Sets the time mode as *realtime*.
     /// This means that what is returned by time() and delta_time() corresponds to the actual time that elapsed in the real world.
     /// This is ideal when you want to do realtime animation and interactive sketches.
-    void set_time_mode_realtime();
+    void time_perceived_as_realtime();
 
-    /// Sets the time mode as *fixedstep*.
+    /// Sets the time mode as *constant delta time*.
     /// This means that what is returned by time() and delta_time() corresponds to an ideal world where there is exactly `1/framerate` seconds between each updates.
     /// This is ideal when you are exporting a video and don't want the long export time to influence your animation.
     /// `framerate` is expressed in frames per second
-    void set_time_mode_fixedstep(float framerate);
+    void time_perceived_as_constant_delta_time(float framerate);
+
+    /// Makes sure that the framerate is adapted to your monitor: it will be 60 fps if you have a 60 Hertz monitor (which is the most common), or 120 fps if you have a 120 Hertz monitor, etc.
+    /// This is the default framerate mode.
+    void framerate_synced_with_monitor();
+
+    /// Removes any limit on the framerate. update() will be called as fast as possible.
+    void framerate_as_high_as_possible();
+
+    /// Keeps the framerate at the given value.
+    void framerate_capped_at(float framerate);
 
     /**@}*/
     /* ------------------------------- */
@@ -343,18 +385,22 @@ private:
     Transform2D make_transform_2D(FullScreen) const;
 
 private:
-    mutable details::UniqueGlfwWindow _window;
-    std::unique_ptr<details::Clock>   _clock = std::make_unique<details::Clock_Realtime>();
-    details::RectRenderer             _rect_renderer;
-    details::TextRenderer             _text_renderer;
-    ImageSize                         _framebuffer_size;
-    ImageSize                         _window_size;
-    glm::vec2                         _mouse_position;
-    glm::vec2                         _mouse_position_delta{0.f, 0.f};
-    glm::vec2                         _drag_start_position{};
-    bool                              _is_dragging = false;
-    Canvas                            _default_canvas;
-    Shader                            _rect_shader{R"(
+    internal::ImGuiWrapper::Raii            _imgui_raii;
+    mutable internal::UniqueGlfwWindow      _window;
+    std::unique_ptr<internal::Clock>        _clock{std::make_unique<internal::Clock_Realtime>()};
+    internal::RectRenderer                  _rect_renderer;
+    internal::TriangleRenderer              _triangle_renderer;
+    internal::TextRenderer                  _text_renderer;
+    ImageSize                               _framebuffer_size;
+    ImageSize                               _window_size;
+    glm::vec2                               _mouse_position;
+    glm::vec2                               _mouse_position_delta{0.f, 0.f};
+    glm::vec2                               _drag_start_position{};
+    bool                                    _is_dragging{false};
+    std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
+    std::chrono::steady_clock::time_point   _last_update{};
+    Canvas                                  _default_canvas{{1, 1}};
+    Shader                                  _rect_shader{R"(
 #version 330
 
 in vec2 _raw_uv;
@@ -417,7 +463,7 @@ void main() {
     _frag_color *= shape_factor;
 }
     )"};
-    Shader                            _line_shader{R"(
+    Shader                                  _line_shader{R"(
 #version 330
 out vec4 _frag_color;
 

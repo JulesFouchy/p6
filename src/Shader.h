@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Transform2D.h"
 #include <filesystem>
 #include <glpp/extended.hpp>
 #include <string_view>
+#include "Transform2D.h"
 
 namespace p6 {
 
@@ -31,12 +31,12 @@ private:
     glpp::ext::Program _program;
 };
 
-/// Loads a Shader from a file containing the fragment shader's source code
-/// Throws std::runtime_error if there is an error while compiling the shader source code
-Shader load_shader(std::filesystem::path fragment_shader_path);
+/// Loads a Shader from a file containing the fragment shader's source code.
+/// If the path is relative, it will be relative to the directory containing your executable.
+/// Throws std::runtime_error if there is an error while compiling the shader source code.
+[[nodiscard]] Shader load_shader(std::filesystem::path fragment_shader_path);
 
 namespace internal {
-
 /// Set all needed uniforms for the p6 default vertex shader.
 void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio);
 

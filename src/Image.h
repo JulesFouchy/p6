@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <glpp/extended.hpp>
 #include "ImageCommon.h"
 
@@ -34,8 +35,9 @@ private:
 };
 
 /// Loads an image from a file.
+/// If the path is relative, it will be relative to the directory containing your executable.
 /// Throws a `std::runtime_error` if the file doesn't exist or isn't a valid image file.
-Image load_image(const char* file_path);
+[[nodiscard]] Image load_image(std::filesystem::path file_path);
 
 /**@}*/
 

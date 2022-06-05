@@ -19,3 +19,6 @@
 [submodule "third-party/exe_path"]
 	path = third-party/exe_path
 	url = https://github.com/CoolLibs/exe_path
+[submodule "tooling"]
+	path = tooling
+	url = https://github.com/CoolLibs/tooling

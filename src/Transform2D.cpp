@@ -1,5 +1,4 @@
 #include "Transform2D.h"
-
 #include "math.h"
 
 namespace p6 {

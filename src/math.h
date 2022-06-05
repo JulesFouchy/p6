@@ -4,6 +4,7 @@
 #include "Angle.h"
 
 namespace p6 {
+
 /* ------------------------------- */
 /** \defgroup math Math
  * Mathematical functions and numerical constants.

@@ -1,9 +1,9 @@
 #include "Context.h"
+#include <cstdint>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <stdexcept>
 #include <string>
-#include "details/ImGuiWrapper.h"
 #include "math.h"
 
 namespace p6 {
@@ -38,7 +38,6 @@ Context::Context(WindowCreationParams window_creation_params)
     , _window_size{window_creation_params.width,
                    window_creation_params.height}
     , _mouse_position{compute_mouse_position()}
-    , _default_canvas{{1, 1}}
 {
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
@@ -62,27 +61,64 @@ Context::Context(WindowCreationParams window_creation_params)
     internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
     render_to_screen();
+    framerate_synced_with_monitor();
+}
+
+static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanoseconds> capped_delta_time,
+                                           std::chrono::steady_clock::time_point   last_update)
+{
+    if (!capped_delta_time)
+    {
+        return false;
+    }
+    const auto delta_time = std::chrono::steady_clock::now() - last_update;
+    return delta_time < *capped_delta_time;
+}
+
+static bool skip_first_frames(internal::Clock& clock)
+{
+    static int frame_count = 0;
+    if (frame_count < 2)
+    {
+        frame_count++;
+        clock.update();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Context::start()
 {
-    while (!glfwWindowShouldClose(*_window)) {
-        if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) { // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
-            render_to_screen();
-            check_for_mouse_movements();
-            if (!is_paused()) {
-                update();
+    while (!glfwWindowShouldClose(*_window))
+    {
+        if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
+        {
+            if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
+            {
+                render_to_screen();
+                check_for_mouse_movements();
+
+                if (!is_paused()
+                    && !needs_to_wait_to_cap_framerate(_capped_delta_time, _last_update))
+                {
+                    _clock->update();
+                    _last_update = std::chrono::steady_clock::now();
+                    update();
+                }
+
+                _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                        framebuffer_size(),
+                                                        glpp::Interpolation::NearestNeighbour);
+                glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+                internal::ImGuiWrapper::begin_frame();
+                imgui();
+                internal::ImGuiWrapper::end_frame(*_window);
+                render_to_screen();
             }
-            _default_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                    framebuffer_size(),
-                                                    glpp::Interpolation::NearestNeighbour);
-            glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
-            internal::ImGuiWrapper::begin_frame();
-            imgui();
-            internal::ImGuiWrapper::end_frame(*_window);
-            render_to_screen();
             glfwSwapBuffers(*_window);
-            _clock->update();
         }
         glfwPollEvents();
     }
@@ -187,6 +223,15 @@ void Context::ellipse(Center center, Radii radii, Rotation rotation)
 void Context::ellipse(Transform2D transform)
 {
     render_with_rect_shader(transform, true, false);
+}
+
+void Context::triangle(Point2D p1, Point2D p2, Point2D p3)
+{
+    _triangle_renderer.render(p1.value, p2.value, p3.value,
+                              static_cast<float>(framebuffer_height()), aspect_ratio(),
+                              use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
+                              use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,
+                              stroke_weight);
 }
 
 static Radii make_radii(RadiusX radiusX, float aspect_ratio)
@@ -337,13 +382,13 @@ void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D trans
 }
 
 template<typename PositionSpecifier>
-static void text_impl(Context& ctx, details::TextRenderer& text_renderer, const std::u16string& str,
+static void text_impl(Context& ctx, internal::TextRenderer& text_renderer, const std::u16string& str,
                       PositionSpecifier position_specifier, Rotation rotation)
 {
     text_renderer.setup_rendering_for(str, ctx.fill, ctx.text_inflating);
     ctx.rectangle_with_shader(text_renderer.shader(),
                               position_specifier,
-                              details::TextRendererU::compute_text_radii(str, ctx.text_size),
+                              internal::TextRendererU::compute_text_radii(str, ctx.text_size),
                               rotation);
 }
 
@@ -438,7 +483,7 @@ void Context::line(glm::vec2 start, glm::vec2 end)
     _line_shader.set("_material", stroke.as_premultiplied_vec4());
     rectangle_with_shader(_line_shader,
                           Center{(start + end) / 2.f},
-                          Radii{glm::distance(start, end) / 2.f, stroke_weight},
+                          Radii{glm::distance(start, end) / 2.f + stroke_weight, stroke_weight},
                           Rotation{Radians{glm::orientedAngle(glm::vec2{1.f, 0.f},
                                                               glm::normalize(end - start))}});
 }
@@ -455,6 +500,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_stroke_weight", stroke_weight);
     _rect_renderer.render();
 }
+
 /* -------------------------------- *
  * ---------RENDER TARGETS--------- *
  * -------------------------------- */
@@ -486,30 +532,27 @@ glm::vec2 Context::mouse_delta() const
 
 bool Context::mouse_is_in_window() const
 {
-    if (!window_is_focused()) {
+    if (!window_is_focused())
+    {
         return false;
     }
     const auto pos = mouse();
-    return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() &&
-           pos.y >= -1.f && pos.y <= 1.f;
+    return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() && pos.y >= -1.f && pos.y <= 1.f;
 }
 
 bool Context::ctrl() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
 }
 
 bool Context::shift() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
 }
 
 bool Context::alt() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS ||
-           glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
 }
 
 /* ------------------------ *
@@ -539,6 +582,22 @@ int Context::framebuffer_width() const
 int Context::framebuffer_height() const
 {
     return framebuffer_size().height();
+}
+
+Color Context::read_pixel(glm::vec2 position) const
+{
+    const auto x = static_cast<int>(p6::map(position.x,
+                                            -aspect_ratio(), +aspect_ratio(),
+                                            0.f, static_cast<float>(framebuffer_width())));
+    const auto y = static_cast<int>(p6::map(position.y,
+                                            -1.f, +1.f,
+                                            0.f, static_cast<float>(framebuffer_height())));
+    uint8_t    channels[4];
+    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
+    return p6::Color{static_cast<float>(channels[0]) / 255.f,
+                     static_cast<float>(channels[1]) / 255.f,
+                     static_cast<float>(channels[2]) / 255.f,
+                     static_cast<float>(channels[3]) / 255.f};
 }
 
 bool Context::window_is_focused() const
@@ -585,26 +644,48 @@ float Context::delta_time() const
     return _clock->delta_time();
 }
 
-void Context::set_time_mode_realtime()
+void Context::time_perceived_as_realtime()
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
-    _clock                = std::make_unique<details::Clock_Realtime>();
+    _clock                = std::make_unique<internal::Clock_Realtime>();
     _clock->set_time(t);
-    if (was_paused) {
+    if (was_paused)
+    {
         _clock->pause();
     }
 }
 
-void Context::set_time_mode_fixedstep(float framerate)
+void Context::time_perceived_as_constant_delta_time(float framerate)
 {
     const auto t          = _clock->time();
     const auto was_paused = !_clock->is_playing();
-    _clock                = std::make_unique<details::Clock_FixedTimestep>(framerate);
+    _clock                = std::make_unique<internal::Clock_FixedTimestep>(framerate);
     _clock->set_time(t);
-    if (was_paused) {
+    if (was_paused)
+    {
         _clock->pause();
     }
+}
+
+void Context::framerate_synced_with_monitor()
+{
+    glfwSwapInterval(1);
+    _capped_delta_time.reset();
+}
+
+void Context::framerate_as_high_as_possible()
+{
+    glfwSwapInterval(0);
+    _capped_delta_time.reset();
+}
+
+void Context::framerate_capped_at(float framerate)
+{
+    glfwSwapInterval(0);
+    _capped_delta_time = std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(
+        1000000000.f / framerate // Convert from fps to nanoseconds
+        )};
 }
 
 /* ------------------------------- *
@@ -648,7 +729,8 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 
 void Context::on_framebuffer_resize(int width, int height)
 {
-    if (width > 0 && height > 0) {
+    if (width > 0 && height > 0)
+    {
         _framebuffer_size = {width, height};
         _default_canvas.resize(_framebuffer_size);
         framebuffer_resized();
@@ -657,7 +739,8 @@ void Context::on_framebuffer_resize(int width, int height)
 
 void Context::on_window_resize(int width, int height)
 {
-    if (width > 0 && height > 0) {
+    if (width > 0 && height > 0)
+    {
         _window_size = {width, height};
     }
 }
@@ -665,7 +748,8 @@ void Context::on_window_resize(int width, int height)
 void Context::on_mouse_button(int button, int action, int /*mods*/)
 {
     const auto mouse_button = [&]() {
-        switch (button) {
+        switch (button)
+        {
         case GLFW_MOUSE_BUTTON_LEFT:
             return Button::Left;
         case GLFW_MOUSE_BUTTON_RIGHT:
@@ -677,16 +761,19 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
         };
     }();
     const auto button_event = MouseButton{_mouse_position, mouse_button};
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS)
+    {
         _is_dragging         = true;
         _drag_start_position = _mouse_position;
         mouse_pressed(button_event);
     }
-    else if (action == GLFW_RELEASE) {
+    else if (action == GLFW_RELEASE)
+    {
         _is_dragging = false;
         mouse_released(button_event);
     }
-    else {
+    else
+    {
         throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
     }
 }
@@ -703,26 +790,32 @@ void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
     const auto  key      = Key{key_code == GLFW_KEY_SPACE ? " " : key_name ? key_name
                                                                            : "",
                          key_code};
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS)
+    {
         key_pressed(key);
     }
-    else if (action == GLFW_REPEAT) {
+    else if (action == GLFW_REPEAT)
+    {
         key_repeated(key);
     }
-    else if (action == GLFW_RELEASE) {
+    else if (action == GLFW_RELEASE)
+    {
         key_released(key);
     }
-    else {
+    else
+    {
         throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
     }
 }
 
 void Context::on_mouse_move()
 {
-    if (_is_dragging) {
+    if (_is_dragging)
+    {
         mouse_dragged({mouse(), mouse_delta(), _drag_start_position});
     }
-    else {
+    else
+    {
         mouse_moved({mouse(), mouse_delta()});
     }
 }
@@ -730,14 +823,17 @@ void Context::on_mouse_move()
 void Context::check_for_mouse_movements()
 {
     const auto mouse_pos = compute_mouse_position();
-    if (mouse_pos != _mouse_position) {
+    if (mouse_pos != _mouse_position)
+    {
         _mouse_position_delta = mouse_pos - _mouse_position;
         _mouse_position       = mouse_pos;
-        if (window_is_focused()) {
+        if (window_is_focused())
+        {
             on_mouse_move();
         }
     }
-    else {
+    else
+    {
         _mouse_position_delta = glm::vec2{0.f};
     }
 }
