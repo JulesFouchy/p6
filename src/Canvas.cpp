@@ -11,6 +11,7 @@ Canvas::Canvas(ImageSize size, glpp::TextureLayout texture_layout)
 
 void save_image(const Canvas& canvas, std::filesystem::path path)
 {
+    const auto automatically_restore_previous_bindings_at_end_of_scope = glpp::RenderTargetBindState_RAII{};
     canvas.render_target().bind();
     const auto                 width  = canvas.size().width();
     const auto                 height = canvas.size().height();
