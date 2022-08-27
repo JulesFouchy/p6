@@ -10,10 +10,10 @@ public:
     {
         static WindowFactory instance{};
     }
-    WindowFactory(const WindowFactory&) = delete;
+    WindowFactory(const WindowFactory&)            = delete;
     WindowFactory& operator=(const WindowFactory&) = delete;
     WindowFactory(WindowFactory&&)                 = delete;
-    WindowFactory& operator=(WindowFactory&&) = delete;
+    WindowFactory& operator=(WindowFactory&&)      = delete;
 
 private:
     WindowFactory()
@@ -33,12 +33,10 @@ private:
 UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
 {
     WindowFactory::init();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-#if defined(__APPLE__)
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Required on MacOS
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);           // Required on MacOS
     _window = glfwCreateWindow(window_creation_params.width,
                                window_creation_params.height,
                                window_creation_params.title,
