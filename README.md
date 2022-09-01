@@ -1,6 +1,8 @@
 # p6
 
-A take on improving the (already amazing) [p5](https://p5js.org/) API.
+*A take on improving the (already amazing) [p5](https://p5js.org/) API.*
+
+**Check out [our website](https://julesfouchy.github.io/p6-docs/) to learn everything you need to know about *p6*!**
 
 *p6* is designed to be very easy to use. Here is all the code you need to create a window:
 
@@ -30,8 +32,6 @@ int main()
     ctx.start();
 }
 ```
-
-Check out [our website](https://julesfouchy.github.io/p6-docs/) to learn everything you need to know about *p6*!
 
 ## Core design principles
   - **Simplicity first** : optimization considerations should not complexify the API, but should still be a goal if they can be transparent to the user.
