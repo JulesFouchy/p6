@@ -145,9 +145,9 @@ void Context::start()
                 internal::ImGuiWrapper::begin_frame();
                 imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
-                render_to_main_canvas();
             }
             glfwSwapBuffers(*_window);
+            render_to_main_canvas();
         }
         glfwPollEvents();
     }
