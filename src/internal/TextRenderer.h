@@ -31,7 +31,7 @@ private:
     Image _font_atlas;
 
     Shader _shader{R"(
-#version 330
+#version 410
 out vec4 _frag_color;
 
 in vec2 _raw_uv;

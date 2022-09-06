@@ -84,17 +84,17 @@ class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
 
-    Context(Context&&) noexcept = default;
+    Context(Context&&) noexcept            = default;
     Context& operator=(Context&&) noexcept = default;
 
-    Context(const Context&) = delete;
+    Context(const Context&)            = delete;
     Context& operator=(const Context&) = delete;
 
     /* ------------------------------- */
     /** \defgroup events Events
      * You can set those functions as you wish to react to various events.
      * The simplest way is to use a lambda:
-     * 
+     *
      * ```
      * auto ctx = p6::Context{};
      * ctx.mouse_pressed = [](p6::MouseButton) {
@@ -496,7 +496,7 @@ private:
     int                                     _window_width_before_fullscreen;
     int                                     _window_height_before_fullscreen;
     Shader                                  _rect_shader{R"(
-#version 330
+#version 410
 
 in vec2 _raw_uv;
 in vec2 _canvas_uv;
@@ -559,7 +559,7 @@ void main() {
 }
     )"};
     Shader                                  _line_shader{R"(
-#version 330
+#version 410
 out vec4 _frag_color;
 
 in vec2 _uniform_uv;

@@ -7,7 +7,7 @@ namespace p6::internal {
 TriangleRenderer::TriangleRenderer()
 {
     const auto vertex_shader = glpp::VertexShader{R"(
-#version 330
+#version 410
 
 uniform vec2 _p1;
 uniform vec2 _p2;
@@ -23,7 +23,7 @@ void main()
     )"};
 
     const auto fragment_shader = glpp::FragmentShader{R"(
-#version 330
+#version 410
 out vec4 _frag_color;
 
 uniform vec2 _p1;

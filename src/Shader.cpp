@@ -19,7 +19,7 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
 Shader::Shader(std::string_view fragment_source_code)
 {
     const auto vert = glpp::VertexShader{R"(
-#version 330
+#version 410
 
 layout(location = 0) in vec2 _vertex_position;
 layout(location = 1) in vec2 _texture_coordinates;
