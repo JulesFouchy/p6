@@ -143,6 +143,7 @@ void Context::start()
                                                      glpp::Interpolation::NearestNeighbour,
                                                      pos_inside_window);
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+                imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
             }
             glfwSwapBuffers(*_window);
