@@ -107,9 +107,6 @@ public:
     /// This function is called repeatedly. The framerate is controlled by the framerate_xxx() functions.
     std::function<void()> update = []() {
     };
-    /// In this function you can render all the ImGui windows you want.
-    std::function<void()> imgui = []() {
-    };
     /// This function is called whenever the mouse is moved
     std::function<void(MouseMove)> mouse_moved = [](MouseMove) {
     };

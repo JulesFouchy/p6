@@ -118,6 +118,7 @@ void Context::start()
         {
             if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
             {
+                internal::ImGuiWrapper::begin_frame();
                 // Clear the window in case the default canvas doesn't cover the whole window
                 glpp::bind_framebuffer(glpp::SCREEN_FRAMEBUFFER_ID);
                 glClearColor(0.3f, 0.3f, 0.3f, 1.f);
@@ -142,8 +143,6 @@ void Context::start()
                                                      glpp::Interpolation::NearestNeighbour,
                                                      pos_inside_window);
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
-                internal::ImGuiWrapper::begin_frame();
-                imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
             }
             glfwSwapBuffers(*_window);
