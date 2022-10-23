@@ -13,10 +13,16 @@ public:
     {
     }
 
-    float     r() const { return _r; }
-    float     g() const { return _g; }
-    float     b() const { return _b; }
-    float     a() const { return _a; }
+    float r() const { return _r; }
+    float g() const { return _g; }
+    float b() const { return _b; }
+    float a() const { return _a; }
+
+    float& r() { return _r; }
+    float& g() { return _g; }
+    float& b() { return _b; }
+    float& a() { return _a; }
+
     glm::vec3 as_premultiplied_vec3() const { return as_straight_vec3() * _a; }
     glm::vec3 as_straight_vec3() const { return {_r, _g, _b}; }
     glm::vec4 as_premultiplied_vec4() const { return {as_premultiplied_vec3(), _a}; }
