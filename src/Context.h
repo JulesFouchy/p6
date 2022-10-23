@@ -108,8 +108,8 @@ public:
     std::function<void()> update = []() {
     };
     /// In this function you can call all the ImGui code you want.
-    /// Note that you can also do it during the other event functions (update(), mouse_moved(), etc.).
-    /// This imgui() function is just here to help you organize your code if you want to.
+    /// Note that you can also do it during the `update()` function.
+    /// This `imgui()` function is just here to help you organize your code if you want to.
     std::function<void()> imgui = []() {
     };
     /// This function is called whenever the mouse is moved
