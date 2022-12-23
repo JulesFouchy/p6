@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+#include <glm/glm.hpp>
 #include <op/op.hpp>
 #include "math_constants.h"
 
@@ -47,6 +49,10 @@ public:
     constexpr Angle() = default;
     constexpr explicit Angle(Radians value)
         : value{value} {}
+    /// Constructs the angle that `direction` makes with the positive x axis.
+    /// `direction` does not need to be normalized.
+    constexpr explicit Angle(glm::vec2 direction)
+        : value{Radians{std::atan2(direction.y, direction.x)}} {}
 
     float as_turns() const { return radians_to_turns(value); }
     float as_radians() const { return value.value; }
