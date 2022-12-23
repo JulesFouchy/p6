@@ -29,4 +29,50 @@ float number(float min, float max)
     return distribution(generator());
 }
 
+glm::vec2 point(const p6::Context& ctx)
+{
+    return point(ctx.main_canvas());
+}
+
+glm::vec2 point(const p6::Canvas& canvas)
+{
+    return point(canvas.aspect_ratio());
+}
+
+glm::vec2 point()
+{
+    return point(
+        {-1.f, -1.f},
+        {1.f, 1.f});
+}
+
+glm::vec2 point(glm::vec2 min, glm::vec2 max)
+{
+    return glm::vec2{
+        number(min.x, max.x),
+        number(min.y, max.y),
+    };
+}
+
+glm::vec2 point(float aspect_ratio)
+{
+    return point(
+        {-aspect_ratio, -1.f},
+        {aspect_ratio, 1.f});
+}
+
+glm::vec2 direction()
+{
+    const auto agl = angle();
+    return glm::vec2{
+        std::cos(agl.as_radians()),
+        std::sin(agl.as_radians()),
+    };
+}
+
+Angle angle()
+{
+    return Angle{Radians(number(TAU))};
+}
+
 } // namespace p6::random
