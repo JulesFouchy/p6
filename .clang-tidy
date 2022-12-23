@@ -4,6 +4,7 @@ Checks: '
   -modernize-use-nodiscard,
   -performance-unnecessary-value-param, -modernize-pass-by-value,
   -cppcoreguidelines-avoid-non-const-global-variables,
+  -modernize-use-trailing-return-type,
   -readability-redundant-access-specifiers,
   -readability-else-after-return,
   -readability-implicit-bool-conversion,
