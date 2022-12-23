@@ -1,27 +1,27 @@
-import string
 import urllib.request
 import json
 import unicodedata
 
-def format_hex(str: string):
-    str = str.replace("#", "").upper()
-    if len(str) == 3:
-        str = str[0] + str[0] + str[1] + str[1] + str[2] + str[2]
-    assert(len(str) == 6)
-    return str
 
-def format_name(str: string):
-    return unicodedata.normalize('NFKD',
-           str.replace(" ", ""
-             ).replace("(", ""
-             ).replace(")", ""
-             ).replace("-", ""
-             ).replace("/", ""
-             ).replace("'", ""
-             ).replace("#", ""
-             ).replace("&", ""
-             ).replace(".", ""
-             )
+def format_hex(s: str):
+    s = s.replace("#", "").upper()
+    if len(s) == 3:
+        s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2]
+    assert(len(s) == 6)
+    return s
+
+
+def format_name(s: str):
+    return unicodedata.normalize('NFKD', s
+                                 .replace(" ", "")
+                                 .replace("(", "")
+                                 .replace(")", "")
+                                 .replace("-", "")
+                                 .replace("/", "")
+                                 .replace("'", "")
+                                 .replace("#", "")
+                                 .replace("&", "")
+                                 .replace(".", "")
     ).encode('ascii', 'ignore').decode('ascii')
 
 # Load colors data
