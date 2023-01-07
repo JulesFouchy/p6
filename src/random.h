@@ -4,6 +4,12 @@
 
 namespace p6::random {
 
+/* ------------------------------- */
+/** \defgroup random Random
+ * Pick random numbers, points, directions, etc.
+ * @{*/
+/* ------------------------------- */
+
 /// Returns a random number between 0 and 1.
 float number();
 
@@ -37,4 +43,5 @@ glm::vec2 direction();
 /// Returns a random angle.
 Angle angle();
 
+/**@}*/
 } // namespace p6::random
