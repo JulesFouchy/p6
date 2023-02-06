@@ -133,6 +133,7 @@ void Context::start()
                     _clock->update();
                     _last_update = std::chrono::steady_clock::now();
                     update();
+                    on_event(Event_Update{});
                 }
 
                 const auto size_inside_window = main_canvas_displayed_size_inside_window();
@@ -942,6 +943,7 @@ void Context::adapt_main_canvas_size_to_framebuffer_size()
 {
     std::visit([&](auto&& mode) { internal::adapt_canvas_size_to_framebuffer_size(_main_canvas, _framebuffer_size, mode); }, _main_canvas_size_mode);
     main_canvas_resized();
+    on_event(Event_MainCanvasResized{});
 }
 
 void Context::on_framebuffer_resize(int width, int height)
@@ -984,11 +986,13 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
             _is_dragging         = true;
             _drag_start_position = _mouse_position;
             mouse_pressed(button_event);
+            on_event(Event_MousePressed{button_event});
         }
         else if (action == GLFW_RELEASE)
         {
             _is_dragging = false;
             mouse_released(button_event);
+            on_event(Event_MouseReleased{button_event});
         }
         else
         {
@@ -1002,8 +1006,10 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
 
 void Context::on_mouse_scroll(double x, double y)
 {
-    mouse_scrolled({static_cast<float>(x),
-                    static_cast<float>(y)});
+    auto const data = MouseScroll{static_cast<float>(x),
+                                  static_cast<float>(y)};
+    mouse_scrolled(data);
+    on_event(Event_MouseScrolled{data});
 }
 
 void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
@@ -1026,14 +1032,17 @@ void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
             escape_fullscreen();
         }
         key_pressed(key);
+        on_event(Event_KeyPressed{key});
     }
     else if (action == GLFW_REPEAT)
     {
         key_repeated(key);
+        on_event(Event_KeyRepeated{key});
     }
     else if (action == GLFW_RELEASE)
     {
         key_released(key);
+        on_event(Event_KeyReleased{key});
     }
 }
 
@@ -1041,11 +1050,15 @@ void Context::on_mouse_move()
 {
     if (_is_dragging)
     {
-        mouse_dragged({mouse(), mouse_delta(), _drag_start_position});
+        auto const data = MouseDrag{mouse(), mouse_delta(), _drag_start_position};
+        mouse_dragged(data);
+        on_event(Event_MouseDragged{data});
     }
     else
     {
-        mouse_moved({mouse(), mouse_delta()});
+        auto const data = MouseMove{mouse(), mouse_delta()};
+        mouse_moved(data);
+        on_event(Event_MouseMoved{data});
     }
 }
 

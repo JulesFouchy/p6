@@ -10,12 +10,8 @@
 #include <stdexcept>
 #include "Canvas.h"
 #include "Color.h"
+#include "Event.h"
 #include "Image.h"
-#include "Key.h"
-#include "MouseButton.h"
-#include "MouseDrag.h"
-#include "MouseMove.h"
-#include "MouseScroll.h"
 #include "Shader.h"
 #include "Transform2D.h"
 #include "internal/ImGuiWrapper.h"
@@ -151,6 +147,12 @@ public:
     /// This function is called whenever the main canvas is resized.
     /// If you call main_canvas_size(), main_canvas_width(), main_canvas_height() or aspect_ratio() inside main_canvas_resized() they will already be referring to the new size.
     std::function<void()> main_canvas_resized = []() {
+    };
+    /// This function is called whenever any event occurs (key pressed, mouse moved, etc.).
+    /// It can be useful to use this function instead of the more specific ones (key_pressed, mouse_moved, etc.) if for example you want
+    /// to forward several events to a function that will handle them. For example in order to control a camera you might need to forward the key, mouse and update events to it.
+    /// Instead of having to put the code inside those three event functions, you can just put it in `on_event` and let the camera handle each event as it so pleases.
+    std::function<void(Event)> on_event = [](Event const&) {
     };
 
     /**@}*/
