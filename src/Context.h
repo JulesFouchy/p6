@@ -133,13 +133,13 @@ public:
     /// This function is called whenever a keyboard key is released
     std::function<void(Key)> key_released = [](Key) {
     };
-    /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The axact behaviour is OS-specific)
+    /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The exact behaviour is OS-specific)
     ///
     /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
     ///
     /// ```
-    /// if (p6.is_held(PhysicalKey::W)) { // TODO implement is_held and PhysicalKey and LogicalKey
-    ///     character.move_forward(p6.delta_time());
+    /// if (ctx.key_is_held(GLFW_KEY_W)) {
+    ///     character.move_forward(ctx.delta_time());
     /// }
     /// ```
     std::function<void(Key)> key_repeated = [](Key) {
@@ -353,6 +353,10 @@ public:
     bool shift() const;
     /// Returns true iff the ALT key is pressed
     bool alt() const;
+    /// Returns true iff the given `key` is currently pressed.
+    /// `key` should be a GLFW_KEY_ value. See https://www.glfw.org/docs/3.3/group__keys.html for the complete list.
+    /// e.g. `ctx.key_is_pressed(GLFW_KEY_Q)`
+    bool key_is_held(int key) const;
 
     /**@}*/
     /* ------------------------------- */

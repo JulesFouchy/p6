@@ -1,6 +1,7 @@
 ---
 Checks: '
   *,
+  -*-non-private-member-variables-in-classes,
   -modernize-use-nodiscard,
   -performance-unnecessary-value-param, -modernize-pass-by-value,
   -cppcoreguidelines-avoid-non-const-global-variables,

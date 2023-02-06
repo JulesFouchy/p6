@@ -607,17 +607,25 @@ bool Context::mouse_is_in_window() const
 
 bool Context::ctrl() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS;
+    return key_is_held(GLFW_KEY_LEFT_CONTROL)
+           || key_is_held(GLFW_KEY_RIGHT_CONTROL);
 }
 
 bool Context::shift() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS;
+    return key_is_held(GLFW_KEY_LEFT_SHIFT)
+           || key_is_held(GLFW_KEY_RIGHT_SHIFT);
 }
 
 bool Context::alt() const
 {
-    return glfwGetKey(*_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS || glfwGetKey(*_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS;
+    return key_is_held(GLFW_KEY_LEFT_ALT)
+           || key_is_held(GLFW_KEY_RIGHT_ALT);
+}
+
+bool Context::key_is_held(int key) const
+{
+    return glfwGetKey(*_window, key) == GLFW_PRESS;
 }
 
 /* ------------------------ *
@@ -955,34 +963,40 @@ void Context::on_window_resize(int width, int height)
 
 void Context::on_mouse_button(int button, int action, int /*mods*/)
 {
-    const auto mouse_button = [&]() {
-        switch (button)
+    try
+    {
+        const auto mouse_button = [&]() {
+            switch (button)
+            {
+            case GLFW_MOUSE_BUTTON_LEFT:
+                return Button::Left;
+            case GLFW_MOUSE_BUTTON_RIGHT:
+                return Button::Right;
+            case GLFW_MOUSE_BUTTON_MIDDLE:
+                return Button::Middle;
+            default:
+                throw std::runtime_error("[p6 internal error] Unknown mouse button: " + std::to_string(button));
+            };
+        }();
+        const auto button_event = MouseButton{_mouse_position, mouse_button};
+        if (action == GLFW_PRESS)
         {
-        case GLFW_MOUSE_BUTTON_LEFT:
-            return Button::Left;
-        case GLFW_MOUSE_BUTTON_RIGHT:
-            return Button::Right;
-        case GLFW_MOUSE_BUTTON_MIDDLE:
-            return Button::Middle;
-        default:
-            throw std::runtime_error("[p6 internal error] Unknown mouse button: " + std::to_string(button));
-        };
-    }();
-    const auto button_event = MouseButton{_mouse_position, mouse_button};
-    if (action == GLFW_PRESS)
-    {
-        _is_dragging         = true;
-        _drag_start_position = _mouse_position;
-        mouse_pressed(button_event);
+            _is_dragging         = true;
+            _drag_start_position = _mouse_position;
+            mouse_pressed(button_event);
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            _is_dragging = false;
+            mouse_released(button_event);
+        }
+        else
+        {
+            throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
+        }
     }
-    else if (action == GLFW_RELEASE)
+    catch (...)
     {
-        _is_dragging = false;
-        mouse_released(button_event);
-    }
-    else
-    {
-        throw std::runtime_error("[p6 internal error] Unknown mouse button action: " + std::to_string(action));
     }
 }
 
@@ -995,8 +1009,11 @@ void Context::on_mouse_scroll(double x, double y)
 void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
 {
     const char* key_name = glfwGetKeyName(key_code, scancode);
-    const auto  key      = Key{key_code == GLFW_KEY_SPACE ? " " : key_name ? key_name
-                                                                           : "",
+    const auto  key      = Key{key_code == GLFW_KEY_SPACE
+                                   ? " "
+                               : key_name
+                                   ? key_name
+                                   : "",
                          key_code};
     if (action == GLFW_PRESS)
     {
@@ -1017,10 +1034,6 @@ void Context::on_key(int key_code, int scancode, int action, int /*mods*/)
     else if (action == GLFW_RELEASE)
     {
         key_released(key);
-    }
-    else
-    {
-        throw std::runtime_error("[p6 internal error] Unknown key action: " + std::to_string(action));
     }
 }
 
