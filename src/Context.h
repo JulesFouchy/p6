@@ -5,6 +5,7 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <stdexcept>
@@ -142,6 +143,7 @@ public:
     };
     /// This function is called whenever an error occurs.
     std::function<void(std::string&&)> on_error = [](std::string&& error_message) {
+        std::cerr << error_message << '\n';
         throw std::runtime_error{error_message};
     };
     /// This function is called whenever the main canvas is resized.
