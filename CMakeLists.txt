@@ -19,7 +19,7 @@ endif()
 
 # ---Add glpp-extended---
 add_subdirectory(third-party/glpp-extended)
-target_compile_definitions(glpp PRIVATE $<$<CONFIG:Debug>:GLPP_SHOULD_CHECK_ERRORS>)
+target_compile_definitions(glpp PUBLIC $<$<CONFIG:Debug>:GLPP_SHOULD_CHECK_ERRORS>)
 target_link_libraries(p6 PUBLIC glpp::extended)
 # ---Add img---
 add_subdirectory(third-party/img)
