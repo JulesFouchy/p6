@@ -24,7 +24,7 @@ public:
     const GLFWwindow* operator*() const { return _window; }
 
 private:
-    GLFWwindow* _window;
+    GLFWwindow* _window{};
 };
 
 } // namespace internal
