@@ -25,7 +25,7 @@ float number(float min, float max)
     if (min > max)
         throw std::invalid_argument{"`min` must be smaller than `max`"};
 
-    const auto distribution = std::uniform_real_distribution<float>{min, max};
+    auto distribution = std::uniform_real_distribution<float>{min, max};
     return distribution(generator());
 }
 
