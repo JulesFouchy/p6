@@ -46,9 +46,10 @@ UniqueGlfwWindow::UniqueGlfwWindow(WindowCreationParams window_creation_params)
         throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to create a window");
     }
     glfwMakeContextCurrent(_window);
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    { // NOLINT
-        throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to intialize glad");
+    if (!gladLoadGL(glfwGetProcAddress))
+    {
+        throw std::runtime_error("[p6::UniqueGlfwWindow] Failed to initialize glad");
+    }
     }
 }
 
