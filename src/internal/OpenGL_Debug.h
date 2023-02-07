@@ -8,9 +8,8 @@
 
 #if OPENGL_DEBUG
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
 #include <glpp/glpp.hpp>
+#include "glfw.h"
 
 namespace p6 {
 

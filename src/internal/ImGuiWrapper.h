@@ -1,7 +1,6 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "glfw.h"
 
 namespace p6::internal::ImGuiWrapper {
 
