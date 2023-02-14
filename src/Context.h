@@ -360,7 +360,7 @@ public:
     /// Returns true iff the given `key` is currently pressed.
     /// `key` should be a GLFW_KEY_ value. See https://www.glfw.org/docs/3.3/group__keys.html for the complete list.
     /// e.g. `ctx.key_is_pressed(GLFW_KEY_Q)`
-    bool key_is_held(int key) const;
+    bool key_is_pressed(int key) const;
 
     /**@}*/
     /* ------------------------------- */

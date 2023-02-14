@@ -608,23 +608,23 @@ bool Context::mouse_is_in_window() const
 
 bool Context::ctrl() const
 {
-    return key_is_held(GLFW_KEY_LEFT_CONTROL)
-           || key_is_held(GLFW_KEY_RIGHT_CONTROL);
+    return key_is_pressed(GLFW_KEY_LEFT_CONTROL)
+           || key_is_pressed(GLFW_KEY_RIGHT_CONTROL);
 }
 
 bool Context::shift() const
 {
-    return key_is_held(GLFW_KEY_LEFT_SHIFT)
-           || key_is_held(GLFW_KEY_RIGHT_SHIFT);
+    return key_is_pressed(GLFW_KEY_LEFT_SHIFT)
+           || key_is_pressed(GLFW_KEY_RIGHT_SHIFT);
 }
 
 bool Context::alt() const
 {
-    return key_is_held(GLFW_KEY_LEFT_ALT)
-           || key_is_held(GLFW_KEY_RIGHT_ALT);
+    return key_is_pressed(GLFW_KEY_LEFT_ALT)
+           || key_is_pressed(GLFW_KEY_RIGHT_ALT);
 }
 
-bool Context::key_is_held(int key) const
+bool Context::key_is_pressed(int key) const
 {
     return glfwGetKey(*_window, key) == GLFW_PRESS;
 }
