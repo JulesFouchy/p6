@@ -350,6 +350,8 @@ public:
     glm::vec2 mouse_delta() const;
     /// Returns true iff the window is focused and the coordinates returned by mouse() correspond to a position inside the window.
     bool mouse_is_in_window() const;
+    /// Returns true iff the given mouse button is currently pressed.
+    bool mouse_button_is_pressed(Button) const;
 
     /// Returns true iff the CTRL key is pressed (or CMD on Mac)
     bool ctrl() const;
@@ -360,6 +362,8 @@ public:
     /// Returns true iff the given `key` is currently pressed.
     /// `key` should be a GLFW_KEY_ value. See https://www.glfw.org/docs/3.3/group__keys.html for the complete list.
     /// e.g. `ctx.key_is_pressed(GLFW_KEY_Q)`
+    /// /!\\ Please note that these are physical keys that don't depend on the current layout.
+    /// This means that GLFW_KEY_Q will refer to the first key on your keyboard, no matter if you are using QWERTY or AZERTY.
     bool key_is_pressed(int key) const;
 
     /**@}*/

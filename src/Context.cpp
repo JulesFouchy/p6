@@ -5,6 +5,7 @@
 #include <img/img.hpp>
 #include <stdexcept>
 #include <string>
+#include "GLFW/glfw3.h"
 #include "math.h"
 
 namespace p6 {
@@ -604,6 +605,27 @@ bool Context::mouse_is_in_window() const
     }
     const auto pos = mouse();
     return pos.x >= -aspect_ratio() && pos.x <= aspect_ratio() && pos.y >= -1.f && pos.y <= 1.f;
+}
+
+static int glfw_button(Button button)
+{
+    switch (button)
+    {
+    case Button::Left:
+        return GLFW_MOUSE_BUTTON_LEFT;
+    case Button::Right:
+        return GLFW_MOUSE_BUTTON_RIGHT;
+    case Button::Middle:
+        return GLFW_MOUSE_BUTTON_MIDDLE;
+    default:
+        assert(false);
+        return GLFW_MOUSE_BUTTON_LEFT;
+    }
+}
+
+bool Context::mouse_button_is_pressed(Button button) const
+{
+    return GLFW_PRESS == glfwGetMouseButton(*_window, glfw_button(button));
 }
 
 bool Context::ctrl() const
