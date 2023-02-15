@@ -15,6 +15,10 @@ void APIENTRY GLDebugCallback(
     const void* /*userParam*/
 )
 {
+    // ignore non-significant error / warning codes
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+        return;
+
     { // Check if we have already seen the message
         static std::vector<unsigned int> already_seen_ids;
         if (std::find(already_seen_ids.begin(), already_seen_ids.end(), id) != already_seen_ids.end())
