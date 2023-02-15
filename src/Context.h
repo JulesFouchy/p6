@@ -205,8 +205,12 @@ public:
     void ellipse(Center, Radii = {}, Rotation = {});
     void ellipse(Transform2D);
 
-    /// Draws a triangle
-    void triangle(Point2D, Point2D, Point2D, Transform2D = {});
+    /// Draws an equilateral triangle. `Radius` is the distance between the `Center` and one of the tips of the triangle.
+    void equilateral_triangle(Center, Radius = {}, Rotation = {});
+    /// Draws a triangle between the three points, translated by `Center` and rotated by `Rotation`.
+    void triangle(Point2D, Point2D, Point2D, Center = {}, Rotation = {});
+    /// Draws a triangle between the three points, and applies the Transform2D to the triangle.
+    void triangle(Point2D, Point2D, Point2D, Transform2D);
 
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Fit = {});

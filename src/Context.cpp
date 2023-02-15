@@ -256,6 +256,17 @@ void Context::ellipse(Transform2D transform)
     render_with_rect_shader(transform, true, false);
 }
 
+void Context::equilateral_triangle(Center center, Radius radius, Rotation rotation)
+{
+    const float y = radius.value * sqrt(3.f) / 2.f;
+    triangle(Point2D{radius.value, 0.f}, Point2D{-0.5f * radius.value, y}, Point2D{-0.5f * radius.value, -y}, center, rotation);
+}
+
+void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Center center, Rotation rotation)
+{
+    triangle(p1, p2, p3, Transform2D{center.value, glm::vec2{1.f}, rotation});
+}
+
 void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Transform2D transform)
 {
     _triangle_renderer.render(p1.value, p2.value, p3.value,
