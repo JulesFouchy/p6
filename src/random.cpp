@@ -29,6 +29,20 @@ float number(float min, float max)
     return distribution(generator());
 }
 
+int integer(int max)
+{
+    return integer(0, max);
+}
+
+int integer(int min, int max)
+{
+    if (min >= max)
+        throw std::invalid_argument{"`min` must be strictly smaller than `max`"};
+
+    auto distribution = std::uniform_int_distribution<int>{min, max - 1};
+    return distribution(generator());
+}
+
 glm::vec2 point(const p6::Context& ctx)
 {
     return point(ctx.main_canvas());

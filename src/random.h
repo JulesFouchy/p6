@@ -21,6 +21,14 @@ float number(float max);
 /// Throws a `std::invalid_argument` exception if `min > max`.
 float number(float min, float max);
 
+/// Returns a random integer between 0 (included) and `max` (excluded).
+/// Throws a `std::invalid_argument` exception if `max <= 0`.
+int integer(int max);
+
+/// Returns a random integer between `min` (included) and `max` (excluded).
+/// Throws a `std::invalid_argument` exception if `min >= max`.
+int integer(int min, int max);
+
 /// Returns a point inside the main canvas of the context.
 glm::vec2 point(const p6::Context&);
 
