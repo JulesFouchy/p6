@@ -74,7 +74,14 @@ void main()
     _shader.link();
 }
 
+static glm::vec2 apply(glm::mat3 const& matrix, glm::vec2 point)
+{
+    auto const tmp = matrix * glm::vec3(point.x, point.y, 1.);
+    return glm::vec2(tmp.x, tmp.y) / tmp.z;
+}
+
 void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
+                              const Transform2D& transform,
                               float framebuffer_height, float framebuffer_ratio,
                               const std::optional<glm::vec4>& fill_material,
                               const std::optional<glm::vec4>& stroke_material,
@@ -82,10 +89,13 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
 {
     if (!fill_material && !stroke_material)
         return;
+
+    const glm::mat3 matrix = as_matrix(transform);
+
     _shader.use();
-    _shader.set("_p1", p1);
-    _shader.set("_p2", p2);
-    _shader.set("_p3", p3);
+    _shader.set("_p1", apply(matrix, p1));
+    _shader.set("_p2", apply(matrix, p2));
+    _shader.set("_p3", apply(matrix, p3));
     _shader.set("_window_height", framebuffer_height);
     _shader.set("_window_aspect_ratio", framebuffer_ratio);
     _shader.set("_fill_material", fill_material.value_or(glm::vec4{0.f}));

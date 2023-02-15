@@ -256,9 +256,10 @@ void Context::ellipse(Transform2D transform)
     render_with_rect_shader(transform, true, false);
 }
 
-void Context::triangle(Point2D p1, Point2D p2, Point2D p3)
+void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Transform2D transform)
 {
     _triangle_renderer.render(p1.value, p2.value, p3.value,
+                              transform,
                               static_cast<float>(current_canvas_height()), aspect_ratio(),
                               use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
                               use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,

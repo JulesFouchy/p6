@@ -206,7 +206,7 @@ public:
     void ellipse(Transform2D);
 
     /// Draws a triangle
-    void triangle(Point2D, Point2D, Point2D);
+    void triangle(Point2D, Point2D, Point2D, Transform2D = {});
 
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
     void image(const ImageOrCanvas&, Fit = {});

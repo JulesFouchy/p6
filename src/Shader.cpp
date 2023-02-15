@@ -1,6 +1,5 @@
 #include "Shader.h"
 #include <fstream>
-#include <glm/gtx/matrix_transform_2d.hpp>
 #include <iterator>
 #include <stdexcept>
 #include "internal/make_absolute_path.h"
@@ -134,10 +133,7 @@ void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transfo
 {
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
-    shader.set("_transform", glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
-                                                                   transform.position),
-                                                    transform.rotation.as_radians()),
-                                        transform.scale));
+    shader.set("_transform", as_matrix(transform));
     shader.set("_size", transform.scale);
     shader.set("_aspect_ratio", transform.scale.x / transform.scale.y);
     shader.set("_inverse_aspect_ratio", transform.scale.y / transform.scale.x);

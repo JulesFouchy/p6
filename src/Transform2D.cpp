@@ -1,7 +1,16 @@
 #include "Transform2D.h"
+#include <glm/gtx/matrix_transform_2d.hpp>
 #include "math.h"
 
 namespace p6 {
+
+glm::mat3 as_matrix(const Transform2D& transform)
+{
+    return glm::scale(glm::rotate(glm::translate(glm::mat3{1.f},
+                                                 transform.position),
+                                  transform.rotation.as_radians()),
+                      transform.scale);
+}
 
 Transform2D make_transform_2D(Center center, Radius radius, Rotation rotation)
 {

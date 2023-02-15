@@ -12,6 +12,8 @@ struct Transform2D {
     Rotation  rotation{0.0_radians};
 };
 
+glm::mat3 as_matrix(const Transform2D&);
+
 struct Center {
     glm::vec2 value{0.f};
 
