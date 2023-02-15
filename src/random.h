@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <random>
 #include "Context.h"
 
 namespace p6::random {
@@ -28,6 +29,21 @@ int integer(int max);
 /// Returns a random integer between `min` (included) and `max` (excluded).
 /// Throws a `std::invalid_argument` exception if `min >= max`.
 int integer(int min, int max);
+
+/// Returns a random size_t between 0 (included) and `max` (excluded).
+size_t size_type(size_t max);
+
+/// Returns a random size_t between `min` (included) and `max` (excluded).
+/// Throws a `std::invalid_argument` exception if `min >= max`.
+size_t size_type(size_t min, size_t max);
+
+/// Randomly returns one of the elements of the `collection`.
+/// Throws a `std::invalid_argument` exception if the `collection` is empty.
+template<typename T>
+const T& among(const std::vector<T>& collection)
+{
+    return collection[size_type(collection.size())];
+}
 
 /// Returns a point inside the main canvas of the context.
 glm::vec2 point(const p6::Context&);

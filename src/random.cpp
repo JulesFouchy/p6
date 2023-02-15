@@ -43,6 +43,20 @@ int integer(int min, int max)
     return distribution(generator());
 }
 
+size_t size_type(size_t max)
+{
+    return size_type(0u, max);
+}
+
+size_t size_type(size_t min, size_t max)
+{
+    if (min >= max)
+        throw std::invalid_argument{"`min` must be strictly smaller than `max`"};
+
+    auto distribution = std::uniform_int_distribution<size_t>{min, max - 1};
+    return distribution(generator());
+}
+
 glm::vec2 point(const p6::Context& ctx)
 {
     return point(ctx.main_canvas());
