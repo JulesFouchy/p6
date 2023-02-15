@@ -209,7 +209,7 @@ public:
     void equilateral_triangle(Center, Radius = {}, Rotation = {});
     /// Draws a triangle between the three points, translated by `Center` and rotated by `Rotation`.
     void triangle(Point2D, Point2D, Point2D, Center = {}, Rotation = {});
-    /// Draws a triangle between the three points, and applies the Transform2D to the triangle.
+    /// Draws a triangle between the three points, and applies the transform to the triangle.
     void triangle(Point2D, Point2D, Point2D, Transform2D);
 
     /// Draws an image as big as possible on the screen. This will respect the aspect ratio of the image.
