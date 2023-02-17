@@ -79,7 +79,7 @@ using CanvasSizeMode = std::variant<CanvasSizeMode_SameAsWindow,
                                     CanvasSizeMode_RelativeToWindow>;
 
 class Context;
-class [[nodiscard("You need to assign this to a variable. It will push_transform() when created and pop_transform() when it goes out of scope. See liendoc")]] TransformScopeGuard // NOLINT(*-special-member-functions)
+class [[nodiscard("You need to assign this to a variable. It will push_transform() when created and pop_transform() when it goes out of scope. See https://julesfouchy.github.io/p6-docs/tutorials/transform")]] TransformScopeGuard // NOLINT(*-special-member-functions)
 {
 public:
     explicit TransformScopeGuard(Context & ctx);
