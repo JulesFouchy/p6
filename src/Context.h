@@ -21,6 +21,7 @@
 #include "internal/Time/Clock.h"
 #include "internal/Time/Clock_FixedTimestep.h"
 #include "internal/Time/Clock_Realtime.h"
+#include "internal/TransformStack.h"
 #include "internal/TriangleRenderer.h"
 #include "internal/UniqueGlfwWindow.h"
 
@@ -276,6 +277,34 @@ public:
 
     /**@}*/
     /* ------------------------------- */
+    /** \defgroup transform Transform
+     * Allows you to translate / rotate / scale all your drawings at once.
+     * @{*/
+    /* ------------------------------- */
+
+    /// Applies a translation to all the future drawings. To undo this, see `push_transform()` and `pop_transform()`.
+    void translate(glm::vec2 translation) { _transform_stack.translate(translation); }
+    /// Applies a rotation to all the future drawings. To undo this, see `push_transform()` and `pop_transform()`.
+    void rotate(p6::Angle angle) { _transform_stack.rotate(angle); }
+    /// Applies a scale to all the future drawings. To undo this, see `push_transform()` and `pop_transform()`.
+    void scale(glm::vec2 scale_factor) { _transform_stack.scale(scale_factor); }
+    /// Undoes all the translate / rotate / scale / apply_transform / set_transform.
+    void reset_transform() { _transform_stack.reset_matrix(); }
+    /// Applies a custom transform matrix to all the future drawings. To undo this, see `push_transform()` and `pop_transform()`.
+    void apply_transform(glm::mat3 additional_transform) { _transform_stack.apply_matrix(additional_transform); }
+    /// Sets the current transform matrix. This will override all the previous translate / rotate / scale / apply_transform. To undo this, see `push_transform()` and `pop_transform()`.
+    void set_transform(glm::mat3 transform) { _transform_stack.set_matrix(transform); }
+
+    /// Saves the current transform state.
+    void push_transform() { _transform_stack.push_transform(); }
+    /// Restores the transform to the state it had during the last `push_transform()` that has not been popped yet.
+    void pop_transform() { _transform_stack.pop_transform(); }
+
+    /// Returns the current transform matrix that is the combination of all the translate / rotate / scale / apply_transform / set_transform that have been applied.
+    glm::mat3 current_transform() const { return _transform_stack.current_matrix(); }
+
+    /**@}*/
+    /* ------------------------------- */
     /** \defgroup canvas Canvas
      * You can either draw directly in the window (the default) or onto a custom Canvas.
      * @{*/
@@ -497,6 +526,7 @@ private:
     internal::RectRenderer                  _rect_renderer;
     internal::TriangleRenderer              _triangle_renderer;
     internal::TextRenderer                  _text_renderer;
+    internal::TransformStack                _transform_stack{};
     ImageSize                               _framebuffer_size;
     ImageSize                               _window_size;
     glm::vec2                               _mouse_position{};

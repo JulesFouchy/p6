@@ -433,7 +433,7 @@ void Context::image(const ImageOrCanvas& img, Transform2D transform)
 
 void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const
 {
-    p6::internal::set_vertex_shader_uniforms(shader, transform, aspect_ratio());
+    p6::internal::set_vertex_shader_uniforms(shader, as_matrix(transform) * _transform_stack.current_matrix(), aspect_ratio()); // TODO(JF) Is this the right multiplication order?
 }
 
 template<typename PositionSpecifier>

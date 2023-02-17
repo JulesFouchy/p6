@@ -129,14 +129,14 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
 
 namespace internal {
 
-void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio)
+void set_vertex_shader_uniforms(const Shader& shader, const glm::mat3& transform, float framebuffer_aspect_ratio)
 {
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
-    shader.set("_transform", as_matrix(transform));
-    shader.set("_size", transform.scale);
-    shader.set("_aspect_ratio", transform.scale.x / transform.scale.y);
-    shader.set("_inverse_aspect_ratio", transform.scale.y / transform.scale.x);
+    shader.set("_transform", transform);
+    shader.set("_size", glm::vec2{1.f});      // TODO(JF) Compute size from transform
+    shader.set("_aspect_ratio", 1.f);         // TODO(JF) Compute aspect ratio from transform
+    shader.set("_inverse_aspect_ratio", 1.f); // TODO(JF) Compute aspect ratio from transform
 }
 
 } // namespace internal

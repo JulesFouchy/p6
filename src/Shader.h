@@ -42,7 +42,7 @@ private:
 
 namespace internal {
 /// Set all needed uniforms for the p6 default vertex shader.
-void set_vertex_shader_uniforms(const Shader& shader, const Transform2D& transform, float framebuffer_aspect_ratio);
+void set_vertex_shader_uniforms(const Shader& shader, const glm::mat3& transform, float framebuffer_aspect_ratio);
 
 } // namespace internal
 
