@@ -78,6 +78,17 @@ using CanvasSizeMode = std::variant<CanvasSizeMode_SameAsWindow,
                                     CanvasSizeMode_FixedSize,
                                     CanvasSizeMode_RelativeToWindow>;
 
+class Context;
+class [[nodiscard("You need to assign this to a variable. It will push_transform() when created and pop_transform() when it goes out of scope. See liendoc")]] TransformScopeGuard // NOLINT(*-special-member-functions)
+{
+public:
+    explicit TransformScopeGuard(Context & ctx);
+    ~TransformScopeGuard();
+
+private:
+    Context& _ctx;
+};
+
 class Context {
 public:
     Context(WindowCreationParams window_creation_params = {});
@@ -299,6 +310,7 @@ public:
     void push_transform() { _transform_stack.push_transform(); }
     /// Restores the transform to the state it had during the last `push_transform()` that has not been popped yet.
     void pop_transform() { _transform_stack.pop_transform(); }
+    TransformScopeGuard transform_scope_guard() { return TransformScopeGuard{*this}; }
 
     /// Returns the current transform matrix that is the combination of all the translate / rotate / scale / apply_transform / set_transform that have been applied.
     glm::mat3 current_transform() const { return _transform_stack.current_matrix(); }

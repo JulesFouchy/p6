@@ -1133,4 +1133,14 @@ Transform2D Context::make_transform_2D(FullScreen) const
                                  Rotation{});
 }
 
+TransformScopeGuard::TransformScopeGuard(Context& ctx)
+    : _ctx{ctx}
+{
+    _ctx.push_transform();
+}
+TransformScopeGuard::~TransformScopeGuard()
+{
+    _ctx.pop_transform();
+}
+
 } // namespace p6
