@@ -131,19 +131,10 @@ namespace internal {
 
 static glm::vec2 get_scale(const glm::mat3& transform)
 {
-    // We find the eigenvalues of the matrix.
-
-    const float b = -transform[0][0] - transform[1][1];
-    const float c = transform[0][0] * transform[1][1] + transform[0][1] * transform[1][0];
-
-    const float delta = b * b - 4 * c;
-    if (delta < 0.f) // This will never happen with a translation / rotation /scale matrix. But someone could have set the transform matrix to something weird.
-        return glm::vec2{1.f, 1.f};
-
-    const float sqrt_delta_over_2 = std::sqrt(delta) / 2.f;
+    // Get the length of the first two columns of the 2x2 sub-matrix
     return glm::vec2{
-        -b - sqrt_delta_over_2,
-        -b + sqrt_delta_over_2,
+        glm::length(glm::vec2{transform[0][0], transform[0][1]}),
+        glm::length(glm::vec2{transform[1][0], transform[1][1]}),
     };
 }
 
