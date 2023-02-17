@@ -1,4 +1,5 @@
 #include "TransformStack.h"
+#include <stdexcept>
 #include "glm/fwd.hpp"
 #include "glm/gtx/matrix_transform_2d.hpp"
 
@@ -41,6 +42,8 @@ void TransformStack::push_transform()
 
 void TransformStack::pop_transform()
 {
+    if (_stack.empty())
+        throw std::runtime_error{"[p6 error] Called pop_transform() without a matching push_transform() before it."};
     _current = _stack.top();
     _stack.pop();
 }
