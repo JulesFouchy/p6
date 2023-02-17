@@ -310,6 +310,9 @@ public:
     void push_transform() { _transform_stack.push_transform(); }
     /// Restores the transform to the state it had during the last `push_transform()` that has not been popped yet.
     void pop_transform() { _transform_stack.pop_transform(); }
+    /// Will call push_transform() and pop_transform() automatically.
+    /// Assign the result of this function to a variable and pop_transform() will be called when the variable goes out of scope.
+    /// push_transform() is called when transform_scope_guard() is called.
     TransformScopeGuard transform_scope_guard() { return TransformScopeGuard{*this}; }
 
     /// Returns the current transform matrix that is the combination of all the translate / rotate / scale / apply_transform / set_transform that have been applied.
