@@ -145,6 +145,8 @@ void set_vertex_shader_uniforms(const Shader& shader, const glm::mat3& transform
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
     shader.set("_transform", transform);
     shader.set("_size", scale);
+    if (scale.x == 0.f || scale.y == 0.f) // Avoid crash when aspect ratio implies a division by 0
+        return;
     shader.set("_aspect_ratio", scale.x / scale.y);
     shader.set("_inverse_aspect_ratio", scale.y / scale.x);
 }
