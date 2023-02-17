@@ -111,6 +111,11 @@ ImageSize Context::main_canvas_displayed_size_inside_window()
                                            to_img_size(_main_canvas.size())));
 }
 
+glm::mat3 Context::complete_transform_matrix(const Transform2D& transform) const
+{
+    return _transform_stack.current_matrix() * as_matrix(transform);
+}
+
 void Context::start()
 {
     while (!glfwWindowShouldClose(*_window))
@@ -270,7 +275,7 @@ void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Center center, Rotati
 void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Transform2D transform)
 {
     _triangle_renderer.render(p1.value, p2.value, p3.value,
-                              transform,
+                              complete_transform_matrix(transform),
                               static_cast<float>(current_canvas_height()), aspect_ratio(),
                               use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
                               use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,
@@ -433,7 +438,7 @@ void Context::image(const ImageOrCanvas& img, Transform2D transform)
 
 void Context::set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const
 {
-    p6::internal::set_vertex_shader_uniforms(shader, _transform_stack.current_matrix() * as_matrix(transform), aspect_ratio());
+    p6::internal::set_vertex_shader_uniforms(shader, complete_transform_matrix(transform), aspect_ratio());
 }
 
 template<typename PositionSpecifier>

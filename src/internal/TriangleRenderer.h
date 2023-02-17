@@ -11,7 +11,7 @@ class TriangleRenderer {
 public:
     TriangleRenderer();
     void render(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
-                const Transform2D& transform,
+                const glm::mat3& transform,
                 float framebuffer_height, float framebuffer_ratio,
                 const std::optional<glm::vec4>& fill_material,
                 const std::optional<glm::vec4>& stroke_material,

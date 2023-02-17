@@ -513,6 +513,8 @@ private:
 
     ImageSize main_canvas_displayed_size_inside_window();
 
+    glm::mat3 complete_transform_matrix(const Transform2D&) const;
+
     void set_vertex_shader_uniforms(const Shader& shader, Transform2D transform) const;
     void render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const;
 
