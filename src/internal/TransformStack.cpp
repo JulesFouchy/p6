@@ -21,7 +21,7 @@ void TransformStack::scale(glm::vec2 scale_factor)
 
 void TransformStack::apply_matrix(glm::mat3 additional_transform)
 {
-    _current = _current * additional_transform; // TODO(JF) Is this the right multiplication order?
+    _current *= additional_transform;
 }
 
 void TransformStack::set_matrix(glm::mat3 transform)
