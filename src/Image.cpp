@@ -26,4 +26,17 @@ Image load_image(std::filesystem::path file_path)
     }
 }
 
+img::Image load_image_buffer(std::filesystem::path file_path)
+{
+    try
+    {
+        return img::load(internal::make_absolute_path(file_path), 4);
+    }
+    catch (const std::runtime_error& e)
+    {
+        throw std::runtime_error{std::string{e.what()}
+                                 + "\nMaybe you forgot to call p6_copy_folder() in your CMakeLists.txt? See https://julesfouchy.github.io/p6-docs/tutorials/images#loading-an-image"};
+    }
+}
+
 } // namespace p6
