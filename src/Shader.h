@@ -28,7 +28,12 @@ public:
     /// :warning: You can have at most 8 images set at once. This is a limitation of the GPUs.
     void set(std::string_view uniform_name, const ImageOrCanvas& image) const;
 
+    /// Sets this as the current shader that will be used for rendering.
     void use() const;
+
+    /// Returns the OpenGL id of the program.
+    /// This is for advanced uses only.
+    GLuint id() const { return *_program; }
 
 private:
     glpp::ext::Program _program;
