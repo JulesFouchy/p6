@@ -431,7 +431,7 @@ void Context::image(const ImageOrCanvas& img, BottomRightCorner corner, Radii ra
 void Context::image(const ImageOrCanvas& img, Transform2D transform)
 {
     img.texture().bind_to_texture_unit(0);
-    _rect_shader.bind();
+    _rect_shader.use();
     _rect_shader.set("_image", 0);
     render_with_rect_shader(transform, false, true);
 }
@@ -550,7 +550,7 @@ void Context::line(glm::vec2 start, glm::vec2 end)
 
 void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bool is_image) const
 {
-    _rect_shader.bind();
+    _rect_shader.use();
     set_vertex_shader_uniforms(_rect_shader, transform);
     _rect_shader.set("_is_image", is_image);
     _rect_shader.set("_is_ellipse", is_ellipse);

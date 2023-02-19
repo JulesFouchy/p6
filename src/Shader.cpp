@@ -16,8 +16,7 @@ static void link_program(const glpp::ext::Program& program, const glpp::VertexSh
 }
 
 Shader::Shader(std::string_view fragment_source_code)
-{
-    const auto vert = glpp::VertexShader{R"(
+    : Shader{R"(
 #version 410
 
 layout(location = 0) in vec2 _vertex_position;
@@ -42,7 +41,13 @@ void main()
     _uniform_uv = (_texture_coordinates - 0.5) * vec2(_aspect_ratio, 1.) * 2.;
     _canvas_uv = (_texture_coordinates - 0.5) * _size * 2.;
 }
-    )"};
+    )",
+             fragment_source_code}
+{}
+
+Shader::Shader(std::string_view vertex_source_code, std::string_view fragment_source_code)
+{
+    const auto vert = glpp::VertexShader{vertex_source_code.data()};
     const auto frag = glpp::FragmentShader{fragment_source_code.data()};
 #if !defined(NDEBUG)
     {
@@ -63,7 +68,7 @@ void main()
     link_program(_program, vert, frag);
 }
 
-void Shader::bind() const
+void Shader::use() const
 {
     _program.use();
 }
@@ -125,6 +130,14 @@ Shader load_shader(std::filesystem::path fragment_shader_path)
 {
     auto ifs = std::ifstream{internal::make_absolute_path(fragment_shader_path)};
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
+}
+
+Shader load_shader(std::filesystem::path vertex_shader_path, std::filesystem::path fragment_shader_path)
+{
+    auto fragment_ifs = std::ifstream{internal::make_absolute_path(fragment_shader_path)};
+    auto vertex_ifs   = std::ifstream{internal::make_absolute_path(vertex_shader_path)};
+    return Shader{std::string{std::istreambuf_iterator<char>{vertex_ifs}, {}},
+                  std::string{std::istreambuf_iterator<char>{fragment_ifs}, {}}};
 }
 
 namespace internal {
