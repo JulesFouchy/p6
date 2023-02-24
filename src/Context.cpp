@@ -558,6 +558,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.set("_stroke_color", stroke.as_premultiplied_vec4());
     _rect_shader.set("_use_stroke", use_stroke);
     _rect_shader.set("_stroke_weight", stroke_weight);
+    _rect_shader.check_for_errors_before_rendering();
     _rect_renderer.render();
 }
 

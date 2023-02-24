@@ -35,6 +35,9 @@ public:
     /// This is for advanced uses only.
     GLuint id() const { return *_program; }
 
+    /// You can call this just before a draw call (e.g. `glDrawArrays`) to check if your shader is set up properly (all textures have been set, etc.)
+    void check_for_errors_before_rendering() const;
+
 private:
     glpp::ext::Program _program;
     static GLenum      s_available_texture_slot;

@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include <fstream>
+#include <iostream>
 #include <iterator>
 #include <stdexcept>
 #include "internal/make_absolute_path.h"
@@ -7,13 +8,6 @@
 namespace p6 {
 
 GLenum Shader::s_available_texture_slot{0};
-
-static void link_program(const glpp::ext::Program& program, const glpp::VertexShader& vertex_shader, const glpp::FragmentShader& fragment_shader)
-{
-    program.attach_shader(*vertex_shader);
-    program.attach_shader(*fragment_shader);
-    program.link();
-}
 
 Shader::Shader(std::string_view fragment_source_code)
     : Shader{R"(
@@ -54,18 +48,48 @@ Shader::Shader(std::string_view vertex_source_code, std::string_view fragment_so
         const auto err = vert.check_compilation_errors();
         if (err)
         {
-            throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
+            const auto msg = "Vertex shader compilation failed:\n" + err.message();
+            std::cerr << msg << '\n';
+            throw std::runtime_error{msg};
         }
     }
     {
         const auto err = frag.check_compilation_errors();
         if (err)
         {
-            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
+            const auto msg = "Fragment shader compilation failed:\n" + err.message();
+            std::cerr << msg << '\n';
+            throw std::runtime_error{msg};
         }
     }
 #endif
-    link_program(_program, vert, frag);
+    _program.attach_shader(*vert);
+    _program.attach_shader(*frag);
+    _program.link();
+#if !defined(NDEBUG)
+    {
+        const auto err = _program.check_linking_errors();
+        if (err)
+        {
+            const auto msg = "Shader linking failed:\n" + err.message();
+            std::cerr << msg << '\n';
+            throw std::runtime_error{msg};
+        }
+    }
+#endif
+}
+
+void Shader::check_for_errors_before_rendering() const
+{
+#if !defined(NDEBUG)
+    const auto err = _program.check_for_state_errors();
+    if (err)
+    {
+        const auto msg = "Shader is not ready for rendering:\n" + err.message();
+        std::cerr << msg << '\n';
+        throw std::runtime_error{msg};
+    }
+#endif
 }
 
 void Shader::use() const
