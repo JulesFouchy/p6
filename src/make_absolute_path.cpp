@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace p6::internal {
+namespace p6 {
 
 std::filesystem::path make_absolute_path(std::filesystem::path path)
 {
@@ -30,4 +30,4 @@ std::filesystem::path make_absolute_path(std::filesystem::path path)
     return res;
 }
 
-} // namespace p6::internal
+} // namespace p6

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
-#include "internal/make_absolute_path.h"
+#include "make_absolute_path.h"
 
 namespace p6 {
 
@@ -152,14 +152,14 @@ void Shader::set(std::string_view uniform_name, const ImageOrCanvas& image) cons
 
 Shader load_shader(std::filesystem::path fragment_shader_path)
 {
-    auto ifs = std::ifstream{internal::make_absolute_path(fragment_shader_path)};
+    auto ifs = std::ifstream{make_absolute_path(fragment_shader_path)};
     return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
 }
 
 Shader load_shader(std::filesystem::path vertex_shader_path, std::filesystem::path fragment_shader_path)
 {
-    auto fragment_ifs = std::ifstream{internal::make_absolute_path(fragment_shader_path)};
-    auto vertex_ifs   = std::ifstream{internal::make_absolute_path(vertex_shader_path)};
+    auto fragment_ifs = std::ifstream{make_absolute_path(fragment_shader_path)};
+    auto vertex_ifs   = std::ifstream{make_absolute_path(vertex_shader_path)};
     return Shader{std::string{std::istreambuf_iterator<char>{vertex_ifs}, {}},
                   std::string{std::istreambuf_iterator<char>{fragment_ifs}, {}}};
 }
