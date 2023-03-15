@@ -10,7 +10,8 @@ namespace p6 {
 GLenum Shader::s_available_texture_slot{0};
 
 Shader::Shader(std::string_view fragment_source_code)
-    : Shader{R"(
+    : Shader{ShaderSources{
+        /*. vertex = */ R"(
 #version 410
 
 layout(location = 0) in vec2 _vertex_position;
@@ -36,35 +37,54 @@ void main()
     _canvas_uv = (_texture_coordinates - 0.5) * _size * 2.;
 }
     )",
-             fragment_source_code}
+        /* .fragment = */ std::string{fragment_source_code},
+    }}
 {}
 
 Shader::Shader(std::string_view vertex_source_code, std::string_view fragment_source_code)
+    : Shader{ShaderSources{
+        /* .vertex   = */ std::string{vertex_source_code},
+        /* .fragment = */ std::string{fragment_source_code},
+    }}
+{}
+
+template<glpp::ShaderType Type>
+static auto gen_shader_module(std::optional<std::string> const& source_code, std::string const& stage_name) -> std::optional<glpp::internal::Shader<Type>>
 {
-    const auto vert = glpp::VertexShader{vertex_source_code.data()};
-    const auto frag = glpp::FragmentShader{fragment_source_code.data()};
+    if (!source_code)
+        return std::nullopt;
+    auto module = glpp::internal::Shader<Type>{source_code->data()};
 #if !defined(NDEBUG)
     {
-        const auto err = vert.check_compilation_errors();
+        auto const err = module.check_compilation_errors();
         if (err)
         {
-            const auto msg = "Vertex shader compilation failed:\n" + err.message();
-            std::cerr << msg << '\n';
-            throw std::runtime_error{msg};
-        }
-    }
-    {
-        const auto err = frag.check_compilation_errors();
-        if (err)
-        {
-            const auto msg = "Fragment shader compilation failed:\n" + err.message();
+            auto const msg = stage_name + " shader compilation failed:\n" + err.message();
             std::cerr << msg << '\n';
             throw std::runtime_error{msg};
         }
     }
 #endif
-    _program.attach_shader(*vert);
-    _program.attach_shader(*frag);
+    return module;
+}
+
+Shader::Shader(ShaderSources const& sources)
+{
+    auto const vert      = gen_shader_module<glpp::ShaderType::Vertex>(sources.vertex, "Vertex");
+    auto const frag      = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment, "Fragment");
+    auto const geom      = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry, "Geometry");
+    auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control, "Tessellation Control");
+    auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation, "Tessellation Evaluation");
+    if (vert)
+        _program.attach_shader(**vert);
+    if (frag)
+        _program.attach_shader(**frag);
+    if (geom)
+        _program.attach_shader(**geom);
+    if (tess_ctrl)
+        _program.attach_shader(**tess_ctrl);
+    if (tess_eval)
+        _program.attach_shader(**tess_eval);
     _program.link();
 #if !defined(NDEBUG)
     {
@@ -98,7 +118,7 @@ void Shader::use() const
 }
 
 template<typename T>
-void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value)
+static void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value)
 {
     program.use();
     program.set(std::string{uniform_name}, value);
@@ -150,18 +170,40 @@ void Shader::set(std::string_view uniform_name, const ImageOrCanvas& image) cons
     s_available_texture_slot = (s_available_texture_slot + 1) % 8;
 }
 
-Shader load_shader(std::filesystem::path fragment_shader_path)
+static auto file_content(std::filesystem::path const& path) -> std::string
 {
-    auto ifs = std::ifstream{make_absolute_path(fragment_shader_path)};
-    return Shader{std::string{std::istreambuf_iterator<char>{ifs}, {}}};
+    auto ifs = std::ifstream{make_absolute_path(path)};
+    return std::string{std::istreambuf_iterator<char>{ifs}, {}};
 }
 
-Shader load_shader(std::filesystem::path vertex_shader_path, std::filesystem::path fragment_shader_path)
+static auto maybe_file_content(std::optional<std::filesystem::path> const& path) -> std::optional<std::string>
 {
-    auto fragment_ifs = std::ifstream{make_absolute_path(fragment_shader_path)};
-    auto vertex_ifs   = std::ifstream{make_absolute_path(vertex_shader_path)};
-    return Shader{std::string{std::istreambuf_iterator<char>{vertex_ifs}, {}},
-                  std::string{std::istreambuf_iterator<char>{fragment_ifs}, {}}};
+    if (!path)
+        return std::nullopt;
+
+    return file_content(*path);
+}
+
+Shader load_shader(std::filesystem::path const& fragment_shader_path)
+{
+    return Shader{file_content(fragment_shader_path)};
+}
+
+Shader load_shader(std::filesystem::path const& vertex_shader_path, std::filesystem::path const& fragment_shader_path)
+{
+    return Shader{file_content(vertex_shader_path),
+                  file_content(fragment_shader_path)};
+}
+
+Shader load_shader(ShaderPaths const& paths)
+{
+    return Shader{{
+        maybe_file_content(paths.vertex),
+        maybe_file_content(paths.fragment),
+        maybe_file_content(paths.geometry),
+        maybe_file_content(paths.tessellation_control),
+        maybe_file_content(paths.tessellation_evaluation),
+    }};
 }
 
 namespace internal {
@@ -175,9 +217,9 @@ static glm::vec2 get_scale(const glm::mat3& transform)
     };
 }
 
-void set_vertex_shader_uniforms(const Shader& shader, const glm::mat3& transform, float framebuffer_aspect_ratio)
+void set_vertex_shader_uniforms(Shader const& shader, glm::mat3 const& transform, float framebuffer_aspect_ratio)
 {
-    const glm::vec2 scale = get_scale(transform);
+    glm::vec2 const scale = get_scale(transform);
     shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
     shader.set("_transform", transform);
