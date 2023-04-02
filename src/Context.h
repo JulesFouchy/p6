@@ -144,10 +144,10 @@ public:
     };
     /// This function is called repeatedly whenever a keyboard key is held. (NB: this only starts after holding the key for a little while. The exact behaviour is OS-specific)
     ///
-    /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update function:
+    /// :warning: This is less than ideal to do things like handling the movement of a character. You should rather do, in your update() function:
     ///
     /// ```
-    /// if (ctx.key_is_held(GLFW_KEY_W)) {
+    /// if (ctx.key_is_pressed(GLFW_KEY_W)) {
     ///     character.move_forward(ctx.delta_time());
     /// }
     /// ```
@@ -387,14 +387,14 @@ public:
 
     /**@}*/
     /* ------------------------------- */
-    /** \defgroup input Input
+    /** \defgroup input Mouse and keyboard info
      * Query the state of the mouse and keyboard.
      * @{*/
     /* ------------------------------- */
 
     /// Returns the current mouse position
     glm::vec2 mouse() const;
-    /// Returns the movement of the mouse since last update().
+    /// Returns the movement of the mouse since the last update().
     glm::vec2 mouse_delta() const;
     /// Returns true iff the window is focused and the coordinates returned by mouse() correspond to a position inside the window.
     bool mouse_is_in_window() const;
@@ -408,7 +408,7 @@ public:
     /// Returns true iff the ALT key is pressed
     bool alt() const;
     /// Returns true iff the given `key` is currently pressed.
-    /// `key` should be a GLFW_KEY_ value. See https://www.glfw.org/docs/3.3/group__keys.html for the complete list.
+    /// `key` should be a GLFW_KEY value. See https://www.glfw.org/docs/3.3/group__keys.html for the complete list.
     /// e.g. `ctx.key_is_pressed(GLFW_KEY_Q)`
     /// /!\\ Please note that these are physical keys that don't depend on the current layout.
     /// This means that GLFW_KEY_Q will refer to the first key on your keyboard, no matter if you are using QWERTY or AZERTY.
