@@ -13,12 +13,12 @@
 [submodule "third-party/op"]
 	path = third-party/op
 	url = https://github.com/CoolLibs/op
-[submodule "third-party/imgui"]
-	path = third-party/imgui
-	url = https://github.com/CoolLibs/imgui
 [submodule "third-party/exe_path"]
 	path = third-party/exe_path
 	url = https://github.com/CoolLibs/exe_path
 [submodule "tooling"]
 	path = tooling
 	url = https://github.com/CoolLibs/tooling
+[submodule "third-party/imgui"]
+	path = third-party/imgui
+	url = https://github.com/ocornut/imgui

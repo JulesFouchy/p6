@@ -2,9 +2,8 @@
 #include <glad/gl.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui/imgui_internal.h>
+#include <imgui/imgui.h>
 
 namespace p6::internal::ImGuiWrapper {
 

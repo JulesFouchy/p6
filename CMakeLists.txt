@@ -12,13 +12,15 @@ if(P6_RAW_OPENGL_MODE)
     target_compile_definitions(p6 PUBLIC "P6_RAW_OPENGL_MODE")
 endif()
 
-if (p6_ENABLE_WARNINGS_AS_ERRORS)
+if(p6_ENABLE_WARNINGS_AS_ERRORS)
     message("-- [p6] Enabling warnings as errors for p6")
+
     if(MSVC)
         target_compile_options(p6 PRIVATE /WX /W4)
     else()
         target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wno-unknown-pragmas)
     endif()
+
     set(glpp_extended_ENABLE_WARNINGS_AS_ERRORS true)
     set(img_ENABLE_WARNINGS_AS_ERRORS true)
 else()
@@ -29,33 +31,54 @@ endif()
 add_subdirectory(third-party/glpp-extended)
 target_compile_definitions(glpp PUBLIC $<$<CONFIG:Debug>:GLPP_SHOULD_CHECK_ERRORS>)
 target_link_libraries(p6 PUBLIC glpp::extended)
+
 # ---Add img---
 add_subdirectory(third-party/img)
 target_link_libraries(p6 PUBLIC img::img)
+
 # ---Add op---
 add_subdirectory(third-party/op)
 target_link_libraries(p6 PUBLIC op::op)
+
 # ---Add exe_path---
 add_subdirectory(third-party/exe_path)
 target_link_libraries(p6 PUBLIC exe_path::exe_path)
+
 # ---Add glfw---
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
+
 # ---Add Dear ImGui---
-add_subdirectory(third-party/imgui)
-# Build ImGui with glfw
+add_library(ImGui)
+target_compile_features(ImGui PUBLIC cxx_std_11)
+
+if(WIN32)
+    target_link_libraries(ImGui PRIVATE imm32) # Required only when using mingw, not Visual Studio
+endif()
+
+target_include_directories(ImGui SYSTEM PUBLIC third-party/imgui)
+target_sources(ImGui PRIVATE
+    third-party/imgui/imgui_demo.cpp
+    third-party/imgui/imgui_draw.cpp
+    third-party/imgui/imgui_tables.cpp
+    third-party/imgui/imgui_widgets.cpp
+    third-party/imgui/imgui.cpp
+    third-party/imgui/misc/cpp/imgui_stdlib.cpp
+    third-party/imgui/backends/imgui_impl_glfw.cpp # Build ImGui with glfw
+    third-party/imgui/backends/imgui_impl_opengl3.cpp # Build ImGui with OpenGL
+)
 target_link_libraries(ImGui PRIVATE glfw)
-target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_glfw.cpp)
-# Build ImGui with OpenGL
-target_sources(ImGui PRIVATE third-party/imgui/backends/imgui_impl_opengl3.cpp)
+
+target_sources(ImGui PRIVATE)
+
 #
-target_link_libraries(p6 PUBLIC ImGui::ImGui)
+target_link_libraries(p6 PUBLIC ImGui)
 
 # ---Add p6 files---
 file(GLOB_RECURSE P6_SOURCES CONFIGURE_DEPENDS src/*)
 target_sources(p6 PRIVATE ${P6_SOURCES})
 target_include_directories(p6 PUBLIC include
-                                     third-party # For Dear ImGui
+    third-party # For Dear ImGui
 )
 
 # ---Functions to copy files and folders---
@@ -69,7 +92,7 @@ function(p6_copy_folder TARGET_NAME FOLDERNAME)
     Cool__target_copy_folder(${TARGET_NAME} ${FOLDERNAME})
 endfunction()
 
-#! Deprecated
+# ! Deprecated
 function(target_link_p6_library TARGET)
     target_link_libraries(${TARGET} p6::p6)
     message("[p6] Sorry, target_link_p6_library() is deprecated, you should go back to using the usual `target_link_libraries(\${PROJECT_NAME} p6::p6)`")
