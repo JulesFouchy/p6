@@ -59,7 +59,7 @@ size_t size_type(size_t min, size_t max)
 
 glm::vec2 point(const p6::Context& ctx)
 {
-    return point(ctx.main_canvas());
+    return point(ctx.aspect_ratio());
 }
 
 glm::vec2 point(const p6::Canvas& canvas)

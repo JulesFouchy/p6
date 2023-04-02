@@ -4,6 +4,14 @@ add_library(p6)
 add_library(p6::p6 ALIAS p6)
 target_compile_features(p6 PRIVATE cxx_std_17)
 
+set(P6_RAW_OPENGL_MODE OFF CACHE BOOL "When enabled, disables a few things that p6 does internally (like enabling alpha blending or using custom framebuffers).
+                                       This allows you to have a vanilla OpenGL experience. p6 won't get in the way of what you see in OpenGL tutorials.
+                                       Only enable this if you want to learn OpenGL and simply use p6 as an easy way to create a window and handle events, without using the drawing features of p6.")
+
+if(P6_RAW_OPENGL_MODE)
+    target_compile_definitions(p6 PUBLIC "P6_RAW_OPENGL_MODE")
+endif()
+
 if (p6_ENABLE_WARNINGS_AS_ERRORS)
     message("-- [p6] Enabling warnings as errors for p6")
     if(MSVC)

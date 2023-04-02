@@ -45,10 +45,11 @@ Context::Context(WindowCreationParams window_creation_params)
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
     });
+#ifndef P6_RAW_OPENGL_MODE
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
-
+#endif
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetFramebufferSizeCallback(*_window, &framebuffer_size_callback);
@@ -63,7 +64,9 @@ Context::Context(WindowCreationParams window_creation_params)
 
     internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
+#ifndef P6_RAW_OPENGL_MODE
     render_to_main_canvas();
+#endif
     framerate_synced_with_monitor();
 }
 
@@ -105,11 +108,13 @@ static auto to_p6_size(const img::SizeT<float>& size)
                      static_cast<GLsizei>(size.height())};
 }
 
+#ifndef P6_RAW_OPENGL_MODE
 ImageSize Context::main_canvas_displayed_size_inside_window()
 {
     return to_p6_size(img::SizeU::fit_into(to_img_size(_framebuffer_size),
                                            to_img_size(_main_canvas.size())));
 }
+#endif
 
 glm::mat3 Context::complete_transform_matrix(const Transform2D& transform) const
 {
@@ -125,12 +130,14 @@ void Context::start()
             if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
             {
                 internal::ImGuiWrapper::begin_frame();
+#ifndef P6_RAW_OPENGL_MODE
                 // Clear the window in case the default canvas doesn't cover the whole window
                 glpp::bind_framebuffer(glpp::SCREEN_FRAMEBUFFER_ID);
                 glClearColor(0.3f, 0.3f, 0.3f, 1.f);
                 glClear(GL_COLOR_BUFFER_BIT);
 
                 render_to_main_canvas();
+#endif
                 check_for_mouse_movements();
 
                 if (!is_paused()
@@ -141,20 +148,25 @@ void Context::start()
                     update();
                     on_event(Event_Update{});
                 }
-
-                const auto size_inside_window = main_canvas_displayed_size_inside_window();
-                const auto pos_inside_window  = glpp::BlitTopLeftCorner{_framebuffer_size.width() / 2 - size_inside_window.width() / 2,
-                                                                       _framebuffer_size.height() / 2 - size_inside_window.height() / 2};
-                _main_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
-                                                     size_inside_window,
-                                                     glpp::Interpolation::NearestNeighbour,
-                                                     pos_inside_window);
+#ifndef P6_RAW_OPENGL_MODE
+                {
+                    const auto size_inside_window = main_canvas_displayed_size_inside_window();
+                    const auto pos_inside_window  = glpp::BlitTopLeftCorner{_framebuffer_size.width() / 2 - size_inside_window.width() / 2,
+                                                                           _framebuffer_size.height() / 2 - size_inside_window.height() / 2};
+                    _main_canvas.render_target().blit_to(glpp::RenderTarget::screen_framebuffer_id(),
+                                                         size_inside_window,
+                                                         glpp::Interpolation::NearestNeighbour,
+                                                         pos_inside_window);
+                }
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
+#endif
                 imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
             }
             glfwSwapBuffers(*_window);
+#ifndef P6_RAW_OPENGL_MODE
             render_to_main_canvas();
+#endif
         }
         glfwPollEvents();
     }
@@ -276,7 +288,12 @@ void Context::triangle(Point2D p1, Point2D p2, Point2D p3, Transform2D transform
 {
     _triangle_renderer.render(p1.value, p2.value, p3.value,
                               complete_transform_matrix(transform),
-                              static_cast<float>(current_canvas_height()), aspect_ratio(),
+#ifndef P6_RAW_OPENGL_MODE
+                              static_cast<float>(current_canvas_height()),
+#else
+                              static_cast<float>(main_canvas_height()),
+#endif
+                              aspect_ratio(),
                               use_fill ? std::make_optional(fill.as_premultiplied_vec4()) : std::nullopt,
                               use_stroke ? std::make_optional(stroke.as_premultiplied_vec4()) : std::nullopt,
                               stroke_weight);
@@ -566,6 +583,7 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
  * ---------RENDER TARGETS--------- *
  * -------------------------------- */
 
+#ifndef P6_RAW_OPENGL_MODE
 void Context::render_to_canvas(Canvas& canvas)
 {
     canvas.render_target().bind();
@@ -600,6 +618,7 @@ float Context::canvas_ratio(const Canvas& canvas) const
     return canvas_ratio_impl(canvas.aspect_ratio(),
                              _main_canvas.aspect_ratio());
 }
+#endif
 
 /* ----------------------- *
  * ---------INPUT--------- *
@@ -675,17 +694,29 @@ bool Context::key_is_pressed(int key) const
 
 float Context::aspect_ratio() const
 {
+#ifndef P6_RAW_OPENGL_MODE
     return current_canvas().aspect_ratio();
+#else
+    return _framebuffer_size.aspect_ratio();
+#endif
 }
 
 float Context::inverse_aspect_ratio() const
 {
+#ifndef P6_RAW_OPENGL_MODE
     return current_canvas().inverse_aspect_ratio();
+#else
+    return _framebuffer_size.inverse_aspect_ratio();
+#endif
 }
 
 ImageSize Context::main_canvas_size() const
 {
+#ifndef P6_RAW_OPENGL_MODE
     return _main_canvas.size();
+#else
+    return _framebuffer_size;
+#endif
 }
 
 int Context::main_canvas_width() const
@@ -698,6 +729,7 @@ int Context::main_canvas_height() const
     return main_canvas_size().height();
 }
 
+#ifndef P6_RAW_OPENGL_MODE
 ImageSize Context::current_canvas_size() const
 {
     return current_canvas().size();
@@ -712,6 +744,7 @@ int Context::current_canvas_height() const
 {
     return current_canvas_size().height();
 }
+#endif
 
 Color Context::read_pixel(glm::vec2 position) const
 {
@@ -722,11 +755,15 @@ Color Context::read_pixel(glm::vec2 position) const
                                             -1.f, +1.f,
                                             0.f, static_cast<float>(main_canvas_height())));
     uint8_t    channels[4];
+#ifndef P6_RAW_OPENGL_MODE
     GLint      previous_framebuffer;
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previous_framebuffer);
     glpp::bind_framebuffer_as_read(main_canvas().render_target().framebuffer());
+#endif
     glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, channels);
+#ifndef P6_RAW_OPENGL_MODE
     glpp::bind_framebuffer_as_read(static_cast<GLuint>(previous_framebuffer));
+#endif
     return p6::Color{static_cast<float>(channels[0]) / 255.f,
                      static_cast<float>(channels[1]) / 255.f,
                      static_cast<float>(channels[2]) / 255.f,
@@ -931,11 +968,13 @@ bool Context::is_paused() const
  * ---------PRIVATE--------- *
  * ------------------------- */
 
+#ifndef P6_RAW_OPENGL_MODE
 float Context::default_canvas_ratio() const
 {
     return canvas_ratio_impl(_main_canvas.aspect_ratio(),
                              _window_size.aspect_ratio());
 }
+#endif
 
 glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 {
@@ -946,7 +985,9 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
     pos.x -= w / 2.f;              // Center around 0
     pos.y -= h / 2.f;              // Center around 0
     pos /= h / 2.f;                // Normalize
+#ifndef P6_RAW_OPENGL_MODE
     pos *= default_canvas_ratio(); // Adapt to the canvas
+#endif
     return pos;
 }
 
@@ -979,19 +1020,23 @@ static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size
 
 } // namespace internal
 
+#ifndef P6_RAW_OPENGL_MODE
 void Context::adapt_main_canvas_size_to_framebuffer_size()
 {
     std::visit([&](auto&& mode) { internal::adapt_canvas_size_to_framebuffer_size(_main_canvas, _framebuffer_size, mode); }, _main_canvas_size_mode);
     main_canvas_resized();
     on_event(Event_MainCanvasResized{});
 }
+#endif
 
 void Context::on_framebuffer_resize(int width, int height)
 {
     if (width > 0 && height > 0)
     {
         _framebuffer_size = {width, height};
+#ifndef P6_RAW_OPENGL_MODE
         adapt_main_canvas_size_to_framebuffer_size();
+#endif
     }
 }
 

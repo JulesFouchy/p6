@@ -325,6 +325,7 @@ public:
      * @{*/
     /* ------------------------------- */
 
+#ifndef P6_RAW_OPENGL_MODE
     /// Sets a canvas to be the one that all the drawing commands will draw on, until you call render_to_main_canvas.
     void render_to_canvas(Canvas&);
     /// Reset the Context to render to the main canvas. The main canvas is the one that will be displayed in the window.
@@ -334,6 +335,7 @@ public:
     const Canvas& main_canvas() const { return _main_canvas; }
     Canvas&       current_canvas() { return _current_canvas; }
     const Canvas& current_canvas() const { return _current_canvas; }
+#endif
 
     /// Returns the aspect ratio (a.k.a. width / height) of the current canvas.
     /// This canvas is the window's main canvas by default, unless you called render_to_canvas() in which case it will be the given canvas.
@@ -354,6 +356,7 @@ public:
     /// Returns the height of the main canvas.
     int main_canvas_height() const;
 
+#ifndef P6_RAW_OPENGL_MODE
     /// Returns the size of the current canvas (width and height).
     ImageSize current_canvas_size() const;
 
@@ -380,6 +383,7 @@ public:
     {
         p6::save_image(_main_canvas, path);
     }
+#endif
 
     /// Returns the color of the pixel at the given position in the main canvas.
     /// The coordinates are expressed in the usual p6 coordinate system.
@@ -510,7 +514,9 @@ public:
     /**@}*/
 private:
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
+#ifndef P6_RAW_OPENGL_MODE
     float     default_canvas_ratio() const;
+#endif
 
     void        on_framebuffer_resize(int width, int height);
     friend void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -527,7 +533,9 @@ private:
     void      check_for_mouse_movements();
     glm::vec2 compute_mouse_position() const;
 
+#ifndef P6_RAW_OPENGL_MODE
     void adapt_main_canvas_size_to_framebuffer_size();
+#endif
 
     ImageSize main_canvas_displayed_size_inside_window();
 
@@ -547,7 +555,7 @@ private:
     internal::TriangleRenderer              _triangle_renderer;
     internal::TextRenderer                  _text_renderer;
     internal::TransformStack                _transform_stack{};
-    ImageSize                               _framebuffer_size;
+    ImageSize                               _framebuffer_size{1, 1};
     ImageSize                               _window_size;
     glm::vec2                               _mouse_position{};
     glm::vec2                               _mouse_position_delta{0.f, 0.f};
@@ -555,9 +563,11 @@ private:
     bool                                    _is_dragging{false};
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};
+#ifndef P6_RAW_OPENGL_MODE
     Canvas                                  _main_canvas{{1, 1}};
     CanvasSizeMode                          _main_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
     std::reference_wrapper<Canvas>          _current_canvas{_main_canvas};
+#endif
     bool                                    _window_is_fullscreen{false};
     int                                     _window_pos_x_before_fullscreen{};
     int                                     _window_pos_y_before_fullscreen{};
