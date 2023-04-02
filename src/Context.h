@@ -443,6 +443,9 @@ public:
     void toggle_fullscreen();
     /// Returns true iff the window is currently fullscreen.
     bool window_is_fullscreen() const;
+    /// Advanced function that returns the glfw window pointer. It allows you to call all the glfw functions that are not directly exposed by p6.
+    /// Note that you might also want to [raise an issue](https://github.com/JulesFouchy/p6/issues/new) to ask us to add that functionality directly into p6 to simplify future uses. We would be very thankful for that.
+    GLFWwindow* underlying_glfw_window() const { return *_window; }
 
     /**@}*/
     /* ------------------------------- */
