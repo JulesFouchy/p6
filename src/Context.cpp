@@ -62,7 +62,7 @@ Context::Context(WindowCreationParams window_creation_params)
         on_framebuffer_resize(width, height);
     }
 
-    internal::ImGuiWrapper::initialize(*_window); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
+    internal::ImGuiWrapper::initialize(*_window, window_creation_params.imgui_config_flags); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
 #ifndef P6_RAW_OPENGL_MODE
     render_to_main_canvas();

@@ -1,4 +1,5 @@
 #pragma once
+#include <imgui/imgui.h>
 #include "glfw.h"
 
 namespace p6 {
@@ -7,6 +8,8 @@ struct WindowCreationParams {
     int         width  = 1280;
     int         height = 720;
     const char* title  = "p6";
+    ImGuiConfigFlags imgui_config_flags = ImGuiConfigFlags_NavEnableKeyboard  // Enable Keyboard Controls
+                                          | ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
 };
 
 namespace internal {

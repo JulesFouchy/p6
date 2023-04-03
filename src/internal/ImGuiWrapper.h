@@ -1,10 +1,10 @@
 #pragma once
-
+#include <imgui/imgui.h>
 #include "glfw.h"
 
 namespace p6::internal::ImGuiWrapper {
 
-void initialize(GLFWwindow* window);
+void initialize(GLFWwindow* window, ImGuiConfigFlags config_flags);
 
 class Raii {
 public:
