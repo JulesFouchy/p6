@@ -759,7 +759,7 @@ Color Context::read_pixel(glm::vec2 position) const
                                             0.f, static_cast<float>(main_canvas_height())));
     uint8_t    channels[4];
 #ifndef P6_RAW_OPENGL_MODE
-    GLint      previous_framebuffer;
+    GLint previous_framebuffer;
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previous_framebuffer);
     glpp::bind_framebuffer_as_read(main_canvas().render_target().framebuffer());
 #endif
@@ -939,7 +939,7 @@ void Context::framerate_capped_at(float framerate)
 {
     glfwSwapInterval(0);
     _capped_delta_time = std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(
-        1000000000.f / framerate // Convert from fps to nanoseconds
+        1'000'000'000.f / framerate // Convert from fps to nanoseconds
         )};
 }
 
@@ -984,10 +984,10 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
     const auto w = static_cast<float>(_window_size.width());
     const auto h = static_cast<float>(_window_size.height());
 
-    pos.y = h - pos.y;             // Make y-axis point up
-    pos.x -= w / 2.f;              // Center around 0
-    pos.y -= h / 2.f;              // Center around 0
-    pos /= h / 2.f;                // Normalize
+    pos.y = h - pos.y; // Make y-axis point up
+    pos.x -= w / 2.f;  // Center around 0
+    pos.y -= h / 2.f;  // Center around 0
+    pos /= h / 2.f;    // Normalize
 #ifndef P6_RAW_OPENGL_MODE
     pos *= default_canvas_ratio(); // Adapt to the canvas
 #endif
