@@ -47,8 +47,9 @@ class Angle
     , public op::Scalable<Angle> {
 public:
     constexpr Angle() = default;
-    constexpr explicit Angle(Radians value)
-        : value{value} {}
+    constexpr Angle(Radians value) // NOLINT(*-explicit-constructor, *-explicit-conversions) Radians already has an explicit constructor, requiring two of them in a row is too verbose and doesn't add anything.
+        : value{value}
+    {}
     /// Constructs the angle that `direction` makes with the positive x axis.
     /// `direction` does not need to be normalized.
     constexpr explicit Angle(glm::vec2 direction)
