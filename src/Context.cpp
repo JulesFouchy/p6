@@ -127,7 +127,9 @@ void Context::start()
     {
         if (!glfwGetWindowAttrib(*_window, GLFW_ICONIFIED)) // Do nothing while the window is minimized. This is here partly because we don't have a proper notion of a window with size 0 and it would currently crash.
         {
+#if P6_RAW_OPENGL_MODE
             bool has_updated_this_frame = false;
+#endif
             if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
             {
                 internal::ImGuiWrapper::begin_frame();
@@ -148,7 +150,9 @@ void Context::start()
                     _last_update = std::chrono::steady_clock::now();
                     update();
                     on_event(Event_Update{});
+#if P6_RAW_OPENGL_MODE
                     has_updated_this_frame = true;
+#endif
                 }
 #ifndef P6_RAW_OPENGL_MODE
                 {
@@ -165,7 +169,9 @@ void Context::start()
                 imgui();
                 internal::ImGuiWrapper::end_frame(*_window);
             }
-            if (has_updated_this_frame) // If we don't check for that, images glitch in framerate_capped_at() mode with raw OpenGL enabled.
+#if P6_RAW_OPENGL_MODE
+            if (has_updated_this_frame) // If we don't check for that, images glitch in framerate_capped_at() mode with raw OpenGL enabled. (Note that this causes ImGui rendering to be tied to the capped framerate too, and to stop rendering when p6 is paused. But we can't work around that in raw opengl mode because we do all our rendering on the screen's framebuffer.)
+#endif
                 glfwSwapBuffers(*_window);
 #ifndef P6_RAW_OPENGL_MODE
             render_to_main_canvas();
