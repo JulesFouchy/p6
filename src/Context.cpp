@@ -96,6 +96,7 @@ static bool skip_first_frames(internal::Clock& clock)
     }
 }
 
+#if !P6_RAW_OPENGL_MODE
 static auto to_img_size(const ImageSize& size)
 {
     return img::SizeT<GLsizei>{size.width(),
@@ -108,7 +109,6 @@ static auto to_p6_size(const img::SizeT<float>& size)
                      static_cast<GLsizei>(size.height())};
 }
 
-#ifndef P6_RAW_OPENGL_MODE
 ImageSize Context::main_canvas_displayed_size_inside_window()
 {
     return to_p6_size(img::SizeU::fit_into(to_img_size(_framebuffer_size),
@@ -996,6 +996,7 @@ glm::vec2 Context::window_to_relative_coords(glm::vec2 pos) const
 
 namespace internal {
 
+#if !P6_RAW_OPENGL_MODE
 static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size,
                                                   CanvasSizeMode_SameAsWindow)
 {
@@ -1020,6 +1021,7 @@ static void adapt_canvas_size_to_framebuffer_size(Canvas& canvas, ImageSize size
     canvas.resize({static_cast<GLsizei>(mode.width_scale * static_cast<float>(size.width())),
                    static_cast<GLsizei>(mode.height_scale * static_cast<float>(size.height()))});
 }
+#endif
 
 } // namespace internal
 
