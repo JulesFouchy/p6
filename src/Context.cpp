@@ -70,6 +70,11 @@ Context::Context(WindowCreationParams window_creation_params)
     framerate_synced_with_monitor();
 }
 
+Context::~Context()
+{
+    glpp::shut_down();
+}
+
 static bool needs_to_wait_to_cap_framerate(std::optional<std::chrono::nanoseconds> capped_delta_time,
                                            std::chrono::steady_clock::time_point   last_update)
 {
