@@ -82,7 +82,7 @@ class Context;
 class [[nodiscard]] TransformScopeGuard // NODISCARD: You need to assign this to a variable. It will push_transform() when created and pop_transform() when it goes out of scope. See https://julesfouchy.github.io/p6-docs/tutorials/transform#transform_scope_guard") // NOLINT(*-special-member-functions)
 {
 public:
-    explicit TransformScopeGuard(Context & ctx);
+    explicit TransformScopeGuard(Context& ctx);
     ~TransformScopeGuard();
 
 private:
@@ -515,7 +515,7 @@ public:
 private:
     glm::vec2 window_to_relative_coords(glm::vec2 pos) const;
 #ifndef P6_RAW_OPENGL_MODE
-    float     default_canvas_ratio() const;
+    float default_canvas_ratio() const;
 #endif
 
     void        on_framebuffer_resize(int width, int height);
@@ -564,16 +564,16 @@ private:
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};
 #ifndef P6_RAW_OPENGL_MODE
-    Canvas                                  _main_canvas{{1, 1}};
-    CanvasSizeMode                          _main_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
-    std::reference_wrapper<Canvas>          _current_canvas{_main_canvas};
+    Canvas                         _main_canvas{{1, 1}};
+    CanvasSizeMode                 _main_canvas_size_mode{CanvasSizeMode_SameAsWindow{}};
+    std::reference_wrapper<Canvas> _current_canvas{_main_canvas};
 #endif
-    bool                                    _window_is_fullscreen{false};
-    int                                     _window_pos_x_before_fullscreen{};
-    int                                     _window_pos_y_before_fullscreen{};
-    int                                     _window_width_before_fullscreen;
-    int                                     _window_height_before_fullscreen;
-    Shader                                  _rect_shader{R"(
+    bool   _window_is_fullscreen{false};
+    int    _window_pos_x_before_fullscreen{};
+    int    _window_pos_y_before_fullscreen{};
+    int    _window_width_before_fullscreen;
+    int    _window_height_before_fullscreen;
+    Shader _rect_shader{R"(
 #version 410
 
 in vec2 _raw_uv;
@@ -636,7 +636,7 @@ void main() {
     _frag_color *= shape_factor;
 }
     )"};
-    Shader                                  _line_shader{R"(
+    Shader _line_shader{R"(
 #version 410
 out vec4 _frag_color;
 
