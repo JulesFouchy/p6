@@ -10,11 +10,11 @@ Image::Image(ImageSize size, const uint8_t* data, glpp::TextureLayout texture_la
     _texture.upload_data(size, data, texture_layout);
 }
 
-Image load_image(std::filesystem::path file_path)
+Image load_image(std::filesystem::path file_path, bool flip_vertically)
 {
     try
     {
-        const auto image_data = img::load(make_absolute_path(file_path), 4);
+        const auto image_data = img::load(make_absolute_path(file_path), 4, flip_vertically);
         return Image{{static_cast<GLsizei>(image_data.size().width()),
                       static_cast<GLsizei>(image_data.size().height())},
                      image_data.data()};
@@ -26,11 +26,11 @@ Image load_image(std::filesystem::path file_path)
     }
 }
 
-img::Image load_image_buffer(std::filesystem::path file_path)
+img::Image load_image_buffer(std::filesystem::path file_path, bool flip_vertically)
 {
     try
     {
-        return img::load(make_absolute_path(file_path), 4);
+        return img::load(make_absolute_path(file_path), 4, flip_vertically);
     }
     catch (const std::runtime_error& e)
     {

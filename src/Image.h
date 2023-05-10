@@ -38,13 +38,15 @@ private:
 /// Loads an image from a file.
 /// If the path is relative, it will be relative to the directory containing your executable.
 /// Throws a `std::runtime_error` if the file doesn't exist or isn't a valid image file.
-[[nodiscard]] Image load_image(std::filesystem::path file_path);
+/// Set `flip_vertically` to false if your image appears upside-down.
+[[nodiscard]] Image load_image(std::filesystem::path file_path, bool flip_vertically = true);
 
 /// For advanced uses only.
 /// Loads an image from a file and returns the buffer of pixels and the size.
 /// If the path is relative, it will be relative to the directory containing your executable.
 /// Throws a `std::runtime_error` if the file doesn't exist or isn't a valid image file.
-[[nodiscard]] img::Image load_image_buffer(std::filesystem::path file_path);
+/// Set `flip_vertically` to false if your image appears upside-down.
+[[nodiscard]] img::Image load_image_buffer(std::filesystem::path file_path, bool flip_vertically = true);
 
 /**@}*/
 
