@@ -3,6 +3,8 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+#include <string_view>
+#include "internal/string_utils.h"
 #include "make_absolute_path.h"
 
 namespace p6 {
@@ -48,14 +50,56 @@ Shader::Shader(std::string_view vertex_source_code, std::string_view fragment_so
     }}
 {}
 
+#if !defined(NDEBUG)
+static auto find_exact_word(std::string_view text, std::string_view keyword, size_t start = 0) -> size_t
+{
+    auto const is_delimiter = [](char c) {
+        return internal::default_word_delimiters.find(c) != std::string_view::npos;
+    };
+    auto const offset = text.find(keyword, start);
+    if (offset == std::string_view::npos)
+        return std::string_view::npos;
+    if ((offset > 0 && !is_delimiter(text[offset - 1]))
+        || (offset + keyword.size() < text.size() && !is_delimiter(text[offset + keyword.size()])))
+    {
+        return find_exact_word(text, keyword, offset + keyword.size());
+    }
+    return offset;
+}
+
+static void append_uniforms_names(std::string source_code, std::set<std::string>& _uniforms_names)
+{
+    source_code        = internal::remove_comments(source_code);
+    auto const keyword = std::string_view{"uniform"};
+
+    size_t offset = find_exact_word(source_code, keyword);
+    while (offset != std::string::npos)
+    {
+        offset += keyword.length();
+
+        auto const type_pos = internal::find_next_word_position(source_code, offset);
+        if (!type_pos)
+            break;
+        auto const name = internal::next_word(source_code, type_pos->second);
+        if (!name)
+            break;
+
+        _uniforms_names.insert(std::string{*name});
+
+        offset = find_exact_word(source_code, keyword, type_pos->second);
+    }
+}
+#endif
+
 template<glpp::ShaderType Type>
-static auto gen_shader_module(std::optional<std::string> const& source_code, std::string const& stage_name) -> std::optional<glpp::internal::Shader<Type>>
+static auto gen_shader_module(std::optional<std::string> const& source_code, std::string const& stage_name, std::set<std::string>& uniforms_names) -> std::optional<glpp::internal::Shader<Type>>
 {
     if (!source_code)
         return std::nullopt;
     auto module = glpp::internal::Shader<Type>{source_code->data()};
 #if !defined(NDEBUG)
     {
+        append_uniforms_names(*source_code, uniforms_names);
         auto const err = module.check_compilation_errors();
         if (err)
         {
@@ -70,11 +114,11 @@ static auto gen_shader_module(std::optional<std::string> const& source_code, std
 
 Shader::Shader(ShaderSources const& sources)
 {
-    auto const vert      = gen_shader_module<glpp::ShaderType::Vertex>(sources.vertex, "Vertex");
-    auto const frag      = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment, "Fragment");
-    auto const geom      = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry, "Geometry");
-    auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control, "Tessellation Control");
-    auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation, "Tessellation Evaluation");
+    auto const vert      = gen_shader_module<glpp::ShaderType::Vertex>(sources.vertex, "Vertex", _uniforms_names);
+    auto const frag      = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment, "Fragment", _uniforms_names);
+    auto const geom      = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry, "Geometry", _uniforms_names);
+    auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control, "Tessellation Control", _uniforms_names);
+    auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation, "Tessellation Evaluation", _uniforms_names);
     if (vert)
         _program.attach_shader(**vert);
     if (frag)
@@ -118,55 +162,119 @@ void Shader::use() const
 }
 
 template<typename T>
-static void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value)
+static void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value
+#if !defined(NDEBUG)
+                        ,
+                        std::set<std::string> const& uniforms_names
+#endif
+)
 {
+#if !defined(NDEBUG)
+    assert(uniforms_names.find(std::string{uniform_name}) != uniforms_names.end()
+           && "This uniform name does not exist in the shader.");
+#endif
     program.use();
     program.set(std::string{uniform_name}, value);
 }
 void Shader::set(std::string_view uniform_name, int value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, unsigned int value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, bool value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, float value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::vec2& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::vec3& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::vec4& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::mat2& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::mat3& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
 {
-    set_uniform(_program, uniform_name, value);
+    set_uniform(_program, uniform_name, value
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
 }
 void Shader::set(std::string_view uniform_name, const ImageOrCanvas& image) const
 {
     image.texture().bind_to_texture_unit(s_available_texture_slot);
-    set_uniform(_program, uniform_name, s_available_texture_slot);
+    set_uniform(_program, uniform_name, s_available_texture_slot
+#if !defined(NDEBUG)
+                ,
+                _uniforms_names
+#endif
+    );
     s_available_texture_slot = (s_available_texture_slot + 1) % 8;
 }
 
@@ -220,14 +328,12 @@ static glm::vec2 get_scale(const glm::mat3& transform)
 void set_vertex_shader_uniforms(Shader const& shader, glm::mat3 const& transform, float framebuffer_aspect_ratio)
 {
     glm::vec2 const scale = get_scale(transform);
-    shader.set("_window_aspect_ratio", framebuffer_aspect_ratio);
     shader.set("_window_inverse_aspect_ratio", 1.0f / framebuffer_aspect_ratio);
     shader.set("_transform", transform);
     shader.set("_size", scale);
     if (scale.x == 0.f || scale.y == 0.f) // Avoid crash when aspect ratio implies a division by 0
         return;
     shader.set("_aspect_ratio", scale.x / scale.y);
-    shader.set("_inverse_aspect_ratio", scale.y / scale.x);
 }
 
 } // namespace internal

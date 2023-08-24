@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <glpp/extended.hpp>
+#include <set>
 #include <string_view>
 #include "ImageCommon.h"
 #include "Transform2D.h"
@@ -59,6 +60,9 @@ public:
 private:
     glpp::ext::Program _program;
     static GLenum      s_available_texture_slot;
+#if !defined(NDEBUG)
+    std::set<std::string> _uniforms_names{};
+#endif
 };
 
 /// Loads a Shader from a file containing the fragment shader's source code.
