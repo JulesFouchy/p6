@@ -92,7 +92,13 @@ static void append_uniforms_names(std::string source_code, std::set<std::string>
 #endif
 
 template<glpp::ShaderType Type>
-static auto gen_shader_module(std::optional<std::string> const& source_code, std::string const& stage_name, std::set<std::string>& uniforms_names) -> std::optional<glpp::internal::Shader<Type>>
+static auto gen_shader_module(std::optional<std::string> const& source_code
+#if !defined(NDEBUG)
+                              ,
+                              std::string const&     stage_name,
+                              std::set<std::string>& uniforms_names
+#endif
+                              ) -> std::optional<glpp::internal::Shader<Type>>
 {
     if (!source_code)
         return std::nullopt;
@@ -114,11 +120,41 @@ static auto gen_shader_module(std::optional<std::string> const& source_code, std
 
 Shader::Shader(ShaderSources const& sources)
 {
-    auto const vert      = gen_shader_module<glpp::ShaderType::Vertex>(sources.vertex, "Vertex", _uniforms_names);
-    auto const frag      = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment, "Fragment", _uniforms_names);
-    auto const geom      = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry, "Geometry", _uniforms_names);
-    auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control, "Tessellation Control", _uniforms_names);
-    auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation, "Tessellation Evaluation", _uniforms_names);
+    auto const vert = gen_shader_module<glpp::ShaderType::Vertex>(sources.vertex
+#if !defined(NDEBUG)
+                                                                  ,
+                                                                  "Vertex",
+                                                                  _uniforms_names
+#endif
+    );
+    auto const frag = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment
+#if !defined(NDEBUG)
+                                                                    ,
+                                                                    "Fragment",
+                                                                    _uniforms_names
+#endif
+    );
+    auto const geom = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry
+#if !defined(NDEBUG)
+                                                                    ,
+                                                                    "Geometry",
+                                                                    _uniforms_names
+#endif
+    );
+    auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control
+#if !defined(NDEBUG)
+                                                                                    ,
+                                                                                    "Tessellation Control",
+                                                                                    _uniforms_names
+#endif
+    );
+    auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation
+#if !defined(NDEBUG)
+                                                                                       ,
+                                                                                       "Tessellation Evaluation",
+                                                                                       _uniforms_names
+#endif
+    );
     if (vert)
         _program.attach_shader(**vert);
     if (frag)
