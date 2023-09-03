@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glpp/extended.hpp>
 #include <optional>
+#include "../Shader.h"
 #include "../Transform2D.h"
 
 namespace p6::internal {
@@ -19,7 +20,7 @@ public:
 
 private:
     glpp::UniqueVertexArray _vao;
-    glpp::ext::Program      _shader;
+    Shader                  _shader;
 };
 
 } // namespace p6::internal

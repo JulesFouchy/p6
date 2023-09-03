@@ -5,8 +5,7 @@
 namespace p6::internal {
 
 TriangleRenderer::TriangleRenderer()
-{
-    const auto vertex_shader = glpp::VertexShader{R"(
+    : _shader{R"(
 #version 410
 
 uniform vec2 _p1;
@@ -20,9 +19,8 @@ void main()
     if (gl_VertexID == 1) gl_Position = vec4(_p2 * vec2(1./_window_aspect_ratio, 1.), 0., 1.);
     if (gl_VertexID == 2) gl_Position = vec4(_p3 * vec2(1./_window_aspect_ratio, 1.), 0., 1.);
 }
-    )"};
-
-    const auto fragment_shader = glpp::FragmentShader{R"(
+    )",
+              R"(
 #version 410
 out vec4 _frag_color;
 
@@ -51,28 +49,8 @@ void main()
                     ? _stroke_material
                     : _fill_material;
 }
-    )"};
-
-#if !defined(NDEBUG)
-    {
-        const auto err = vertex_shader.check_compilation_errors();
-        if (err)
-        {
-            throw std::runtime_error{"Vertex shader compilation failed:\n" + err.message()};
-        }
-    }
-    {
-        const auto err = fragment_shader.check_compilation_errors();
-        if (err)
-        {
-            throw std::runtime_error{"Fragment shader compilation failed:\n" + err.message()};
-        }
-    }
-#endif
-    _shader.attach_shader(*vertex_shader);
-    _shader.attach_shader(*fragment_shader);
-    _shader.link();
-}
+    )"}
+{}
 
 static glm::vec2 apply(glm::mat3 const& matrix, glm::vec2 point)
 {
@@ -99,6 +77,7 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
     _shader.set("_fill_material", fill_material.value_or(glm::vec4{0.f}));
     _shader.set("_stroke_material", stroke_material ? *stroke_material : *fill_material);
     _shader.set("_stroke_weight", stroke_weight);
+    _shader.check_for_errors_before_rendering();
     glBindVertexArray(*_vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
