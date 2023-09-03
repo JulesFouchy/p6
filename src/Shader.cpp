@@ -215,8 +215,16 @@ static void set_uniform(const glpp::ext::Program& program, std::string_view unif
 {
 #if !defined(NDEBUG)
     auto const it = has_uniform_been_set.find(std::string{uniform_name});
-    assert(it != has_uniform_been_set.end() && "This uniform name does not exist in the shader.");
-    it->second = true;
+    if (it == has_uniform_been_set.end())
+    {
+        auto const msg = "This uniform name \"" + std::string{uniform_name} + "\" does not exist in the shader.";
+        std::cerr << msg << '\n';
+        throw std::runtime_error{msg};
+    }
+    else
+    {
+        it->second = true;
+    }
 #endif
     program.use();
     program.set(std::string{uniform_name}, value);
