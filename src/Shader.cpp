@@ -67,7 +67,7 @@ static auto find_exact_word(std::string_view text, std::string_view keyword, siz
     return offset;
 }
 
-static void append_uniforms_names(std::string source_code, std::set<std::string>& _uniforms_names)
+static void append_uniforms_names(std::string source_code, std::unordered_map<std::string, bool>& has_uniform_been_set)
 {
     source_code        = internal::remove_comments(source_code);
     auto const keyword = std::string_view{"uniform"};
@@ -84,7 +84,7 @@ static void append_uniforms_names(std::string source_code, std::set<std::string>
         if (!name)
             break;
 
-        _uniforms_names.insert(std::string{*name});
+        has_uniform_been_set[std::string{*name}] = false;
 
         offset = find_exact_word(source_code, keyword, type_pos->second);
     }
@@ -95,8 +95,8 @@ template<glpp::ShaderType Type>
 static auto gen_shader_module(std::optional<std::string> const& source_code
 #if !defined(NDEBUG)
                               ,
-                              std::string const&     stage_name,
-                              std::set<std::string>& uniforms_names
+                              std::string const&                     stage_name,
+                              std::unordered_map<std::string, bool>& has_uniform_been_set
 #endif
                               ) -> std::optional<glpp::internal::Shader<Type>>
 {
@@ -105,7 +105,7 @@ static auto gen_shader_module(std::optional<std::string> const& source_code
     auto module = glpp::internal::Shader<Type>{source_code->data()};
 #if !defined(NDEBUG)
     {
-        append_uniforms_names(*source_code, uniforms_names);
+        append_uniforms_names(*source_code, has_uniform_been_set);
         auto const err = module.check_compilation_errors();
         if (err)
         {
@@ -124,35 +124,35 @@ Shader::Shader(ShaderSources const& sources)
 #if !defined(NDEBUG)
                                                                   ,
                                                                   "Vertex",
-                                                                  _uniforms_names
+                                                                  _has_uniform_been_set
 #endif
     );
     auto const frag = gen_shader_module<glpp::ShaderType::Fragment>(sources.fragment
 #if !defined(NDEBUG)
                                                                     ,
                                                                     "Fragment",
-                                                                    _uniforms_names
+                                                                    _has_uniform_been_set
 #endif
     );
     auto const geom = gen_shader_module<glpp::ShaderType::Geometry>(sources.geometry
 #if !defined(NDEBUG)
                                                                     ,
                                                                     "Geometry",
-                                                                    _uniforms_names
+                                                                    _has_uniform_been_set
 #endif
     );
     auto const tess_ctrl = gen_shader_module<glpp::ShaderType::TessellationControl>(sources.tessellation_control
 #if !defined(NDEBUG)
                                                                                     ,
                                                                                     "Tessellation Control",
-                                                                                    _uniforms_names
+                                                                                    _has_uniform_been_set
 #endif
     );
     auto const tess_eval = gen_shader_module<glpp::ShaderType::TessellationEvaluation>(sources.tessellation_evaluation
 #if !defined(NDEBUG)
                                                                                        ,
                                                                                        "Tessellation Evaluation",
-                                                                                       _uniforms_names
+                                                                                       _has_uniform_been_set
 #endif
     );
     if (vert)
@@ -182,10 +182,18 @@ Shader::Shader(ShaderSources const& sources)
 void Shader::check_for_errors_before_rendering() const
 {
 #if !defined(NDEBUG)
-    const auto err = _program.check_for_state_errors();
+    auto const err = _program.check_for_state_errors();
     if (err)
     {
-        const auto msg = "Shader is not ready for rendering:\n" + err.message();
+        auto const msg = "Shader is not ready for rendering:\n" + err.message();
+        std::cerr << msg << '\n';
+        throw std::runtime_error{msg};
+    }
+    for (auto const& [uniform_name, has_been_set] : _has_uniform_been_set)
+    {
+        if (has_been_set)
+            continue;
+        auto const msg = "Uniform \"" + uniform_name + "\" has not been set.";
         std::cerr << msg << '\n';
         throw std::runtime_error{msg};
     }
@@ -201,13 +209,14 @@ template<typename T>
 static void set_uniform(const glpp::ext::Program& program, std::string_view uniform_name, T&& value
 #if !defined(NDEBUG)
                         ,
-                        std::set<std::string> const& uniforms_names
+                        std::unordered_map<std::string, bool>& has_uniform_been_set
 #endif
 )
 {
 #if !defined(NDEBUG)
-    assert(uniforms_names.find(std::string{uniform_name}) != uniforms_names.end()
-           && "This uniform name does not exist in the shader.");
+    auto const it = has_uniform_been_set.find(std::string{uniform_name});
+    assert(it != has_uniform_been_set.end() && "This uniform name does not exist in the shader.");
+    it->second = true;
 #endif
     program.use();
     program.set(std::string{uniform_name}, value);
@@ -217,7 +226,7 @@ void Shader::set(std::string_view uniform_name, int value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -226,7 +235,7 @@ void Shader::set(std::string_view uniform_name, unsigned int value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -235,7 +244,7 @@ void Shader::set(std::string_view uniform_name, bool value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -244,7 +253,7 @@ void Shader::set(std::string_view uniform_name, float value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -253,7 +262,7 @@ void Shader::set(std::string_view uniform_name, const glm::vec2& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -262,7 +271,7 @@ void Shader::set(std::string_view uniform_name, const glm::vec3& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -271,7 +280,7 @@ void Shader::set(std::string_view uniform_name, const glm::vec4& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -280,7 +289,7 @@ void Shader::set(std::string_view uniform_name, const glm::mat2& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -289,7 +298,7 @@ void Shader::set(std::string_view uniform_name, const glm::mat3& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -298,7 +307,7 @@ void Shader::set(std::string_view uniform_name, const glm::mat4& value) const
     set_uniform(_program, uniform_name, value
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
 }
@@ -308,7 +317,7 @@ void Shader::set(std::string_view uniform_name, const ImageOrCanvas& image) cons
     set_uniform(_program, uniform_name, s_available_texture_slot
 #if !defined(NDEBUG)
                 ,
-                _uniforms_names
+                _has_uniform_been_set
 #endif
     );
     s_available_texture_slot = (s_available_texture_slot + 1) % 8;

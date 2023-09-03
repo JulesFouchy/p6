@@ -61,7 +61,7 @@ private:
     glpp::ext::Program _program;
     static GLenum      s_available_texture_slot;
 #if !defined(NDEBUG)
-    std::set<std::string> _uniforms_names{};
+    mutable std::unordered_map<std::string, bool> _has_uniform_been_set{};
 #endif
 };
 
