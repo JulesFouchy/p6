@@ -585,6 +585,8 @@ void Context::render_with_rect_shader(Transform2D transform, bool is_ellipse, bo
     _rect_shader.use();
     set_vertex_shader_uniforms(_rect_shader, transform);
     _rect_shader.set("_is_image", is_image);
+    if (!is_image)
+        _rect_shader.set("_image", 0); // Prevents warning from check_for_errors_before_rendering() if uniform is not set
     _rect_shader.set("_is_ellipse", is_ellipse);
     _rect_shader.set("_fill_color", use_fill ? fill.as_premultiplied_vec4() : glm::vec4{0.f});
     _rect_shader.set("_stroke_color", stroke.as_premultiplied_vec4());
