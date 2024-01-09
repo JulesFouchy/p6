@@ -20,6 +20,9 @@ public:
 private:
     WindowFactory()
     {
+        glfwSetErrorCallback([](int, const char* error_message) {
+            std::cerr << "[glfw error] " << error_message << '\n';
+        });
         if (!glfwInit())
         {
             throw std::runtime_error("[p6::WindowFactory] Failed to intialize glfw");
