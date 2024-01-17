@@ -1,5 +1,4 @@
 #pragma once
-
 #include <glpp/glpp.hpp>
 
 namespace p6::internal {

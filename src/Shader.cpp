@@ -156,15 +156,15 @@ Shader::Shader(ShaderSources const& sources)
 #endif
     );
     if (vert)
-        _program.attach_shader(**vert);
+        _program.attach_shader(vert->id());
     if (frag)
-        _program.attach_shader(**frag);
+        _program.attach_shader(frag->id());
     if (geom)
-        _program.attach_shader(**geom);
+        _program.attach_shader(geom->id());
     if (tess_ctrl)
-        _program.attach_shader(**tess_ctrl);
+        _program.attach_shader(tess_ctrl->id());
     if (tess_eval)
-        _program.attach_shader(**tess_eval);
+        _program.attach_shader(tess_eval->id());
     _program.link();
 #if !defined(NDEBUG)
     {

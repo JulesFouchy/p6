@@ -78,7 +78,7 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
     _shader.set("_stroke_material", stroke_material ? *stroke_material : *fill_material);
     _shader.set("_stroke_weight", stroke_weight);
     _shader.check_for_errors_before_rendering();
-    glBindVertexArray(*_vao);
+    glBindVertexArray(_vao.id());
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
