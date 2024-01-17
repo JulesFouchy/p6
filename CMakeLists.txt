@@ -21,10 +21,8 @@ if(p6_ENABLE_WARNINGS_AS_ERRORS)
         target_compile_options(p6 PRIVATE -Werror -Wall -Wextra -Wpedantic -pedantic-errors -Wconversion -Wno-unknown-pragmas)
     endif()
 
-    set(glpp_extended_ENABLE_WARNINGS_AS_ERRORS true)
-    set(img_ENABLE_WARNINGS_AS_ERRORS true)
-else()
-    message("-- [p6] Not using warnings as errors for p6")
+    set(glpp_extended_ENABLE_WARNINGS_AS_ERRORS ON)
+    set(img_ENABLE_WARNINGS_AS_ERRORS ON)
 endif()
 
 # ---Add glpp-extended---
@@ -56,7 +54,7 @@ target_link_libraries(p6 PUBLIC glfw)
 add_library(ImGui)
 target_compile_features(ImGui PUBLIC cxx_std_11)
 
-if(WIN32)
+if(WIN32 AND NOT MSVC)
     target_link_libraries(ImGui PRIVATE imm32) # Required only when using mingw, not Visual Studio
 endif()
 
@@ -72,17 +70,21 @@ target_sources(ImGui PRIVATE
     third-party/imgui/backends/imgui_impl_opengl3.cpp # Build ImGui with OpenGL
 )
 target_link_libraries(ImGui PRIVATE glfw)
-
-target_sources(ImGui PRIVATE)
-
-#
 target_link_libraries(p6 PUBLIC ImGui)
 
 # ---Add p6 files---
 file(GLOB_RECURSE P6_SOURCES CONFIGURE_DEPENDS src/*)
 target_sources(p6 PRIVATE ${P6_SOURCES})
-target_include_directories(p6 PUBLIC include
-    third-party # For Dear ImGui
+
+if(p6_ENABLE_WARNINGS_AS_ERRORS)
+    set(MAYBE_SYSTEM "")
+else()
+    set(MAYBE_SYSTEM "SYSTEM")
+endif()
+
+target_include_directories(p6 ${MAYBE_SYSTEM} PUBLIC
+    "include"
+    "third-party" # For Dear ImGui
 )
 
 # ---Functions to copy files and folders---
@@ -94,10 +96,4 @@ endfunction()
 
 function(p6_copy_folder TARGET_NAME FOLDERNAME)
     Cool__target_copy_folder(${TARGET_NAME} ${FOLDERNAME})
-endfunction()
-
-# ! Deprecated
-function(target_link_p6_library TARGET)
-    target_link_libraries(${TARGET} p6::p6)
-    message("[p6] Sorry, target_link_p6_library() is deprecated, you should go back to using the usual `target_link_libraries(\${PROJECT_NAME} p6::p6)`")
 endfunction()
