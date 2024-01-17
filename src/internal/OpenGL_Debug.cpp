@@ -38,7 +38,7 @@ void APIENTRY GLDebugCallback(
     case GL_DEBUG_SOURCE_THIRD_PARTY: message += "\n\nSource: Third Party"; break;
     case GL_DEBUG_SOURCE_APPLICATION: message += "\n\nSource: Application"; break;
     case GL_DEBUG_SOURCE_OTHER: message += "\n\nSource: Other"; break;
-    default: break;
+    default: message += "\n\nSource: Unknown"; break;
     }
 
     switch (type)
@@ -52,16 +52,16 @@ void APIENTRY GLDebugCallback(
     case GL_DEBUG_TYPE_PUSH_GROUP: message += "\nType: Push Group"; break;
     case GL_DEBUG_TYPE_POP_GROUP: message += "\nType: Pop Group"; break;
     case GL_DEBUG_TYPE_OTHER: message += "\nType: Other"; break;
-    default: break;
+    default: message += "\nType: Unknown"; break;
     }
 
     switch (severity)
     {
-    case GL_DEBUG_SEVERITY_HIGH: message += "\nSeverity: high"; break;
-    case GL_DEBUG_SEVERITY_MEDIUM: message += "\nSeverity: medium"; break;
-    case GL_DEBUG_SEVERITY_LOW: return;
-    case GL_DEBUG_SEVERITY_NOTIFICATION: return;
-    default: break;
+    case GL_DEBUG_SEVERITY_HIGH: message += "\nSeverity: High"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: message += "\nSeverity: Medium"; break;
+    case GL_DEBUG_SEVERITY_LOW: message += "\nSeverity: Low"; break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION: message += "\nSeverity: Notification"; break;
+    default: message += "\nSeverity: Unknown"; break;
     }
 
     // Log
