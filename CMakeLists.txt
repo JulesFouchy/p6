@@ -51,6 +51,7 @@ add_subdirectory(third-party/glfw)
 
 if(APPLE AND(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
     target_compile_options(glfw PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
+    target_compile_options(p6 PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
 endif()
 
 target_link_libraries(p6 PUBLIC glfw)
