@@ -43,11 +43,57 @@ add_subdirectory(third-party/exe_path)
 target_link_libraries(p6 PUBLIC exe_path::exe_path)
 
 # ---Add glfw---
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory(third-party/glfw)
+# set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+# set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+# set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+# set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+# add_subdirectory(third-party/glfw)
+
+# Set the source files
+set(SOURCES
+    third-party/glfw/src/context.c
+    third-party/glfw/src/init.c
+    third-party/glfw/src/input.c
+    third-party/glfw/src/monitor.c
+    third-party/glfw/src/vulkan.c
+    third-party/glfw/src/window.c
+)
+
+# Set the header files
+set(HEADERS
+    third-party/glfw/include/GLFW/glfw3.h
+    third-party/glfw/include/GLFW/glfw3native.h
+)
+
+# Create the framework target
+add_library(glfw SHARED ${SOURCES} ${HEADERS})
+
+# Set include directories
+target_include_directories(glfw PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/glfw/include
+)
+
+# Set framework properties
+set_target_properties(glfw PROPERTIES
+    FRAMEWORK TRUE
+    FRAMEWORK_VERSION A
+    MACOSX_FRAMEWORK_IDENTIFIER org.glfw.glfw3
+    MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
+    PUBLIC_HEADER ${HEADERS}
+)
+
+# Link against required frameworks
+target_link_libraries(glfw PRIVATE
+    -framework Cocoa
+    -framework IOKit
+    -framework CoreFoundation
+    -framework CoreVideo
+    -framework OpenGL
+)
+
+# Optional: Set compiler and linker flags
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,@executable_path/../Frameworks")
+
 target_link_libraries(p6 PUBLIC glfw)
 
 # ---Add Dear ImGui---
