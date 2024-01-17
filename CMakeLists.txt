@@ -48,8 +48,12 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(third-party/glfw)
+
+if(APPLE AND(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
+    target_compile_options(glfw PRIVATE -x objective-c++)
+endif()
+
 target_link_libraries(p6 PUBLIC glfw)
-target_compile_options(p6 PUBLIC -x objective-c++)
 
 # ---Add Dear ImGui---
 add_library(ImGui)
