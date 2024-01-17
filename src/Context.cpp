@@ -289,7 +289,7 @@ void Context::ellipse(Transform2D transform)
 
 void Context::equilateral_triangle(Center center, Radius radius, Rotation rotation)
 {
-    const float y = radius.value * sqrt(3.f) / 2.f;
+    const float y = radius.value * std::sqrt(3.f) / 2.f;
     triangle(Point2D{radius.value, 0.f}, Point2D{-0.5f * radius.value, y}, Point2D{-0.5f * radius.value, -y}, center, rotation);
 }
 
