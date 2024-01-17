@@ -1,9 +1,9 @@
 #pragma once
-
 #include <filesystem>
 #include <glpp/extended.hpp>
 #include <set>
 #include <string_view>
+#include <unordered_map>
 #include "ImageCommon.h"
 #include "Transform2D.h"
 
