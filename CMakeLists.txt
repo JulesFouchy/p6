@@ -49,10 +49,12 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(third-party/glfw)
 
-if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(glfw PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
+if(APPLE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        target_compile_options(glfw PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
 
-    # target_compile_options(p6 PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
+        # target_compile_options(p6 PUBLIC -x objective-c++) # Required to compile some MacOS files used by glfw
+    endif()
 endif()
 
 target_link_libraries(p6 PUBLIC glfw)
