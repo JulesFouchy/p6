@@ -49,6 +49,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory(third-party/glfw)
 target_link_libraries(p6 PUBLIC glfw)
+target_compile_options(p6 PUBLIC -x objective-c++)
 
 # ---Add Dear ImGui---
 add_library(ImGui)
