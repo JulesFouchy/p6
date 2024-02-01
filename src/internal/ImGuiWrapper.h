@@ -2,26 +2,25 @@
 #include <imgui/imgui.h>
 #include "glfw.h"
 
-namespace p6::internal::ImGuiWrapper {
+namespace p6::internal {
 
-void initialize(GLFWwindow* window, ImGuiConfigFlags config_flags);
-
-class Raii {
+class ImGuiWrapper {
 public:
-    Raii() = default;
-    ~Raii();
+    ImGuiWrapper(GLFWwindow* window, ImGuiConfigFlags config_flags);
+    ~ImGuiWrapper();
 
-    Raii(Raii&&) noexcept;
-    Raii& operator=(Raii&&) noexcept;
+    ImGuiWrapper(ImGuiWrapper&&) noexcept;
+    ImGuiWrapper& operator=(ImGuiWrapper&&) noexcept;
 
-    Raii(const Raii&) = delete;
-    Raii& operator=(const Raii&) = delete;
+    ImGuiWrapper(const ImGuiWrapper&)            = delete;
+    ImGuiWrapper& operator=(const ImGuiWrapper&) = delete;
+
+    void begin_frame();
+    void end_frame(GLFWwindow* window);
 
 private:
     bool _moved_from{false};
+    bool _owns_imgui_context{};
 };
 
-void begin_frame();
-void end_frame(GLFWwindow* window);
-
-} // namespace p6::internal::ImGuiWrapper
+} // namespace p6::internal

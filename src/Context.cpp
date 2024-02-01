@@ -62,7 +62,7 @@ Context::Context(WindowCreationParams window_creation_params)
         on_framebuffer_resize(width, height);
     }
 
-    internal::ImGuiWrapper::initialize(*_window, window_creation_params.imgui_config_flags); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
+    _imgui_wrapper.emplace(*_window, window_creation_params.imgui_config_flags); // Must be after all the glfwSetXxxCallback, otherwise they will override the ImGui callbacks
 
 #ifndef P6_RAW_OPENGL_MODE
     render_to_main_canvas();
@@ -137,7 +137,7 @@ void Context::start()
 #endif
             if (!skip_first_frames(*_clock)) // Allow the clock to compute its delta_time() properly
             {
-                internal::ImGuiWrapper::begin_frame();
+                _imgui_wrapper->begin_frame();
 #ifndef P6_RAW_OPENGL_MODE
                 // Clear the window in case the default canvas doesn't cover the whole window
                 glpp::bind_framebuffer(glpp::SCREEN_FRAMEBUFFER_ID);
@@ -172,7 +172,7 @@ void Context::start()
                 glpp::bind_framebuffer(glpp::RenderTarget::screen_framebuffer_id());
 #endif
                 imgui();
-                internal::ImGuiWrapper::end_frame(*_window);
+                _imgui_wrapper->end_frame(*_window);
             }
 #if P6_RAW_OPENGL_MODE
             if (has_updated_this_frame) // If we don't check for that, images glitch in framerate_capped_at() mode with raw OpenGL enabled. (Note that this causes ImGui rendering to be tied to the capped framerate too, and to stop rendering when p6 is paused. But we can't work around that in raw opengl mode because we do all our rendering on the screen's framebuffer.)

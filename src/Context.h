@@ -549,7 +549,7 @@ private:
     Transform2D make_transform_2D(FullScreen) const;
 
 private:
-    internal::ImGuiWrapper::Raii            _imgui_raii;
+    std::optional<internal::ImGuiWrapper>   _imgui_wrapper{};
     mutable internal::UniqueGlfwWindow      _window;
     std::unique_ptr<internal::Clock>        _clock{std::make_unique<internal::Clock_Realtime>()};
     internal::RectRenderer                  _rect_renderer;

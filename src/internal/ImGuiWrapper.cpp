@@ -5,7 +5,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h>
 
-namespace p6::internal::ImGuiWrapper {
+namespace p6::internal {
 
 static void create_context(ImGuiConfigFlags config_flags)
 {
@@ -37,41 +37,55 @@ static void setup_for_glfw(GLFWwindow* window)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
 }
 
-void initialize(GLFWwindow* window, ImGuiConfigFlags config_flags)
+ImGuiWrapper::ImGuiWrapper(GLFWwindow* window, ImGuiConfigFlags config_flags)
 {
-    create_context(config_flags);
-    setup_for_glfw(window);
-}
-
-Raii::~Raii()
-{
-    if (!_moved_from)
+    static bool is_first = true;
+    _owns_imgui_context  = is_first;
+    is_first             = false;
+    if (_owns_imgui_context)
     {
-        ImGui_ImplGlfw_Shutdown();
-        ImGui_ImplOpenGL3_Shutdown();
+        create_context(config_flags);
+        setup_for_glfw(window);
     }
 }
 
-Raii::Raii(Raii&& other) noexcept
+ImGuiWrapper::~ImGuiWrapper()
+{
+    if (!_owns_imgui_context || _moved_from)
+        return;
+
+    ImGui_ImplGlfw_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+}
+
+ImGuiWrapper::ImGuiWrapper(ImGuiWrapper&& other) noexcept
+    : _owns_imgui_context{other._owns_imgui_context}
 {
     other._moved_from = true;
 }
-Raii& Raii::operator=(Raii&& other) noexcept
+ImGuiWrapper& ImGuiWrapper::operator=(ImGuiWrapper&& other) noexcept
 {
-    _moved_from       = false;
-    other._moved_from = true;
+    _moved_from         = false;
+    other._moved_from   = true;
+    _owns_imgui_context = other._owns_imgui_context;
     return *this;
 }
 
-void begin_frame()
+void ImGuiWrapper::begin_frame()
 {
+    if (!_owns_imgui_context || _moved_from)
+        return;
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
 
-void end_frame(GLFWwindow* window)
+void ImGuiWrapper::end_frame(GLFWwindow* window)
 {
+    if (!_owns_imgui_context || _moved_from)
+        return;
+
     ImGui::Render();
     int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -91,4 +105,4 @@ void end_frame(GLFWwindow* window)
     }
 }
 
-} // namespace p6::internal::ImGuiWrapper
+} // namespace p6::internal
