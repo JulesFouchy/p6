@@ -95,7 +95,7 @@ public:
     ~Context();
 
     Context(Context&&) noexcept            = default;
-    Context& operator=(Context&&) noexcept = default;
+    Context& operator=(Context&&) noexcept = delete;
 
     Context(const Context&)            = delete;
     Context& operator=(const Context&) = delete;
