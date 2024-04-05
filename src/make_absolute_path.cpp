@@ -22,7 +22,7 @@ std::filesystem::path make_absolute_path(std::filesystem::path path)
     if (!std::filesystem::exists(res))
     {
         using namespace std::literals;
-        auto const msg = "Path \""s + res.string() + "\" does not exist. Make sure you didn't misspell it or made it relative to the wrong folder. All relative paths will be relative to your executable's directory.";
+        auto const msg = "Path \""s + res.string() + "\" does not exist. Make sure you didn't misspell it or made it relative to the wrong folder. All relative paths will be relative to your executable's directory.\nAlso, in your CMakeLists.txt you need to call `p6_copy_folder(${PROJECT_NAME} the_folder_containing_your_file)`. See this for an example: https://github.com/JulesFouchy/p6-docs/blob/main/tests/CMakeLists.txt";
         std::cerr << msg << '\n';
         throw std::runtime_error{msg};
     }
