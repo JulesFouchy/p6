@@ -25,7 +25,7 @@ private:
         });
         if (!glfwInit())
         {
-            throw std::runtime_error("[p6::WindowFactory] Failed to intialize glfw");
+            throw std::runtime_error("[p6::WindowFactory] Failed to initialize glfw");
         }
     }
     ~WindowFactory()
