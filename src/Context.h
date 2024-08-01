@@ -561,6 +561,7 @@ private:
     glm::vec2                               _mouse_position{};
     glm::vec2                               _mouse_position_delta{0.f, 0.f};
     glm::vec2                               _drag_start_position{};
+    Button                                  _dragged_button{};
     bool                                    _is_dragging{false};
     std::optional<std::chrono::nanoseconds> _capped_delta_time{std::nullopt};
     std::chrono::steady_clock::time_point   _last_update{};

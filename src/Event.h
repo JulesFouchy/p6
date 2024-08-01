@@ -5,6 +5,12 @@
 
 namespace p6 {
 
+enum class Button {
+    Left,
+    Right,
+    Middle,
+};
+
 struct MouseMove {
     glm::vec2 position;
     glm::vec2 delta;
@@ -14,17 +20,12 @@ struct MouseDrag {
     glm::vec2 position;
     glm::vec2 delta;
     glm::vec2 start_position;
+    Button    button; /// The button that was pressed when the dragging started
 };
 
 struct MouseScroll {
     float dx;
     float dy;
-};
-
-enum class Button {
-    Left,
-    Right,
-    Middle,
 };
 
 struct MouseButton {

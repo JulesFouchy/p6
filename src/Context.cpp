@@ -1089,6 +1089,7 @@ void Context::on_mouse_button(int button, int action, int /*mods*/)
         {
             _is_dragging         = true;
             _drag_start_position = _mouse_position;
+            _dragged_button      = mouse_button;
             mouse_pressed(button_event);
             on_event(Event_MousePressed{button_event});
         }
@@ -1154,7 +1155,7 @@ void Context::on_mouse_move()
 {
     if (_is_dragging)
     {
-        auto const data = MouseDrag{mouse(), mouse_delta(), _drag_start_position};
+        auto const data = MouseDrag{mouse(), mouse_delta(), _drag_start_position, _dragged_button};
         mouse_dragged(data);
         on_event(Event_MouseDragged{data});
     }
