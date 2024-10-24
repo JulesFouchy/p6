@@ -1,5 +1,6 @@
 #include "RectRenderer.h"
 #include <array>
+#include "OpenglStateRAII.h"
 
 namespace p6::internal {
 
@@ -34,6 +35,7 @@ RectRenderer::RectRenderer()
 
 void RectRenderer::render() const
 {
+    auto raii = OpenGLStateRAII{};
     glBindVertexArray(_vao.id());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }

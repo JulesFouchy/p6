@@ -45,11 +45,6 @@ Context::Context(WindowCreationParams window_creation_params)
     glpp::set_error_callback([&](std::string&& error_message) { // TODO glpp's error callback is global while on_error is tied to a context. This means that if we create two Contexts glpp will only use the error callback of the second Context.
         on_error(std::move(error_message));
     });
-#ifndef P6_RAW_OPENGL_MODE
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);                // We use premultiplied alpha, which is the only convention that makes actual sense
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/
-#endif
     glfwSetWindowUserPointer(*_window, this);
     glfwSetWindowSizeCallback(*_window, &window_size_callback);
     glfwSetFramebufferSizeCallback(*_window, &framebuffer_size_callback);

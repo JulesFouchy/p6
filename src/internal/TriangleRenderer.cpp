@@ -1,6 +1,7 @@
 #include "TriangleRenderer.h"
 #include <array>
 #include <stdexcept>
+#include "OpenglStateRAII.h"
 
 namespace p6::internal {
 
@@ -67,6 +68,7 @@ void TriangleRenderer::render(const glm::vec2& p1, const glm::vec2& p2, const gl
 {
     if (!fill_material && !stroke_material)
         return;
+    auto raii = OpenGLStateRAII{};
 
     _shader.use();
     _shader.set("_p1", apply(transform, p1));
