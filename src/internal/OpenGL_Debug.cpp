@@ -2,6 +2,7 @@
 #if OPENGL_DEBUG
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 namespace p6 {
 
